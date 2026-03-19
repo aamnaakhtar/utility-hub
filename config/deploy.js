@@ -5,7 +5,7 @@ module.exports = function (deployTarget) {
     build: {},
 
     git: {
-      repo: 'https://github.com/YOUR_USERNAME/utility-hub.git',
+      repo: 'https://github.com/aamnaakhtar/utility-hub.git',
       branch: 'gh-pages',
     },
 
