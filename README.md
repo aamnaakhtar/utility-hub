@@ -128,7 +128,7 @@ Each utility is deployed separately and linked within the hub.
 ## 🛠️ Setup & Installation
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/utility-hub.git
+git clone https://github.com/aamnaakhtar/utility-hub.git
 cd utility-hub
 npm install
 ember serve
