@@ -1,0 +1,17 @@
+{{page-title "Utility Hub"}}
+
+<div class="header">
+  <h1>Utility Hub</h1>
+  <p>All your essential tools in one place</p>
+</div>
+
+<div class="utility-grid">
+  {{#each this.model as |utility|}}
+  <UtilityCard
+    @title={{utility.title}}
+    @description={{utility.description}}
+    @link={{utility.link}}
+    @image={{utility.image}}
+  />
+  {{/each}}
+</div>

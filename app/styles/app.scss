@@ -1,0 +1,45 @@
+@use 'utility-hub';
+
+body {
+    background: #f5f7fb;
+    font-family: Arial, sans-serif;
+    margin: 0;
+}
+
+.header {
+    text-align: center;
+    padding: 30px 20px 0;
+
+    h1 {
+        margin: 0;
+        font-size: 32px;
+        color: #222;
+    }
+
+    p {
+        margin-top: 8px;
+        color: #666;
+        font-size: 16px;
+    }
+}
+
+.utility-grid {
+    display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+    gap: 24px;
+    padding: 40px;
+
+    h2 {
+        margin-bottom: 10px;
+        font-size: 20px;
+        color: #333;
+        text-align: center;
+    }
+
+    p {
+        color: #666;
+        font-size: 14px;
+        line-height: 1.5;
+    }
+}   

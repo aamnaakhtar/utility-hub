@@ -4,7 +4,7 @@ module.exports = function (environment) {
   const ENV = {
     modulePrefix: 'utility-hub',
     environment,
-    rootURL: '/',
+    rootURL: '/utility-hub/',
     locationType: 'history',
     EmberENV: {
       EXTEND_PROTOTYPES: false,
