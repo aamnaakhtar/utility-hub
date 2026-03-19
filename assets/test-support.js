@@ -128,26 +128,16 @@ define("@ember/debug/index", ["exports", "@ember/-internals/browser-environment"
   _exports.warn = void 0;
   // These are the default production build versions:
   var noop = () => {};
-  var assert = noop;
-  _exports.assert = assert;
-  var info = noop;
-  _exports.info = info;
-  var warn = noop;
-  _exports.warn = warn;
-  var debug = noop;
-  _exports.debug = debug;
-  var deprecate = noop;
-  _exports.deprecate = deprecate;
-  var debugSeal = noop;
-  _exports.debugSeal = debugSeal;
-  var debugFreeze = noop;
-  _exports.debugFreeze = debugFreeze;
-  var runInDebug = noop;
-  _exports.runInDebug = runInDebug;
-  var setDebugFunction = noop;
-  _exports.setDebugFunction = setDebugFunction;
-  var getDebugFunction = noop;
-  _exports.getDebugFunction = getDebugFunction;
+  var assert = _exports.assert = noop;
+  var info = _exports.info = noop;
+  var warn = _exports.warn = noop;
+  var debug = _exports.debug = noop;
+  var deprecate = _exports.deprecate = noop;
+  var debugSeal = _exports.debugSeal = noop;
+  var debugFreeze = _exports.debugFreeze = noop;
+  var runInDebug = _exports.runInDebug = noop;
+  var setDebugFunction = _exports.setDebugFunction = noop;
+  var getDebugFunction = _exports.getDebugFunction = noop;
   var deprecateFunc = function () {
     return arguments[arguments.length - 1];
   };
@@ -286,17 +276,11 @@ define("@ember/debug/index", ["exports", "@ember/-internals/browser-environment"
       @return {Function} A new function that wraps the original function with a deprecation warning
       @private
     */
-    setDebugFunction('deprecateFunc', function deprecateFunc() {
-      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-        args[_key] = arguments[_key];
-      }
+    setDebugFunction('deprecateFunc', function deprecateFunc(...args) {
       if (args.length === 3) {
         var [message, options, func] = args;
-        return function () {
+        return function (...args) {
           deprecate(message, false, options);
-          for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-            args[_key2] = arguments[_key2];
-          }
           return func.apply(this, args);
         };
       } else {
@@ -353,7 +337,6 @@ define("@ember/debug/index", ["exports", "@ember/-internals/browser-environment"
     setDebugFunction('warn', _warn2.default);
   }
   var _warnIfUsingStrippedFeatureFlags;
-  _exports._warnIfUsingStrippedFeatureFlags = _warnIfUsingStrippedFeatureFlags;
   if (true /* DEBUG */ && !(0, _testing.isTesting)()) {
     if (typeof window !== 'undefined' && (_browserEnvironment.isFirefox || _browserEnvironment.isChrome) && window.addEventListener) {
       window.addEventListener('load', () => {
@@ -452,9 +435,7 @@ define("@ember/debug/lib/deprecate", ["exports", "@ember/-internals/environment"
   var registerHandler = () => {};
   _exports.registerHandler = registerHandler;
   var missingOptionsDeprecation;
-  _exports.missingOptionsDeprecation = missingOptionsDeprecation;
   var missingOptionsIdDeprecation;
-  _exports.missingOptionsIdDeprecation = missingOptionsIdDeprecation;
   var missingOptionDeprecation = () => '';
   _exports.missingOptionDeprecation = missingOptionDeprecation;
   var deprecate = () => {};
@@ -479,7 +460,6 @@ define("@ember/debug/lib/deprecate", ["exports", "@ember/-internals/environment"
       var updatedMessage = formatMessage(message, options);
       console.warn(`DEPRECATION: ${updatedMessage}`); // eslint-disable-line no-console
     });
-
     var captureErrorForStack;
     if (new Error().stack) {
       captureErrorForStack = () => new Error();
@@ -597,8 +577,7 @@ define("@ember/debug/lib/deprecate", ["exports", "@ember/-internals/environment"
       (0, _handlers.invoke)('deprecate', message, test, options);
     };
   }
-  var _default = deprecate;
-  _exports.default = _default;
+  var _default = _exports.default = deprecate;
 });
 define("@ember/debug/lib/handlers", ["exports"], function (_exports) {
   "use strict";
@@ -607,10 +586,8 @@ define("@ember/debug/lib/handlers", ["exports"], function (_exports) {
     value: true
   });
   _exports.registerHandler = _exports.invoke = _exports.HANDLERS = void 0;
-  var HANDLERS = {};
-  _exports.HANDLERS = HANDLERS;
-  var registerHandler = function registerHandler(_type, _callback) {};
-  _exports.registerHandler = registerHandler;
+  var HANDLERS = _exports.HANDLERS = {};
+  var registerHandler = _exports.registerHandler = function registerHandler(_type, _callback) {};
   var invoke = () => {};
   _exports.invoke = invoke;
   if (true /* DEBUG */) {
@@ -781,12 +758,10 @@ define("@ember/debug/lib/warn", ["exports", "@ember/debug/index", "@ember/debug/
   _exports.registerHandler = registerHandler;
   var warn = () => {};
   var missingOptionsDeprecation;
-  _exports.missingOptionsDeprecation = missingOptionsDeprecation;
   var missingOptionsIdDeprecation;
   /**
   @module @ember/debug
   */
-  _exports.missingOptionsIdDeprecation = missingOptionsIdDeprecation;
   if (true /* DEBUG */) {
     /**
       Allows for runtime registration of handler functions that override the default warning behavior.
@@ -822,7 +797,6 @@ define("@ember/debug/lib/warn", ["exports", "@ember/debug/index", "@ember/debug/
       console.warn(`WARNING: ${message}`);
       /* eslint-enable no-console */
     });
-
     _exports.missingOptionsDeprecation = missingOptionsDeprecation = 'When calling `warn` you ' + 'must provide an `options` hash as the third parameter.  ' + '`options` should include an `id` property.';
     _exports.missingOptionsIdDeprecation = missingOptionsIdDeprecation = 'When calling `warn` you must provide `id` in options.';
     /**
@@ -860,8 +834,7 @@ define("@ember/debug/lib/warn", ["exports", "@ember/debug/index", "@ember/debug/
       (0, _handlers.invoke)('warn', message, test, options);
     };
   }
-  var _default = warn;
-  _exports.default = _default;
+  var _default = _exports.default = warn;
 });
 define("ember-testing/index", ["exports", "ember-testing/lib/test", "ember-testing/lib/adapters/adapter", "ember-testing/lib/setup_for_testing", "ember-testing/lib/adapters/qunit", "ember-testing/lib/ext/application", "ember-testing/lib/ext/rsvp", "ember-testing/lib/helpers", "ember-testing/lib/initializers"], function (_exports, _test, _adapter, _setup_for_testing, _qunit, _application, _rsvp, _helpers, _initializers) {
   "use strict";
@@ -934,8 +907,7 @@ define("ember-testing/lib/adapters/adapter", ["exports", "@ember/object"], funct
       throw error;
     }
   });
-  var _default = Adapter;
-  _exports.default = _default;
+  var _default = _exports.default = Adapter;
 });
 define("ember-testing/lib/adapters/qunit", ["exports", "@ember/debug", "ember-testing/lib/adapters/adapter"], function (_exports, _debug, _adapter) {
   "use strict";
@@ -980,8 +952,7 @@ define("ember-testing/lib/adapters/qunit", ["exports", "@ember/debug", "ember-te
       QUnit.config.current.assert.ok(false, (0, _debug.inspect)(error));
     }
   });
-  var _default = QUnitAdapter;
-  _exports.default = _default;
+  var _default = _exports.default = QUnitAdapter;
 });
 define("ember-testing/lib/ext/application", ["@ember/application", "ember-testing/lib/setup_for_testing", "ember-testing/lib/test/helpers", "ember-testing/lib/test/promise", "ember-testing/lib/test/run", "ember-testing/lib/test/on_inject_helpers", "ember-testing/lib/test/adapter", "@ember/debug"], function (_application, _setup_for_testing, _helpers, _promise, _run, _on_inject_helpers, _adapter, _debug) {
   "use strict";
@@ -1118,10 +1089,7 @@ define("ember-testing/lib/ext/application", ["@ember/application", "ember-testin
   // of helper chaining
   function protoWrap(proto, name, callback, isAsync) {
     // SAFETY: This isn't entirely safe, but it _seems_ to be ok.
-    proto[name] = function () {
-      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-        args[_key] = arguments[_key];
-      }
+    proto[name] = function (...args) {
       if (isAsync) {
         return callback.apply(this, args);
       } else {
@@ -1138,17 +1106,9 @@ define("ember-testing/lib/ext/application", ["@ember/application", "ember-testin
     var fn = helper.method;
     var meta = helper.meta;
     if (!meta.wait) {
-      return function () {
-        for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-          args[_key2] = arguments[_key2];
-        }
-        return fn.apply(app, [app, ...args]);
-      };
+      return (...args) => fn.apply(app, [app, ...args]);
     }
-    return function () {
-      for (var _len3 = arguments.length, args = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
-        args[_key3] = arguments[_key3];
-      }
+    return (...args) => {
       var lastPromise = (0, _run.default)(() => (0, _promise.resolve)((0, _promise.getLastPromise)()));
       // wait for last helper's promise to resolve and then
       // execute. To be safe, we need to tell the adapter we're going
@@ -1178,8 +1138,7 @@ define("ember-testing/lib/ext/rsvp", ["exports", "@ember/-internals/runtime", "@
       _runloop._backburner.schedule('actions', () => callback(promise));
     }
   });
-  var _default = _runtime.RSVP;
-  _exports.default = _default;
+  var _default = _exports.default = _runtime.RSVP;
 });
 define("ember-testing/lib/helpers", ["ember-testing/lib/test/helpers", "ember-testing/lib/helpers/and_then", "ember-testing/lib/helpers/current_path", "ember-testing/lib/helpers/current_route_name", "ember-testing/lib/helpers/current_url", "ember-testing/lib/helpers/pause_test", "ember-testing/lib/helpers/visit", "ember-testing/lib/helpers/wait"], function (_helpers, _and_then, _current_path, _current_route_name, _current_url, _pause_test, _visit, _wait) {
   "use strict";
@@ -1619,8 +1578,7 @@ define("ember-testing/lib/test", ["exports", "ember-testing/lib/test/helpers", "
     get: _adapter.getAdapter,
     set: _adapter.setAdapter
   });
-  var _default = Test;
-  _exports.default = _default;
+  var _default = _exports.default = Test;
 });
 define("ember-testing/lib/test/adapter", ["exports", "@ember/-internals/error-handling"], function (_exports, _errorHandling) {
   "use strict";
@@ -1670,7 +1628,7 @@ define("ember-testing/lib/test/helpers", ["exports", "ember-testing/lib/test/pro
   _exports.registerAsyncHelper = registerAsyncHelper;
   _exports.registerHelper = registerHelper;
   _exports.unregisterHelper = unregisterHelper;
-  var helpers = {};
+  var helpers = _exports.helpers = {};
   /**
    @module @ember/test
   */
@@ -1711,7 +1669,6 @@ define("ember-testing/lib/test/helpers", ["exports", "ember-testing/lib/test/pro
     @param {Function} helperMethod
     @param options {Object}
   */
-  _exports.helpers = helpers;
   function registerHelper(name, helperMethod) {
     helpers[name] = {
       method: helperMethod,
@@ -1807,7 +1764,7 @@ define("ember-testing/lib/test/on_inject_helpers", ["exports"], function (_expor
   _exports.callbacks = void 0;
   _exports.invokeInjectHelpersCallbacks = invokeInjectHelpersCallbacks;
   _exports.onInjectHelpers = onInjectHelpers;
-  var callbacks = [];
+  var callbacks = _exports.callbacks = [];
   /**
     Used to register callbacks to be fired whenever `App.injectTestHelpers`
     is called.
@@ -1835,7 +1792,6 @@ define("ember-testing/lib/test/on_inject_helpers", ["exports"], function (_expor
     @method onInjectHelpers
     @param {Function} callback The function to be called.
   */
-  _exports.callbacks = callbacks;
   function onInjectHelpers(callback) {
     callbacks.push(callback);
   }
@@ -1983,15 +1939,15 @@ define("ember-testing/lib/test/waiters", ["exports"], function (_exports) {
   */
   var contexts = [];
   var callbacks = [];
-  function registerWaiter() {
+  function registerWaiter(...args) {
     var checkedCallback;
     var checkedContext;
-    if (arguments.length === 1) {
+    if (args.length === 1) {
       checkedContext = null;
-      checkedCallback = arguments.length <= 0 ? undefined : arguments[0];
+      checkedCallback = args[0];
     } else {
-      checkedContext = arguments.length <= 0 ? undefined : arguments[0];
-      checkedCallback = arguments.length <= 1 ? undefined : arguments[1];
+      checkedContext = args[0];
+      checkedCallback = args[1];
     }
     if (indexOf(checkedContext, checkedCallback) > -1) {
       return;

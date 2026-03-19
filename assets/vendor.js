@@ -451,20 +451,13 @@ define("@ember/-internals/browser-environment/index", ["exports"], function (_ex
   });
   _exports.window = _exports.userAgent = _exports.location = _exports.isFirefox = _exports.isChrome = _exports.history = _exports.hasDOM = void 0;
   // check if window exists and actually is the global
-  var hasDom = typeof self === 'object' && self !== null && self.Object === Object && typeof Window !== 'undefined' && self.constructor === Window && typeof document === 'object' && document !== null && self.document === document && typeof location === 'object' && location !== null && self.location === location && typeof history === 'object' && history !== null && self.history === history && typeof navigator === 'object' && navigator !== null && self.navigator === navigator && typeof navigator.userAgent === 'string';
-  _exports.hasDOM = hasDom;
-  var window = hasDom ? self : null;
-  _exports.window = window;
-  var location$1 = hasDom ? self.location : null;
-  _exports.location = location$1;
-  var history$1 = hasDom ? self.history : null;
-  _exports.history = history$1;
-  var userAgent = hasDom ? self.navigator.userAgent : 'Lynx (textmode)';
-  _exports.userAgent = userAgent;
-  var isChrome = hasDom ? typeof chrome === 'object' && !(typeof opera === 'object') : false;
-  _exports.isChrome = isChrome;
-  var isFirefox = hasDom ? /Firefox|FxiOS/.test(userAgent) : false;
-  _exports.isFirefox = isFirefox;
+  var hasDom = _exports.hasDOM = typeof self === 'object' && self !== null && self.Object === Object && typeof Window !== 'undefined' && self.constructor === Window && typeof document === 'object' && document !== null && self.document === document && typeof location === 'object' && location !== null && self.location === location && typeof history === 'object' && history !== null && self.history === history && typeof navigator === 'object' && navigator !== null && self.navigator === navigator && typeof navigator.userAgent === 'string';
+  var window = _exports.window = hasDom ? self : null;
+  var location$1 = _exports.location = hasDom ? self.location : null;
+  var history$1 = _exports.history = hasDom ? self.history : null;
+  var userAgent = _exports.userAgent = hasDom ? self.navigator.userAgent : 'Lynx (textmode)';
+  var isChrome = _exports.isChrome = hasDom ? typeof chrome === 'object' && !(typeof opera === 'object') : false;
+  var isFirefox = _exports.isFirefox = hasDom ? /Firefox|FxiOS/.test(userAgent) : false;
 });
 define("@ember/-internals/container/index", ["exports", "@ember/-internals/owner", "@ember/-internals/utils", "@ember/debug"], function (_exports, _owner, _utils, _debug) {
   "use strict";
@@ -521,10 +514,7 @@ define("@ember/-internals/container/index", ["exports", "@ember/-internals/owner
    @class Container
    */
   class Container {
-    constructor(registry, options) {
-      if (options === void 0) {
-        options = {};
-      }
+    constructor(registry, options = {}) {
       this.registry = registry;
       this.owner = options.owner || null;
       this.cache = (0, _utils.dictionary)(options.cache || null);
@@ -684,10 +674,7 @@ define("@ember/-internals/container/index", ["exports", "@ember/-internals/owner
   function isInstantiatable(container, fullName) {
     return container.registry.getOption(fullName, 'instantiate') !== false;
   }
-  function lookup(container, fullName, options) {
-    if (options === void 0) {
-      options = {};
-    }
+  function lookup(container, fullName, options = {}) {
     var normalizedName = fullName;
     if (options.singleton === true || options.singleton === undefined && isSingleton(container, fullName)) {
       var cached = container.cache[normalizedName];
@@ -716,32 +703,28 @@ define("@ember/-internals/container/index", ["exports", "@ember/-internals/owner
     container.factoryManagerCache[normalizedName] = manager;
     return manager;
   }
-  function isSingletonClass(container, fullName, _ref) {
-    var {
-      instantiate,
-      singleton
-    } = _ref;
+  function isSingletonClass(container, fullName, {
+    instantiate,
+    singleton
+  }) {
     return singleton !== false && !instantiate && isSingleton(container, fullName) && !isInstantiatable(container, fullName);
   }
-  function isSingletonInstance(container, fullName, _ref2) {
-    var {
-      instantiate,
-      singleton
-    } = _ref2;
+  function isSingletonInstance(container, fullName, {
+    instantiate,
+    singleton
+  }) {
     return singleton !== false && instantiate !== false && (singleton === true || isSingleton(container, fullName)) && isInstantiatable(container, fullName);
   }
-  function isFactoryClass(container, fullname, _ref3) {
-    var {
-      instantiate,
-      singleton
-    } = _ref3;
+  function isFactoryClass(container, fullname, {
+    instantiate,
+    singleton
+  }) {
     return instantiate === false && (singleton === false || !isSingleton(container, fullname)) && !isInstantiatable(container, fullname);
   }
-  function isFactoryInstance(container, fullName, _ref4) {
-    var {
-      instantiate,
-      singleton
-    } = _ref4;
+  function isFactoryInstance(container, fullName, {
+    instantiate,
+    singleton
+  }) {
     return instantiate !== false && (singleton === false || !isSingleton(container, fullName)) && isInstantiatable(container, fullName);
   }
   function instantiateFactory(container, normalizedName, fullName, options) {
@@ -797,8 +780,7 @@ define("@ember/-internals/container/index", ["exports", "@ember/-internals/owner
       }
     }
   }
-  var INIT_FACTORY = Symbol('INIT_FACTORY');
-  _exports.INIT_FACTORY = INIT_FACTORY;
+  var INIT_FACTORY = _exports.INIT_FACTORY = Symbol('INIT_FACTORY');
   function getFactoryFor(obj) {
     // SAFETY: since we know `obj` is an `object`, we also know we can safely ask
     // whether a key is set on it.
@@ -867,10 +849,7 @@ define("@ember/-internals/container/index", ["exports", "@ember/-internals/owner
    @since 1.11.0
   */
   class Registry {
-    constructor(options) {
-      if (options === void 0) {
-        options = {};
-      }
+    constructor(options = {}) {
       this.fallback = options.fallback || null;
       this.resolver = options.resolver || null;
       this.registrations = (0, _utils.dictionary)(options.registrations || null);
@@ -927,10 +906,7 @@ define("@ember/-internals/container/index", ["exports", "@ember/-internals/owner
     container(options) {
       return new Container(this, options);
     }
-    register(fullName, factory, options) {
-      if (options === void 0) {
-        options = {};
-      }
+    register(fullName, factory, options = {}) {
       (true && !(this.isValidFullName(fullName)) && (0, _debug.assert)('fullName must be a proper full name', this.isValidFullName(fullName)));
       (true && !(factory !== undefined) && (0, _debug.assert)(`Attempting to register an unknown factory: '${fullName}'`, factory !== undefined));
       var normalizedName = this.normalize(fullName);
@@ -1246,8 +1222,7 @@ define("@ember/-internals/container/index", ["exports", "@ember/-internals/owner
   }
   var privateNames = (0, _utils.dictionary)(null);
   var privateSuffix = `${Math.random()}${Date.now()}`.replace('.', '');
-  function privatize(_ref5) {
-    var [fullName] = _ref5;
+  function privatize([fullName]) {
     (true && !(arguments.length === 1 && fullName) && (0, _debug.assert)('has a single string argument', arguments.length === 1 && fullName));
     var name = privateNames[fullName];
     if (name) {
@@ -1284,13 +1259,12 @@ define("@ember/-internals/environment/index", ["exports"], function (_exports) {
     return value && value.nodeType === undefined ? value : undefined;
   }
   // export real global
-  var global$1 = checkGlobal(checkElementIdShadowing(typeof global === 'object' && global)) || checkGlobal(typeof self === 'object' && self) || checkGlobal(typeof window === 'object' && window) || typeof mainContext !== 'undefined' && mainContext ||
+  var global$1 = _exports.global = checkGlobal(checkElementIdShadowing(typeof global === 'object' && global)) || checkGlobal(typeof self === 'object' && self) || checkGlobal(typeof window === 'object' && window) || typeof mainContext !== 'undefined' && mainContext ||
   // set before strict mode in Ember loader/wrapper
   new Function('return this')(); // eval outside of strict mode
 
   // legacy imports/exports/lookup stuff (should we keep this??)
-  _exports.global = global$1;
-  var context = function (global, Ember) {
+  var context = _exports.context = function (global, Ember) {
     return Ember === undefined ? {
       imports: global,
       exports: global,
@@ -1304,7 +1278,6 @@ define("@ember/-internals/environment/index", ["exports"], function (_exports) {
       lookup: Ember.lookup || global
     };
   }(global$1, global$1.Ember);
-  _exports.context = context;
   function getLookup() {
     return context.lookup;
   }
@@ -1323,7 +1296,7 @@ define("@ember/-internals/environment/index", ["exports"], function (_exports) {
     @type Object
     @public
   */
-  var ENV = {
+  var ENV = _exports.ENV = {
     ENABLE_OPTIONAL_FEATURES: false,
     /**
       Determines whether Ember should add to `Array`
@@ -1439,7 +1412,6 @@ define("@ember/-internals/environment/index", ["exports"], function (_exports) {
     EMBER_LOAD_HOOKS: {},
     FEATURES: {}
   };
-  _exports.ENV = ENV;
   (EmberENV => {
     if (typeof EmberENV !== 'object' || EmberENV === null) return;
     for (var flag in EmberENV) {
@@ -1504,13 +1476,12 @@ define("@ember/-internals/error-handling/index", ["exports"], function (_exports
   _exports.setDispatchOverride = setDispatchOverride;
   _exports.setOnerror = setOnerror;
   var onerror;
-  var onErrorTarget = {
+  var onErrorTarget = _exports.onErrorTarget = {
     get onerror() {
       return onerror;
     }
   };
   // Ember.onerror getter
-  _exports.onErrorTarget = onErrorTarget;
   function getOnerror() {
     return onerror;
   }
@@ -1588,13 +1559,12 @@ define("@ember/-internals/glimmer/index", ["exports", "@glimmer/opcode-compiler"
       return _opcodeCompiler.templateCacheCounters;
     }
   });
-  var RootTemplate = (0, _opcodeCompiler.templateFactory)({
+  var RootTemplate = _exports.RootTemplate = (0, _opcodeCompiler.templateFactory)({
     "id": "9BtKrod8",
     "block": "[[[46,[30,0],null,null,null]],[],false,[\"component\"]]",
     "moduleName": "packages/@ember/-internals/glimmer/lib/templates/root.hbs",
     "isStrictMode": false
   });
-  _exports.RootTemplate = RootTemplate;
   var InputTemplate = (0, _opcodeCompiler.templateFactory)({
     "id": "OGSIkgXP",
     "block": "[[[11,\"input\"],[16,1,[30,0,[\"id\"]]],[16,0,[30,0,[\"class\"]]],[17,1],[16,4,[30,0,[\"type\"]]],[16,\"checked\",[30,0,[\"checked\"]]],[16,2,[30,0,[\"value\"]]],[4,[38,0],[\"change\",[30,0,[\"change\"]]],null],[4,[38,0],[\"input\",[30,0,[\"input\"]]],null],[4,[38,0],[\"keyup\",[30,0,[\"keyUp\"]]],null],[4,[38,0],[\"paste\",[30,0,[\"valueDidChange\"]]],null],[4,[38,0],[\"cut\",[30,0,[\"valueDidChange\"]]],null],[12],[13]],[\"&attrs\"],false,[\"on\"]]",
@@ -1734,9 +1704,7 @@ define("@ember/-internals/glimmer/index", ["exports", "@glimmer/opcode-compiler"
     var c = arguments.length,
       r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
       d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) {
-      if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    }
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
   };
   var UNINITIALIZED = Object.freeze({});
@@ -1872,9 +1840,7 @@ define("@ember/-internals/glimmer/index", ["exports", "@glimmer/opcode-compiler"
     var c = arguments.length,
       r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
       d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) {
-      if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    }
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
   };
   var isValidInputType;
@@ -2089,8 +2055,7 @@ define("@ember/-internals/glimmer/index", ["exports", "@glimmer/opcode-compiler"
   __decorate$1([_object.action], Input.prototype, "change", null);
   __decorate$1([_object.action], Input.prototype, "input", null);
   __decorate$1([_object.action], Input.prototype, "checkedDidChange", null);
-  var Input$1 = opaquify(Input, InputTemplate);
-  _exports.Input = Input$1;
+  var Input$1 = _exports.Input = opaquify(Input, InputTemplate);
   var LinkToTemplate = (0, _opcodeCompiler.templateFactory)({
     "id": "CVwkBtGh",
     "block": "[[[11,3],[16,1,[30,0,[\"id\"]]],[16,0,[30,0,[\"class\"]]],[16,\"role\",[30,0,[\"role\"]]],[16,\"title\",[30,0,[\"title\"]]],[16,\"rel\",[30,0,[\"rel\"]]],[16,\"tabindex\",[30,0,[\"tabindex\"]]],[16,\"target\",[30,0,[\"target\"]]],[17,1],[16,6,[30,0,[\"href\"]]],[4,[38,0],[\"click\",[30,0,[\"click\"]]],null],[12],[18,2,null],[13]],[\"&attrs\",\"&default\"],false,[\"on\",\"yield\"]]",
@@ -2101,9 +2066,7 @@ define("@ember/-internals/glimmer/index", ["exports", "@glimmer/opcode-compiler"
     var c = arguments.length,
       r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
       d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) {
-      if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    }
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
   };
   var EMPTY_ARRAY$1 = [];
@@ -2658,8 +2621,7 @@ define("@ember/-internals/glimmer/index", ["exports", "@glimmer/opcode-compiler"
       }
     });
   }
-  var LinkTo$1 = opaquify(LinkTo, LinkToTemplate);
-  _exports.LinkTo = LinkTo$1;
+  var LinkTo$1 = _exports.LinkTo = opaquify(LinkTo, LinkToTemplate);
   var TextareaTemplate = (0, _opcodeCompiler.templateFactory)({
     "id": "OpzctQXz",
     "block": "[[[11,\"textarea\"],[16,1,[30,0,[\"id\"]]],[16,0,[30,0,[\"class\"]]],[17,1],[16,2,[30,0,[\"value\"]]],[4,[38,0],[\"change\",[30,0,[\"change\"]]],null],[4,[38,0],[\"input\",[30,0,[\"input\"]]],null],[4,[38,0],[\"keyup\",[30,0,[\"keyUp\"]]],null],[4,[38,0],[\"paste\",[30,0,[\"valueDidChange\"]]],null],[4,[38,0],[\"cut\",[30,0,[\"valueDidChange\"]]],null],[12],[13]],[\"&attrs\"],false,[\"on\"]]",
@@ -2670,9 +2632,7 @@ define("@ember/-internals/glimmer/index", ["exports", "@glimmer/opcode-compiler"
     var c = arguments.length,
       r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
       d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) {
-      if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    }
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
   };
   /**
@@ -2827,8 +2787,7 @@ define("@ember/-internals/glimmer/index", ["exports", "@glimmer/opcode-compiler"
   }
   __decorate$3([_object.action], Textarea.prototype, "change", null);
   __decorate$3([_object.action], Textarea.prototype, "input", null);
-  var Textarea$1 = opaquify(Textarea, TextareaTemplate);
-  _exports.Textarea = Textarea$1;
+  var Textarea$1 = _exports.Textarea = opaquify(Textarea, TextareaTemplate);
   function isTemplateFactory(template) {
     return typeof template === 'function';
   }
@@ -3289,8 +3248,8 @@ define("@ember/-internals/glimmer/index", ["exports", "@glimmer/opcode-compiler"
     if (true /* DEBUG */) {
       makeClosureAction(context, (0, _reference.valueForRef)(targetRef), (0, _reference.valueForRef)(actionRef), processArgs, debugKey);
     }
-    return function () {
-      return makeClosureAction(context, (0, _reference.valueForRef)(targetRef), (0, _reference.valueForRef)(actionRef), processArgs, debugKey)(...arguments);
+    return (...args) => {
+      return makeClosureAction(context, (0, _reference.valueForRef)(targetRef), (0, _reference.valueForRef)(actionRef), processArgs, debugKey)(...args);
     };
   }
   function makeClosureAction(context, target, action$$1, processArgs, debugKey) {
@@ -3307,10 +3266,7 @@ define("@ember/-internals/glimmer/index", ["exports", "@glimmer/opcode-compiler"
     } else {
       (true && !(false) && (0, _debug.assert)(`An action could not be made for \`${debugKey || action$$1}\` in ${target}. Please confirm that you are using either a quoted action name (i.e. \`(action '${debugKey || 'myAction'}')\`) or a function available in ${target}.`, false));
     }
-    return function () {
-      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-        args[_key] = arguments[_key];
-      }
+    return (...args) => {
       var payload = {
         target: self,
         args,
@@ -3367,9 +3323,7 @@ define("@ember/-internals/glimmer/index", ["exports", "@glimmer/opcode-compiler"
   }
   var __rest = undefined && undefined.__rest || function (s, e) {
     var t = {};
-    for (var p in s) {
-      if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0) t[p] = s[p];
-    }
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0) t[p] = s[p];
     if (s != null && typeof Object.getOwnPropertySymbols === "function") for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
       if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i])) t[p[i]] = s[p[i]];
     }
@@ -3508,10 +3462,9 @@ define("@ember/-internals/glimmer/index", ["exports", "@glimmer/opcode-compiler"
      * features like exposed by view mixins like ChildViewSupport, ActionSupport,
      * etc.
      */
-    create(owner, ComponentClass, args, _ref, dynamicScope, callerSelfRef, hasBlock) {
-      var {
-        isInteractive
-      } = _ref;
+    create(owner, ComponentClass, args, {
+      isInteractive
+    }, dynamicScope, callerSelfRef, hasBlock) {
       // Get the nearest concrete component instance from the scope. "Virtual"
       // components will be skipped.
       var parentView = dynamicScope.view;
@@ -3586,19 +3539,17 @@ define("@ember/-internals/glimmer/index", ["exports", "@glimmer/opcode-compiler"
       var _a;
       return definition.fullName || definition.normalizedName || ((_a = definition.class) === null || _a === void 0 ? void 0 : _a.name) || definition.name;
     }
-    getSelf(_ref2) {
-      var {
-        rootRef
-      } = _ref2;
+    getSelf({
+      rootRef
+    }) {
       return rootRef;
     }
-    didCreateElement(_ref3, element, operations) {
-      var {
-        component,
-        classRef,
-        isInteractive,
-        rootRef
-      } = _ref3;
+    didCreateElement({
+      component,
+      classRef,
+      isInteractive,
+      rootRef
+    }, element, operations) {
       (0, _views.setViewElement)(component, element);
       (0, _views.setElementView)(element, component);
       var {
@@ -3641,11 +3592,10 @@ define("@ember/-internals/glimmer/index", ["exports", "@glimmer/opcode-compiler"
       bucket.component[BOUNDS] = bounds;
       bucket.finalize();
     }
-    didCreate(_ref4) {
-      var {
-        component,
-        isInteractive
-      } = _ref4;
+    didCreate({
+      component,
+      isInteractive
+    }) {
       if (isInteractive) {
         component._transitionTo('inDOM');
         component.trigger('didInsertElement');
@@ -3684,11 +3634,10 @@ define("@ember/-internals/glimmer/index", ["exports", "@glimmer/opcode-compiler"
     didUpdateLayout(bucket) {
       bucket.finalize();
     }
-    didUpdate(_ref5) {
-      var {
-        component,
-        isInteractive
-      } = _ref5;
+    didUpdate({
+      component,
+      isInteractive
+    }) {
       if (isInteractive) {
         component.trigger('didUpdate');
         component.trigger('didRender');
@@ -4077,17 +4026,15 @@ define("@ember/-internals/glimmer/index", ["exports", "@glimmer/opcode-compiler"
         args
       };
     }
-    getDestroyable(_ref6) {
-      var {
-        instance
-      } = _ref6;
+    getDestroyable({
+      instance
+    }) {
       return instance;
     }
-    getValue(_ref7) {
-      var {
-        instance,
-        args
-      } = _ref7;
+    getValue({
+      instance,
+      args
+    }) {
       var {
         positional,
         named
@@ -4354,10 +4301,9 @@ define("@ember/-internals/glimmer/index", ["exports", "@glimmer/opcode-compiler"
       }
       return state;
     }
-    getDebugName(_ref8) {
-      var {
-        name
-      } = _ref8;
+    getDebugName({
+      name
+    }) {
       return name;
     }
     getDebugCustomRenderTree(definition, state, args) {
@@ -4395,10 +4341,9 @@ define("@ember/-internals/glimmer/index", ["exports", "@glimmer/opcode-compiler"
     getCapabilities() {
       return CAPABILITIES$1;
     }
-    getSelf(_ref9) {
-      var {
-        self
-      } = _ref9;
+    getSelf({
+      self
+    }) {
       return self;
     }
     didCreate() {}
@@ -4413,10 +4358,7 @@ define("@ember/-internals/glimmer/index", ["exports", "@glimmer/opcode-compiler"
   }
   var OUTLET_MANAGER = new OutletComponentManager();
   class OutletComponentDefinition {
-    constructor(state, manager) {
-      if (manager === void 0) {
-        manager = OUTLET_MANAGER;
-      }
+    constructor(state, manager = OUTLET_MANAGER) {
       this.state = state;
       this.manager = manager;
       // handle is not used by this custom definition
@@ -4458,10 +4400,9 @@ define("@ember/-internals/glimmer/index", ["exports", "@glimmer/opcode-compiler"
       super();
       this.component = component;
     }
-    create(_owner, _state, _args, _ref10, dynamicScope) {
-      var {
-        isInteractive
-      } = _ref10;
+    create(_owner, _state, _args, {
+      isInteractive
+    }, dynamicScope) {
       var component = this.component;
       var finalizer = (0, _instrumentation._instrumentStart)('render.component', initialRenderInstrumentDetails, component);
       dynamicScope.view = component;
@@ -4675,10 +4616,9 @@ define("@ember/-internals/glimmer/index", ["exports", "@glimmer/opcode-compiler"
       this.inner = inner;
     }
   }
-  var eachIn = internalHelper(_ref11 => {
-    var {
-      positional
-    } = _ref11;
+  var eachIn = internalHelper(({
+    positional
+  }) => {
     var inner = positional[0];
     (true && !(inner) && (0, _debug.assert)('expected at least one positional arg', inner));
     return (0, _reference.createComputeRef)(() => {
@@ -5013,11 +4953,10 @@ define("@ember/-internals/glimmer/index", ["exports", "@glimmer/opcode-compiler"
   /**
   @module ember
   */
-  var disallowDynamicResolution = internalHelper(_ref12 => {
-    var {
-      positional,
-      named
-    } = _ref12;
+  var disallowDynamicResolution = internalHelper(({
+    positional,
+    named
+  }) => {
     var nameOrValueRef = positional[0];
     (true && !(positional.length === 1 && nameOrValueRef) && (0, _debug.assert)(`[BUG] wrong number of positional arguments, expecting 1, got ${positional.length}`, positional.length === 1 && nameOrValueRef));
     var typeRef = named['type'];
@@ -5060,10 +4999,9 @@ define("@ember/-internals/glimmer/index", ["exports", "@glimmer/opcode-compiler"
     };
   }
   var inElementNullCheckHelper = internalHelper(helper$1);
-  var normalizeClassHelper = internalHelper(_ref13 => {
-    var {
-      positional
-    } = _ref13;
+  var normalizeClassHelper = internalHelper(({
+    positional
+  }) => {
     return (0, _reference.createComputeRef)(() => {
       var classNameArg = positional[0];
       var valueArg = positional[1];
@@ -5081,10 +5019,9 @@ define("@ember/-internals/glimmer/index", ["exports", "@glimmer/opcode-compiler"
       }
     });
   });
-  var resolve = internalHelper((_ref14, owner) => {
-    var {
-      positional
-    } = _ref14;
+  var resolve = internalHelper(({
+    positional
+  }, owner) => {
     var _a;
     // why is this allowed to be undefined in the first place?
     (true && !(owner) && (0, _debug.assert)('[BUG] missing owner', owner));
@@ -5109,10 +5046,9 @@ define("@ember/-internals/glimmer/index", ["exports", "@glimmer/opcode-compiler"
     updates to `{{each}}` when it changes. It is put into place by a template
     transform at build time, similar to the (-each-in) helper
   */
-  var trackArray = internalHelper(_ref15 => {
-    var {
-      positional
-    } = _ref15;
+  var trackArray = internalHelper(({
+    positional
+  }) => {
     var inner = positional[0];
     (true && !(inner) && (0, _debug.assert)('expected at least one positional arg', inner));
     return (0, _reference.createComputeRef)(() => {
@@ -5200,10 +5136,9 @@ define("@ember/-internals/glimmer/index", ["exports", "@glimmer/opcode-compiler"
     @for Ember.Templates.helpers
     @public
   */
-  var mut = internalHelper(_ref16 => {
-    var {
-      positional
-    } = _ref16;
+  var mut = internalHelper(({
+    positional
+  }) => {
     var ref = positional[0];
     (true && !(ref) && (0, _debug.assert)('expected at least one positional arg', ref)); // TODO: Improve this error message. This covers at least two distinct
     // cases:
@@ -5336,10 +5271,9 @@ define("@ember/-internals/glimmer/index", ["exports", "@glimmer/opcode-compiler"
     @for Ember.Templates.helpers
     @private
   */
-  var readonly = internalHelper(_ref17 => {
-    var {
-      positional
-    } = _ref17;
+  var readonly = internalHelper(({
+    positional
+  }) => {
     var firstArg = positional[0];
     (true && !(firstArg) && (0, _debug.assert)('has first arg', firstArg));
     return (0, _reference.createReadOnlyRef)(firstArg);
@@ -5375,11 +5309,10 @@ define("@ember/-internals/glimmer/index", ["exports", "@glimmer/opcode-compiler"
     @for Ember.Templates.helpers
     @public
   */
-  var unbound = internalHelper(_ref18 => {
-    var {
-      positional,
-      named
-    } = _ref18;
+  var unbound = internalHelper(({
+    positional,
+    named
+  }) => {
     (true && !(positional.length === 1 && Object.keys(named).length === 0) && (0, _debug.assert)('unbound helper cannot be called with multiple params or hash params', positional.length === 1 && Object.keys(named).length === 0));
     return (0, _reference.createUnboundRef)((0, _reference.valueForRef)(positional[0]), '(result of an `unbound` helper)');
   });
@@ -5536,11 +5469,10 @@ define("@ember/-internals/glimmer/index", ["exports", "@glimmer/opcode-compiler"
     }
   }
   class ActionModifierManager {
-    create(owner, element, _state, _ref19) {
-      var {
-        named,
-        positional
-      } = _ref19;
+    create(owner, element, _state, {
+      named,
+      positional
+    }) {
       var actionArgs = [];
       // The first two arguments are (1) `this` and (2) the action name.
       // Everything else is a param.
@@ -5639,10 +5571,9 @@ define("@ember/-internals/glimmer/index", ["exports", "@glimmer/opcode-compiler"
     getOwner(state) {
       return state.engine;
     }
-    create(owner, _ref20, args, env) {
-      var {
-        name
-      } = _ref20;
+    create(owner, {
+      name
+    }, args, env) {
       // TODO
       // mount is a runtime helper, this shouldn't use dynamic layout
       // we should resolve the engine app template in the helper
@@ -5686,10 +5617,9 @@ define("@ember/-internals/glimmer/index", ["exports", "@glimmer/opcode-compiler"
       }
       return bucket;
     }
-    getDebugName(_ref21) {
-      var {
-        name
-      } = _ref21;
+    getDebugName({
+      name
+    }) {
       return name;
     }
     getDebugCustomRenderTree(definition, state, args, templateModuleName) {
@@ -5708,10 +5638,9 @@ define("@ember/-internals/glimmer/index", ["exports", "@glimmer/opcode-compiler"
         template: templateModuleName
       }];
     }
-    getSelf(_ref22) {
-      var {
-        self
-      } = _ref22;
+    getSelf({
+      self
+    }) {
       return self;
     }
     getDestroyable(bucket) {
@@ -6366,10 +6295,7 @@ define("@ember/-internals/glimmer/index", ["exports", "@glimmer/opcode-compiler"
       var builder = owner.lookup('service:-dom-builder');
       return new this(owner, document, env, rootTemplate, _viewRegistry, builder);
     }
-    constructor(owner, document, env, rootTemplate, viewRegistry, builder) {
-      if (builder === void 0) {
-        builder = _runtime.clientBuilder;
-      }
+    constructor(owner, document, env, rootTemplate, viewRegistry, builder = _runtime.clientBuilder) {
       this._inRenderTransaction = false;
       this._lastRevision = -1;
       this._destroyed = false;
@@ -6655,9 +6581,8 @@ define("@ember/-internals/glimmer/index", ["exports", "@glimmer/opcode-compiler"
   function setComponentManager$1(manager, obj) {
     return (0, _manager2.setComponentManager)(manager, obj);
   }
-  var componentCapabilities$1 = _manager2.componentCapabilities;
-  _exports.componentCapabilities = componentCapabilities$1;
-  var modifierCapabilities$1 = _manager2.modifierCapabilities;
+  var componentCapabilities$1 = _exports.componentCapabilities = _manager2.componentCapabilities;
+  var modifierCapabilities$1 = _exports.modifierCapabilities = _manager2.modifierCapabilities;
 
   /**
     [Glimmer](https://github.com/tildeio/glimmer) is a templating engine used by Ember.js that is compatible with a subset of the [Handlebars](http://handlebarsjs.com/) syntax.
@@ -6739,7 +6664,6 @@ define("@ember/-internals/glimmer/index", ["exports", "@glimmer/opcode-compiler"
     @main @ember/component
     @public
    */
-  _exports.modifierCapabilities = modifierCapabilities$1;
 });
 define("@ember/-internals/meta/index", ["exports", "@ember/-internals/meta/lib/meta"], function (_exports, _meta) {
   "use strict";
@@ -6795,7 +6719,6 @@ define("@ember/-internals/meta/lib/meta", ["exports", "@ember/-internals/utils",
   _exports.setMeta = setMeta;
   var objectPrototype = Object.prototype;
   var counters;
-  _exports.counters = counters;
   if (true /* DEBUG */) {
     _exports.counters = counters = {
       peekCalls: 0,
@@ -6821,8 +6744,7 @@ define("@ember/-internals/meta/lib/meta", ["exports", "@ember/-internals/utils",
   /**
   @module ember
   */
-  var UNDEFINED = (0, _utils.symbol)('undefined');
-  _exports.UNDEFINED = UNDEFINED;
+  var UNDEFINED = _exports.UNDEFINED = (0, _utils.symbol)('undefined');
   var currentListenerVersion = 1;
   class Meta {
     // DEBUG
@@ -7030,11 +6952,7 @@ define("@ember/-internals/meta/lib/meta", ["exports", "@ember/-internals/utils",
       }
       this.pushListener(eventName, target, method, 2 /* ListenerKind.REMOVE */);
     }
-
-    pushListener(event, target, method, kind, sync) {
-      if (sync === void 0) {
-        sync = false;
-      }
+    pushListener(event, target, method, kind, sync = false) {
       var listeners = this.writableListeners();
       var i = indexOfListener(listeners, event, target, method);
       // remove if found listener was inherited
@@ -7164,7 +7082,6 @@ define("@ember/-internals/meta/lib/meta", ["exports", "@ember/-internals/utils",
           }
         }
       }
-
       return result;
     }
     /** @internal */
@@ -7251,7 +7168,7 @@ define("@ember/-internals/meta/lib/meta", ["exports", "@ember/-internals/utils",
       the meta hash, allowing the method to avoid making an unnecessary copy.
     @return {Object} the meta hash for an object
   */
-  var meta = function meta(obj) {
+  var meta = _exports.meta = function meta(obj) {
     (true && !(obj !== null) && (0, _debug.assert)('Cannot call `meta` on null', obj !== null));
     (true && !(obj !== undefined) && (0, _debug.assert)('Cannot call `meta` on undefined', obj !== undefined));
     (true && !(typeof obj === 'object' || typeof obj === 'function') && (0, _debug.assert)(`Cannot call \`meta\` on ${typeof obj}`, typeof obj === 'object' || typeof obj === 'function'));
@@ -7267,7 +7184,6 @@ define("@ember/-internals/meta/lib/meta", ["exports", "@ember/-internals/utils",
     setMeta(obj, newMeta);
     return newMeta;
   };
-  _exports.meta = meta;
   if (true /* DEBUG */) {
     meta._counters = counters;
   }
@@ -7402,10 +7318,7 @@ define("@ember/-internals/metal/index", ["exports", "@ember/-internals/meta", "@
     @param {Boolean} once A flag whether a function should only be called once
     @public
   */
-  function addListener(obj, eventName, target, method, once, sync) {
-    if (sync === void 0) {
-      sync = true;
-    }
+  function addListener(obj, eventName, target, method, once, sync = true) {
     (true && !(Boolean(obj) && Boolean(eventName)) && (0, _debug.assert)('You must pass at least an object and event name to addListener', Boolean(obj) && Boolean(eventName)));
     if (!method && 'function' === typeof target) {
       method = target;
@@ -7530,10 +7443,7 @@ define("@ember/-internals/metal/index", ["exports", "@ember/-internals/meta", "@
     @return {Function} the listener function, passed as last argument to on(...)
     @public
   */
-  function on() {
-    for (var _len = arguments.length, args = new Array(_len), _key2 = 0; _key2 < _len; _key2++) {
-      args[_key2] = arguments[_key2];
-    }
+  function on(...args) {
     var func = args.pop();
     var events = args;
     (true && !(typeof func === 'function') && (0, _debug.assert)('on expects function as last argument', typeof func === 'function'));
@@ -7546,9 +7456,8 @@ define("@ember/-internals/metal/index", ["exports", "@ember/-internals/meta", "@
     return keyName + AFTER_OBSERVERS;
   }
   var SYNC_DEFAULT = !_environment.ENV._DEFAULT_ASYNC_OBSERVERS;
-  var SYNC_OBSERVERS = new Map();
-  _exports.SYNC_OBSERVERS = SYNC_OBSERVERS;
-  var ASYNC_OBSERVERS = new Map();
+  var SYNC_OBSERVERS = _exports.SYNC_OBSERVERS = new Map();
+  var ASYNC_OBSERVERS = _exports.ASYNC_OBSERVERS = new Map();
   /**
   @module @ember/object
   */
@@ -7562,11 +7471,7 @@ define("@ember/-internals/metal/index", ["exports", "@ember/-internals/meta", "@
     @param {Function|String} [method]
     @public
   */
-  _exports.ASYNC_OBSERVERS = ASYNC_OBSERVERS;
-  function addObserver(obj, path, target, method, sync) {
-    if (sync === void 0) {
-      sync = SYNC_DEFAULT;
-    }
+  function addObserver(obj, path, target, method, sync = SYNC_DEFAULT) {
     var eventName = changeEvent(path);
     addListener(obj, eventName, target, method, false, sync);
     var meta$$1 = (0, _meta2.peekMeta)(obj);
@@ -7584,10 +7489,7 @@ define("@ember/-internals/metal/index", ["exports", "@ember/-internals/meta", "@
     @param {Function|String} [method]
     @public
   */
-  function removeObserver(obj, path, target, method, sync) {
-    if (sync === void 0) {
-      sync = SYNC_DEFAULT;
-    }
+  function removeObserver(obj, path, target, method, sync = SYNC_DEFAULT) {
     var eventName = changeEvent(path);
     var meta$$1 = (0, _meta2.peekMeta)(obj);
     if (meta$$1 === null || !(meta$$1.isPrototypeMeta(obj) || meta$$1.isInitializing())) {
@@ -7603,10 +7505,7 @@ define("@ember/-internals/metal/index", ["exports", "@ember/-internals/meta", "@
     }
     return observerMap.get(target);
   }
-  function activateObserver(target, eventName, sync) {
-    if (sync === void 0) {
-      sync = false;
-    }
+  function activateObserver(target, eventName, sync = false) {
     var activeObservers = getOrCreateActiveObserversFor(target, sync);
     if (activeObservers.has(eventName)) {
       activeObservers.get(eventName).count++;
@@ -7624,10 +7523,7 @@ define("@ember/-internals/metal/index", ["exports", "@ember/-internals/meta", "@
   }
   var DEACTIVATE_SUSPENDED = false;
   var SCHEDULED_DEACTIVATE = [];
-  function deactivateObserver(target, eventName, sync) {
-    if (sync === void 0) {
-      sync = false;
-    }
+  function deactivateObserver(target, eventName, sync = false) {
     if (DEACTIVATE_SUSPENDED === true) {
       SCHEDULED_DEACTIVATE.push([target, eventName, sync]);
       return;
@@ -7677,10 +7573,7 @@ define("@ember/-internals/metal/index", ["exports", "@ember/-internals/meta", "@
     }
   }
   var lastKnownRevision = 0;
-  function flushAsyncObservers(shouldSchedule) {
-    if (shouldSchedule === void 0) {
-      shouldSchedule = true;
-    }
+  function flushAsyncObservers(shouldSchedule = true) {
     var currentRevision = (0, _validator.valueForTag)(_validator.CURRENT_TAG);
     if (lastKnownRevision === currentRevision) {
       return;
@@ -7744,10 +7637,7 @@ define("@ember/-internals/metal/index", ["exports", "@ember/-internals/meta", "@
 
   // This is exported for `@tracked`, but should otherwise be avoided. Use `tagForObject`.
   var SELF_TAG = (0, _utils.symbol)('SELF_TAG');
-  function tagForProperty(obj, propertyKey, addMandatorySetter, meta$$1) {
-    if (addMandatorySetter === void 0) {
-      addMandatorySetter = false;
-    }
+  function tagForProperty(obj, propertyKey, addMandatorySetter = false, meta$$1) {
     var customTagFor = (0, _manager.getCustomTagFor)(obj);
     if (customTagFor !== undefined) {
       return customTagFor(obj, propertyKey, addMandatorySetter);
@@ -7776,8 +7666,7 @@ define("@ember/-internals/metal/index", ["exports", "@ember/-internals/meta", "@
    @module ember
    @private
    */
-  var PROPERTY_DID_CHANGE = Symbol('PROPERTY_DID_CHANGE');
-  _exports.PROPERTY_DID_CHANGE = PROPERTY_DID_CHANGE;
+  var PROPERTY_DID_CHANGE = _exports.PROPERTY_DID_CHANGE = Symbol('PROPERTY_DID_CHANGE');
   function hasPropertyDidChange(obj) {
     return obj != null && typeof obj === 'object' && typeof obj[PROPERTY_DID_CHANGE] === 'function';
   }
@@ -7880,10 +7769,7 @@ define("@ember/-internals/metal/index", ["exports", "@ember/-internals/meta", "@
     sendEvent(array, '@array:before', [array, startIdx, removeAmt, addAmt]);
     return array;
   }
-  function arrayContentDidChange(array, startIdx, removeAmt, addAmt, notify) {
-    if (notify === void 0) {
-      notify = true;
-    }
+  function arrayContentDidChange(array, startIdx, removeAmt, addAmt, notify = true) {
     // if no args are passed assume everything changes
     if (startIdx === undefined) {
       startIdx = 0;
@@ -7937,10 +7823,7 @@ define("@ember/-internals/metal/index", ["exports", "@ember/-internals/meta", "@
   function isMutableArray(obj) {
     return obj != null && typeof obj.replace === 'function';
   }
-  function replace(array, start, deleteCount, items) {
-    if (items === void 0) {
-      items = EMPTY_ARRAY;
-    }
+  function replace(array, start, deleteCount, items = EMPTY_ARRAY) {
     if (isMutableArray(array)) {
       array.replace(start, deleteCount, items);
     } else {
@@ -8239,10 +8122,7 @@ define("@ember/-internals/metal/index", ["exports", "@ember/-internals/meta", "@
     @param {function} decorator the value to mark as a decorator
     @private
   */
-  function setClassicDecorator(dec, value) {
-    if (value === void 0) {
-      value = true;
-    }
+  function setClassicDecorator(dec, value = true) {
     DECORATOR_DESCRIPTOR_MAP.set(dec, value);
   }
 
@@ -8563,14 +8443,11 @@ define("@ember/-internals/metal/index", ["exports", "@ember/-internals/meta", "@
         }
       }
     }
-    _property() {
+    _property(...passedArgs) {
       var args = [];
       function addArg(property) {
         (true && !(DEEP_EACH_REGEX.test(property) === false) && (0, _debug.assert)(`Dependent keys containing @each only work one level deep. ` + `You used the key "${property}" which is invalid. ` + `Please create an intermediary computed property or ` + `switch to using tracked properties.`, DEEP_EACH_REGEX.test(property) === false));
         args.push(property);
-      }
-      for (var _len2 = arguments.length, passedArgs = new Array(_len2), _key3 = 0; _key3 < _len2; _key3++) {
-        passedArgs[_key3] = arguments[_key3];
       }
       for (var arg of passedArgs) {
         expandProperties(arg, addArg);
@@ -8821,10 +8698,7 @@ define("@ember/-internals/metal/index", ["exports", "@ember/-internals/meta", "@
       descriptorForDecorator(this).enumerable = value;
     }
   }
-  function computed() {
-    for (var _len3 = arguments.length, args = new Array(_len3), _key4 = 0; _key4 < _len3; _key4++) {
-      args[_key4] = arguments[_key4];
-    }
+  function computed(...args) {
     (true && !(!(isElementDescriptor(args.slice(0, 3)) && args.length === 5 && args[4] === true)) && (0, _debug.assert)(`@computed can only be used directly as a native decorator. If you're using tracked in classic classes, add parenthesis to call it like a function: computed()`, !(isElementDescriptor(args.slice(0, 3)) && args.length === 5 && args[4] === true)));
     if (isElementDescriptor(args)) {
       // SAFETY: We passed in the impl for this class
@@ -8834,10 +8708,7 @@ define("@ember/-internals/metal/index", ["exports", "@ember/-internals/meta", "@
     // SAFETY: We passed in the impl for this class
     return makeComputedDecorator(new ComputedProperty(args), ComputedDecoratorImpl);
   }
-  function autoComputed() {
-    for (var _len4 = arguments.length, config = new Array(_len4), _key5 = 0; _key5 < _len4; _key5++) {
-      config[_key5] = arguments[_key5];
-    }
+  function autoComputed(...config) {
     // SAFETY: We passed in the impl for this class
     return makeComputedDecorator(new AutoComputedProperty(config), ComputedDecoratorImpl);
   }
@@ -8949,10 +8820,7 @@ define("@ember/-internals/metal/index", ["exports", "@ember/-internals/meta", "@
     // pass the decorator function forward for backwards compat
     return desc;
   }
-  function defineValue(obj, keyName, value, wasDescriptor, enumerable) {
-    if (enumerable === void 0) {
-      enumerable = true;
-    }
+  function defineValue(obj, keyName, value, wasDescriptor, enumerable = true) {
     if (wasDescriptor === true || enumerable === false) {
       Object.defineProperty(obj, keyName, {
         configurable: true,
@@ -8973,8 +8841,7 @@ define("@ember/-internals/metal/index", ["exports", "@ember/-internals/meta", "@
   function isPath(path) {
     return typeof path === 'string' && firstDotIndexCache.get(path) !== -1;
   }
-  var PROXY_CONTENT = (0, _utils.symbol)('PROXY_CONTENT');
-  _exports.PROXY_CONTENT = PROXY_CONTENT;
+  var PROXY_CONTENT = _exports.PROXY_CONTENT = (0, _utils.symbol)('PROXY_CONTENT');
   var getPossibleMandatoryProxyValue;
   if (true /* DEBUG */) {
     getPossibleMandatoryProxyValue = function getPossibleMandatoryProxyValue(obj, keyName) {
@@ -9345,8 +9212,7 @@ define("@ember/-internals/metal/index", ["exports", "@ember/-internals/meta", "@
       (0, _debug.debug)('-------------------------------');
     };
   }
-  var LIBRARIES = new Libraries();
-  _exports.libraries = LIBRARIES;
+  var LIBRARIES = _exports.libraries = new Libraries();
   LIBRARIES.registerCoreLibrary('Ember', _version.default);
   function getProperties(obj, keys) {
     var ret = {};
@@ -9404,17 +9270,13 @@ define("@ember/-internals/metal/index", ["exports", "@ember/-internals/meta", "@
     return properties;
   }
   var DEBUG_INJECTION_FUNCTIONS;
-  _exports.DEBUG_INJECTION_FUNCTIONS = DEBUG_INJECTION_FUNCTIONS;
   if (true /* DEBUG */) {
     _exports.DEBUG_INJECTION_FUNCTIONS = DEBUG_INJECTION_FUNCTIONS = new WeakMap();
   }
-  function inject(type) {
+  function inject(type, ...args) {
     (true && !(typeof type === 'string') && (0, _debug.assert)('a string type must be provided to inject', typeof type === 'string'));
     var elementDescriptor;
     var name;
-    for (var _len5 = arguments.length, args = new Array(_len5 > 1 ? _len5 - 1 : 0), _key6 = 1; _key6 < _len5; _key6++) {
-      args[_key6 - 1] = arguments[_key6];
-    }
     if (isElementDescriptor(args)) {
       elementDescriptor = args;
     } else if (typeof args[0] === 'string') {
@@ -9443,10 +9305,7 @@ define("@ember/-internals/metal/index", ["exports", "@ember/-internals/meta", "@
       return decorator;
     }
   }
-  function tracked() {
-    for (var _len6 = arguments.length, args = new Array(_len6), _key7 = 0; _key7 < _len6; _key7++) {
-      args[_key7] = arguments[_key7];
-    }
+  function tracked(...args) {
     (true && !(!(isElementDescriptor(args.slice(0, 3)) && args.length === 5 && args[4] === true)) && (0, _debug.assert)(`@tracked can only be used directly as a native decorator. If you're using tracked in classic classes, add parenthesis to call it like a function: tracked()`, !(isElementDescriptor(args.slice(0, 3)) && args.length === 5 && args[4] === true)));
     if (!isElementDescriptor(args)) {
       var propertyDesc = args[0];
@@ -9475,8 +9334,7 @@ define("@ember/-internals/metal/index", ["exports", "@ember/-internals/meta", "@
     // error in development so we need it to treat it like one
     setClassicDecorator(tracked);
   }
-  function descriptorForField(_ref) {
-    var [target, key, desc] = _ref;
+  function descriptorForField([target, key, desc]) {
     (true && !(!desc || !desc.value && !desc.get && !desc.set) && (0, _debug.assert)(`You attempted to use @tracked on ${key}, but that element is not a class field. @tracked is only usable on class fields. Native getters and setters will autotrack add any tracked fields they encounter, so there is no need mark getters and setters with @tracked.`, !desc || !desc.value && !desc.get && !desc.set));
     var {
       getter,
@@ -9523,10 +9381,7 @@ define("@ember/-internals/metal/index", ["exports", "@ember/-internals/meta", "@
   // NOTE: copied from: https://github.com/glimmerjs/glimmer.js/pull/358
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   _exports.TrackedDescriptor = TrackedDescriptor;
-  var cached = function () {
-    for (var _len7 = arguments.length, args = new Array(_len7), _key8 = 0; _key8 < _len7; _key8++) {
-      args[_key8] = arguments[_key8];
-    }
+  var cached = (...args) => {
     var [target, key, descriptor] = args;
     // Error on `@cached()`, `@cached(...args)`, and `@cached propName = value;`
     if (true /* DEBUG */ && target === undefined) throwCachedExtraneousParens();
@@ -9552,10 +9407,7 @@ define("@ember/-internals/metal/index", ["exports", "@ember/-internals/meta", "@
   function throwCachedGetterOnlyError(key) {
     throw new Error(`The @cached decorator must be applied to getters. '${key}' is not a getter.`);
   }
-  function throwCachedInvalidArgsError(args) {
-    if (args === void 0) {
-      args = [];
-    }
+  function throwCachedInvalidArgsError(args = []) {
     throw new Error(`You attempted to use @cached on with ${args.length > 1 ? 'arguments' : 'an argument'} ( @cached(${args.map(d => `'${d}'`).join(', ')}), which is not supported. Dependencies are automatically tracked, so you can just use ${'`@cached`'}`);
   }
 
@@ -9692,10 +9544,8 @@ define("@ember/-internals/metal/index", ["exports", "@ember/-internals/meta", "@
     }
   };
   var unprocessedMixins = false;
-  var NAMESPACES = [];
-  _exports.NAMESPACES = NAMESPACES;
-  var NAMESPACES_BY_ID = Object.create(null);
-  _exports.NAMESPACES_BY_ID = NAMESPACES_BY_ID;
+  var NAMESPACES = _exports.NAMESPACES = [];
+  var NAMESPACES_BY_ID = _exports.NAMESPACES_BY_ID = Object.create(null);
   function addNamespace(namespace) {
     flags.unprocessedNamespaces = true;
     NAMESPACES.push(namespace);
@@ -9791,15 +9641,13 @@ define("@ember/-internals/metal/index", ["exports", "@ember/-internals/meta", "@
     }
     paths.length = idx; // cut out last item
   }
-
   function isNamespace(obj) {
     return obj != null && typeof obj === 'object' && obj.isNamespace;
   }
   function isUppercase(code) {
     return code >= 65 && code <= 90 // A
-    ; // Z
+; // Z
   }
-
   function tryIsNamespace(lookup, prop) {
     try {
       var obj = lookup[prop];
@@ -9809,15 +9657,21 @@ define("@ember/-internals/metal/index", ["exports", "@ember/-internals/meta", "@
     }
   }
 });
-define("@ember/-internals/overrides/index", ["exports"], function (_exports) {
+define("@ember/-internals/overrides/index", [], function () {
   "use strict";
 
-  Object.defineProperty(_exports, "__esModule", {
-    value: true
-  });
-  _exports.onEmberGlobalAccess = void 0;
-  var onEmberGlobalAccess;
-  _exports.onEmberGlobalAccess = onEmberGlobalAccess;
+  function once(callback) {
+    var called = false;
+    return (...args) => {
+      if (called) {
+        return null;
+      } else {
+        called = true;
+        return callback(...args);
+      }
+    };
+  }
+  undefined;
 });
 define("@ember/-internals/owner/index", ["exports", "@glimmer/owner"], function (_exports, _owner) {
   "use strict";
@@ -10011,8 +9865,7 @@ define("@ember/-internals/runtime/lib/ext/rsvp", ["exports", "rsvp", "@ember/run
     });
     return error;
   }
-  var _default = RSVP;
-  _exports.default = _default;
+  var _default = _exports.default = RSVP;
 });
 define("@ember/-internals/runtime/lib/mixins/-proxy", ["exports", "@ember/-internals/meta", "@ember/object/mixin", "@ember/-internals/metal", "@ember/-internals/utils", "@ember/debug", "@glimmer/manager", "@glimmer/validator"], function (_exports, _meta, _mixin, _metal, _utils, _debug, _manager, _validator) {
   "use strict";
@@ -10099,8 +9952,7 @@ define("@ember/-internals/runtime/lib/mixins/-proxy", ["exports", "@ember/-inter
       return (0, _metal.set)(content, key, value);
     }
   });
-  var _default = ProxyMixin;
-  _exports.default = _default;
+  var _default = _exports.default = ProxyMixin;
 });
 define("@ember/-internals/runtime/lib/mixins/action_handler", ["exports", "@ember/object/mixin", "@ember/-internals/metal", "@ember/debug"], function (_exports, _mixin, _metal, _debug) {
   "use strict";
@@ -10259,10 +10111,7 @@ define("@ember/-internals/runtime/lib/mixins/action_handler", ["exports", "@embe
       @param {*} context a context to send with the action
       @public
     */
-    send(actionName) {
-      for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-        args[_key - 1] = arguments[_key];
-      }
+    send(actionName, ...args) {
       (true && !(!this.isDestroying && !this.isDestroyed) && (0, _debug.assert)(`Attempted to call .send() with the action '${actionName}' on the destroyed object '${this}'.`, !this.isDestroying && !this.isDestroyed));
       if (this.actions && this.actions[actionName]) {
         var shouldBubble = this.actions[actionName].apply(this, args) === true;
@@ -10277,8 +10126,7 @@ define("@ember/-internals/runtime/lib/mixins/action_handler", ["exports", "@embe
       }
     }
   });
-  var _default = ActionHandler;
-  _exports.default = _default;
+  var _default = _exports.default = ActionHandler;
 });
 define("@ember/-internals/runtime/lib/mixins/comparable", ["exports", "@ember/object/mixin"], function (_exports, _mixin) {
   "use strict";
@@ -10304,8 +10152,7 @@ define("@ember/-internals/runtime/lib/mixins/comparable", ["exports", "@ember/ob
     */
     compare: null
   });
-  var _default = Comparable;
-  _exports.default = _default;
+  var _default = _exports.default = Comparable;
 });
 define("@ember/-internals/runtime/lib/mixins/container_proxy", ["exports", "@ember/runloop", "@ember/object/mixin"], function (_exports, _runloop, _mixin) {
   "use strict";
@@ -10341,8 +10188,7 @@ define("@ember/-internals/runtime/lib/mixins/container_proxy", ["exports", "@emb
       return this.__container__.factoryFor(fullName);
     }
   });
-  var _default = ContainerProxyMixin;
-  _exports.default = _default;
+  var _default = _exports.default = ContainerProxyMixin;
 });
 define("@ember/-internals/runtime/lib/mixins/registry_proxy", ["exports", "@ember/debug", "@ember/object/mixin"], function (_exports, _debug, _mixin) {
   "use strict";
@@ -10412,16 +10258,15 @@ define("@ember/-internals/runtime/lib/mixins/registry_proxy", ["exports", "@embe
     inject: registryAlias('injection')
   });
   function registryAlias(name) {
-    return function () {
+    return function (...args) {
       // We need this cast because `Parameters` is deferred so that it is not
       // possible for TS to see it will always produce the right type. However,
       // since `AnyFn` has a rest type, it is allowed. See discussion on [this
       // issue](https://github.com/microsoft/TypeScript/issues/47615).
-      return this.__registry__[name](...arguments);
+      return this.__registry__[name](...args);
     };
   }
-  var _default = RegistryProxyMixin;
-  _exports.default = _default;
+  var _default = _exports.default = RegistryProxyMixin;
 });
 define("@ember/-internals/runtime/lib/mixins/target_action_support", ["exports", "@ember/-internals/environment", "@ember/-internals/metal", "@ember/object/mixin", "@ember/debug"], function (_exports, _environment, _metal, _mixin, _debug) {
   "use strict";
@@ -10499,10 +10344,7 @@ define("@ember/-internals/runtime/lib/mixins/target_action_support", ["exports",
     @return {Boolean} true if the action was sent successfully and did not return false
     @private
     */
-    triggerAction(opts) {
-      if (opts === void 0) {
-        opts = {};
-      }
+    triggerAction(opts = {}) {
       var {
         action,
         target,
@@ -10553,8 +10395,7 @@ define("@ember/-internals/runtime/lib/mixins/target_action_support", ["exports",
   if (true /* DEBUG */) {
     Object.seal(TargetActionSupport);
   }
-  var _default = TargetActionSupport;
-  _exports.default = _default;
+  var _default = _exports.default = TargetActionSupport;
 });
 define("@ember/-internals/string/index", ["exports", "@ember/-internals/utils"], function (_exports, _utils) {
   "use strict";
@@ -10794,7 +10635,7 @@ define("@ember/-internals/utils/index", ["exports", "@glimmer/util", "@ember/deb
     @type String
     @final
   */
-  var GUID_KEY = intern(`__ember${Date.now()}`);
+  var GUID_KEY = _exports.GUID_KEY = intern(`__ember${Date.now()}`);
   /**
     Generates a new guid, optionally saving the guid to the object that you
     pass in. You will rarely need to use this method. Instead you should
@@ -10813,11 +10654,7 @@ define("@ember/-internals/utils/index", ["exports", "@glimmer/util", "@ember/deb
       separate the guid into separate namespaces.
     @return {String} the guid
   */
-  _exports.GUID_KEY = GUID_KEY;
-  function generateGuid(obj, prefix) {
-    if (prefix === void 0) {
-      prefix = GUID_PREFIX;
-    }
+  function generateGuid(obj, prefix = GUID_PREFIX) {
     var guid = prefix + uuid().toString();
     if (isObject(obj)) {
       OBJECT_GUIDS.set(obj, guid);
@@ -10882,14 +10719,13 @@ define("@ember/-internals/utils/index", ["exports", "@glimmer/util", "@ember/deb
     }
     return symbol;
   }
-  var symbol = Symbol;
+  var symbol = _exports.symbol = Symbol;
 
   // the delete is meant to hint at runtimes that this object should remain in
   // dictionary mode. This is clearly a runtime specific hack, but currently it
   // appears worthwhile in some usecases. Please note, these deletes do increase
   // the cost of creation dramatically over a plain Object.create. And as this
   // only makes sense for long-lived dictionaries that aren't instantiated often.
-  _exports.symbol = symbol;
   function makeDictionary(parent) {
     var dict = Object.create(parent);
     dict['_dict'] = null;
@@ -10937,11 +10773,10 @@ define("@ember/-internals/utils/index", ["exports", "@glimmer/util", "@ember/deb
       }
     };
   }
-  var getDebugName$1 = getDebugName;
-  _exports.getDebugName = getDebugName$1;
+  var getDebugName$1 = _exports.getDebugName = getDebugName;
   var HAS_SUPER_PATTERN = /\.(_super|call\(this|apply\(this)/;
   var fnToString = Function.prototype.toString;
-  var checkHasSuper = (() => {
+  var checkHasSuper = _exports.checkHasSuper = (() => {
     var sourceAvailable = fnToString.call(function () {
       return this;
     }).indexOf('return this') > -1;
@@ -10954,10 +10789,8 @@ define("@ember/-internals/utils/index", ["exports", "@glimmer/util", "@ember/deb
       return true;
     };
   })();
-  _exports.checkHasSuper = checkHasSuper;
   var HAS_SUPER_MAP = new WeakMap();
-  var ROOT = Object.freeze(function () {});
-  _exports.ROOT = ROOT;
+  var ROOT = _exports.ROOT = Object.freeze(function () {});
   HAS_SUPER_MAP.set(ROOT, false);
   function hasSuper(func) {
     var hasSuper = HAS_SUPER_MAP.get(func);
@@ -11121,10 +10954,7 @@ define("@ember/-internals/utils/index", ["exports", "@glimmer/util", "@ember/deb
     }
   }
   class Cache {
-    constructor(limit, func, store) {
-      if (store === void 0) {
-        store = new Map();
-      }
+    constructor(limit, func, store = new Map()) {
       this.limit = limit;
       this.func = func;
       this.store = store;
@@ -11158,11 +10988,8 @@ define("@ember/-internals/utils/index", ["exports", "@glimmer/util", "@ember/deb
   }
   _exports.Cache = Cache;
   var setupMandatorySetter;
-  _exports.setupMandatorySetter = setupMandatorySetter;
   var teardownMandatorySetter;
-  _exports.teardownMandatorySetter = teardownMandatorySetter;
   var setWithMandatorySetter;
-  _exports.setWithMandatorySetter = setWithMandatorySetter;
   function isElementKey(key) {
     return typeof key === 'number' ? isPositiveInt(key) : isStringInt(key);
   }
@@ -11176,7 +11003,7 @@ define("@ember/-internals/utils/index", ["exports", "@glimmer/util", "@ember/deb
   if (true /* DEBUG */) {
     var SEEN_TAGS = new _util._WeakSet();
     var MANDATORY_SETTERS = new WeakMap();
-    var _propertyIsEnumerable = function (obj, key) {
+    var propertyIsEnumerable = function (obj, key) {
       return Object.prototype.propertyIsEnumerable.call(obj, key);
     };
     _exports.setupMandatorySetter = setupMandatorySetter = function (tag, obj, keyName) {
@@ -11208,7 +11035,7 @@ define("@ember/-internals/utils/index", ["exports", "@glimmer/util", "@ember/deb
       setters[keyName] = desc;
       Object.defineProperty(obj, keyName, {
         configurable: true,
-        enumerable: _propertyIsEnumerable(obj, keyName),
+        enumerable: propertyIsEnumerable(obj, keyName),
         get() {
           if (desc.get) {
             return desc.get.call(this);
@@ -11425,8 +11252,7 @@ define("@ember/-internals/views/lib/compat/attrs", ["exports"], function (_expor
     value: true
   });
   _exports.MUTABLE_CELL = void 0;
-  var MUTABLE_CELL = Symbol('MUTABLE_CELL');
-  _exports.MUTABLE_CELL = MUTABLE_CELL;
+  var MUTABLE_CELL = _exports.MUTABLE_CELL = Symbol('MUTABLE_CELL');
 });
 define("@ember/-internals/views/lib/compat/fallback-view-registry", ["exports", "@ember/-internals/utils"], function (_exports, _utils) {
   "use strict";
@@ -11435,8 +11261,7 @@ define("@ember/-internals/views/lib/compat/fallback-view-registry", ["exports", 
     value: true
   });
   _exports.default = void 0;
-  var _default = (0, _utils.dictionary)(null);
-  _exports.default = _default;
+  var _default = _exports.default = (0, _utils.dictionary)(null);
 });
 define("@ember/-internals/views/lib/component_lookup", ["exports", "@ember/object"], function (_exports, _object) {
   "use strict";
@@ -11445,7 +11270,7 @@ define("@ember/-internals/views/lib/component_lookup", ["exports", "@ember/objec
     value: true
   });
   _exports.default = void 0;
-  var _default = _object.default.extend({
+  var _default = _exports.default = _object.default.extend({
     componentFor(name, owner) {
       var fullName = `component:${name}`;
       return owner.factoryFor(fullName);
@@ -11455,7 +11280,6 @@ define("@ember/-internals/views/lib/component_lookup", ["exports", "@ember/objec
       return owner.lookup(templateFullName, options);
     }
   });
-  _exports.default = _default;
 });
 define("@ember/-internals/views/lib/mixins/action_support", ["exports", "@ember/-internals/metal", "@ember/object/mixin", "@ember/debug"], function (_exports, _metal, _mixin, _debug) {
   "use strict";
@@ -11469,10 +11293,7 @@ define("@ember/-internals/views/lib/mixins/action_support", ["exports", "@ember/
   */
 
   var ActionSupport = _mixin.default.create({
-    send(actionName) {
-      for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-        args[_key - 1] = arguments[_key];
-      }
+    send(actionName, ...args) {
       (true && !(!this.isDestroying && !this.isDestroyed) && (0, _debug.assert)(`Attempted to call .send() with the action '${actionName}' on the destroyed object '${this}'.`, !this.isDestroying && !this.isDestroyed));
       var action = this.actions && this.actions[actionName];
       if (action) {
@@ -11490,8 +11311,7 @@ define("@ember/-internals/views/lib/mixins/action_support", ["exports", "@ember/
       }
     }
   });
-  var _default = ActionSupport;
-  _exports.default = _default;
+  var _default = _exports.default = ActionSupport;
 });
 define("@ember/-internals/views/lib/mixins/child_views_support", ["exports", "@ember/-internals/metal", "@ember/object/mixin", "@ember/-internals/views/lib/system/utils"], function (_exports, _metal, _mixin, _utils) {
   "use strict";
@@ -11519,8 +11339,7 @@ define("@ember/-internals/views/lib/mixins/child_views_support", ["exports", "@e
       (0, _utils.addChildView)(this, view);
     }
   });
-  var _default = ChildViewsSupport;
-  _exports.default = _default;
+  var _default = _exports.default = ChildViewsSupport;
 });
 define("@ember/-internals/views/lib/mixins/class_names_support", ["exports", "@ember/-internals/metal", "@ember/object/mixin", "@ember/debug"], function (_exports, _metal, _mixin, _debug) {
   "use strict";
@@ -11601,8 +11420,7 @@ define("@ember/-internals/views/lib/mixins/class_names_support", ["exports", "@e
     */
     classNameBindings: EMPTY_ARRAY
   });
-  var _default = ClassNamesSupport;
-  _exports.default = _default;
+  var _default = _exports.default = ClassNamesSupport;
 });
 define("@ember/-internals/views/lib/mixins/view_state_support", ["exports", "@ember/object/mixin"], function (_exports, _mixin) {
   "use strict";
@@ -11628,8 +11446,7 @@ define("@ember/-internals/views/lib/mixins/view_state_support", ["exports", "@em
       }
     }
   });
-  var _default = ViewStateSupport;
-  _exports.default = _default;
+  var _default = _exports.default = ViewStateSupport;
 });
 define("@ember/-internals/views/lib/mixins/view_support", ["exports", "@ember/-internals/utils", "@ember/-internals/metal", "@ember/object/mixin", "@ember/debug", "@ember/-internals/browser-environment", "@ember/-internals/views/lib/system/utils"], function (_exports, _utils, _metal, _mixin, _debug, _browserEnvironment, _utils2) {
   "use strict";
@@ -11963,8 +11780,7 @@ define("@ember/-internals/views/lib/mixins/view_support", ["exports", "@ember/-i
       return this._currentState.handleEvent(this, eventName, evt);
     }
   });
-  var _default = ViewMixin;
-  _exports.default = _default;
+  var _default = _exports.default = ViewMixin;
 });
 define("@ember/-internals/views/lib/system/action_manager", ["exports"], function (_exports) {
   "use strict";
@@ -12195,7 +12011,6 @@ define("@ember/-internals/views/lib/system/event_dispatcher", ["exports", "@embe
       if (eventName === null || !this.lazyEvents.has(event)) {
         return; // nothing to do
       }
-
       var viewHandler = (target, event) => {
         // SAFETY: SimpleElement is supposed to be a subset of Element so this _should_ be safe.
         // However, the types are more specific in some places which necessitates the `as`.
@@ -12487,8 +12302,7 @@ define("@ember/-internals/views/lib/system/utils", ["exports", "@ember/-internal
     @param {DOMElement} el
     @param {String} selector
   */
-  var elMatches = typeof Element !== 'undefined' ? Element.prototype.matches : undefined;
-  _exports.elMatches = elMatches;
+  var elMatches = _exports.elMatches = typeof Element !== 'undefined' ? Element.prototype.matches : undefined;
   function matches(el, selector) {
     (true && !(elMatches !== undefined) && (0, _debug.assert)('cannot call `matches` in fastboot mode', elMatches !== undefined));
     return elMatches.call(el, selector);
@@ -12517,9 +12331,7 @@ define("@ember/-internals/views/lib/views/core_view", ["exports", "@ember/-inter
     var c = arguments.length,
       r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
       d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) {
-      if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    }
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
   };
   class CoreView extends _internals.FrameworkObject.extend(_evented.default, _runtime.ActionHandler) {
@@ -12556,10 +12368,7 @@ define("@ember/-internals/views/lib/views/core_view", ["exports", "@ember/-inter
       @private
     */
     // Changed to `trigger` on init
-    _trigger(name) {
-      for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-        args[_key - 1] = arguments[_key];
-      }
+    _trigger(name, ...args) {
       this._superTrigger(name, ...args);
       var method = this[name];
       if (typeof method === 'function') {
@@ -12575,8 +12384,7 @@ define("@ember/-internals/views/lib/views/core_view", ["exports", "@ember/-inter
   __decorate([(0, _metal.inject)('renderer', '-dom')], CoreView.prototype, "renderer", void 0);
   // Declare on the prototype to have a single shared value.
   CoreView.prototype._states = _states.default;
-  var _default = CoreView;
-  _exports.default = _default;
+  var _default = _exports.default = CoreView;
 });
 define("@ember/-internals/views/lib/views/states", ["exports", "@ember/-internals/utils", "@ember/debug", "@ember/instrumentation", "@ember/runloop"], function (_exports, _utils, _debug, _instrumentation, _runloop) {
   "use strict";
@@ -12594,7 +12402,6 @@ define("@ember/-internals/views/lib/views/states", ["exports", "@ember/-internal
     handleEvent() {
       return true; // continue event propagation
     },
-
     rerender() {},
     destroy() {}
   });
@@ -12622,7 +12429,6 @@ define("@ember/-internals/views/lib/views/states", ["exports", "@ember/-internal
       }
     }
   }));
-
   var IN_DOM = Object.freeze(Object.assign(Object.assign({}, HAS_ELEMENT), {
     enter(view) {
       // Register the view for event handling. This hash is used by
@@ -12676,8 +12482,7 @@ define("@ember/-internals/views/lib/views/states", ["exports", "@ember/-internal
     hasElement: HAS_ELEMENT,
     destroying: DESTROYING
   });
-  var _default = states;
-  _exports.default = _default;
+  var _default = _exports.default = states;
 });
 define("@ember/application/index", ["exports", "@ember/owner", "@ember/-internals/utils", "@ember/-internals/environment", "@ember/-internals/browser-environment", "@ember/debug", "@ember/runloop", "@ember/-internals/metal", "@ember/application/lib/lazy_load", "@ember/-internals/runtime", "@ember/-internals/views", "@ember/routing/route", "@ember/routing/router", "@ember/routing/auto-location", "@ember/routing/hash-location", "@ember/routing/history-location", "@ember/routing/none-location", "@ember/routing/-internals", "@ember/application/instance", "@ember/engine", "@ember/-internals/container", "@ember/-internals/glimmer", "@ember/routing/router-service"], function (_exports, _owner, _utils, _environment, _browserEnvironment, _debug, _runloop, _metal, _lazy_load, _runtime, _views, _route, _router, _autoLocation, _hashLocation, _historyLocation, _noneLocation, _internals, _instance, _engine, _container, _glimmer, _routerService) {
   "use strict";
@@ -12712,12 +12517,11 @@ define("@ember/application/index", ["exports", "@ember/owner", "@ember/-internal
   /**
    * @deprecated Use `import { getOwner } from '@ember/owner';` instead.
    */
-  var getOwner = _owner.getOwner;
+  var getOwner = _exports.getOwner = _owner.getOwner;
   /**
    * @deprecated Use `import { setOwner } from '@ember/owner';` instead.
    */
-  _exports.getOwner = getOwner;
-  var setOwner = _owner.setOwner;
+  var setOwner = _exports.setOwner = _owner.setOwner;
   /**
     An instance of `Application` is the starting point for every Ember
     application. It instantiates, initializes and coordinates the
@@ -12870,7 +12674,6 @@ define("@ember/application/index", ["exports", "@ember/owner", "@ember/-internal
     @extends Engine
     @public
   */
-  _exports.setOwner = setOwner;
   class Application extends _engine.default {
     constructor() {
       super(...arguments);
@@ -12941,10 +12744,7 @@ define("@ember/application/index", ["exports", "@ember/owner", "@ember/-internal
       @method buildInstance
       @return {ApplicationInstance} the application instance
     */
-    buildInstance(options) {
-      if (options === void 0) {
-        options = {};
-      }
+    buildInstance(options = {}) {
       (true && !(!this.isDestroyed) && (0, _debug.assert)('You cannot build new instances of this application since it has already been destroyed', !this.isDestroyed));
       (true && !(!this.isDestroying) && (0, _debug.assert)('You cannot build new instances of this application since it is being destroyed', !this.isDestroying));
       return _instance.default.create(Object.assign(Object.assign({}, options), {
@@ -13733,10 +13533,7 @@ define("@ember/application/instance", ["exports", "@ember/object", "@ember/-inte
      @param {Registry} registry
      @param {BootOptions} options
     */
-    static setupRegistry(registry, options) {
-      if (options === void 0) {
-        options = {};
-      }
+    static setupRegistry(registry, options = {}) {
       var coptions = options instanceof _BootOptions ? options : new _BootOptions(options);
       registry.register('-environment:main', coptions.toEnvironment(), {
         instantiate: false
@@ -13770,10 +13567,7 @@ define("@ember/application/instance", ["exports", "@ember/object", "@ember/-inte
     @public
   */
   class _BootOptions {
-    constructor(options) {
-      if (options === void 0) {
-        options = {};
-      }
+    constructor(options = {}) {
       /**
         If present, overrides the router's `location` property with this
         value. This is useful for environments where trying to modify the
@@ -13832,8 +13626,7 @@ define("@ember/application/instance", ["exports", "@ember/object", "@ember/-inte
       });
     }
   }
-  var _default = ApplicationInstance;
-  _exports.default = _default;
+  var _default = _exports.default = ApplicationInstance;
 });
 define("@ember/application/lib/lazy_load", ["exports", "@ember/-internals/environment", "@ember/-internals/browser-environment"], function (_exports, _environment, _browserEnvironment) {
   "use strict";
@@ -13851,7 +13644,7 @@ define("@ember/application/lib/lazy_load", ["exports", "@ember/-internals/enviro
   */
   var loadHooks = _environment.ENV.EMBER_LOAD_HOOKS || {};
   var loaded = {};
-  var _loaded = loaded;
+  var _loaded = _exports._loaded = loaded;
   /**
     Detects when a specific package of Ember (e.g. 'Application')
     has fully loaded and is available for extension.
@@ -13874,7 +13667,6 @@ define("@ember/application/lib/lazy_load", ["exports", "@ember/-internals/enviro
     @param callback {Function} callback to be called
     @private
   */
-  _exports._loaded = _loaded;
   function onLoad(name, callback) {
     var _a;
     var object = loaded[name];
@@ -13969,8 +13761,7 @@ define("@ember/application/namespace", ["exports", "@ember/-internals/metal", "@
   Namespace.byName = _metal.findNamespace;
   // Declare on the prototype to have a single shared value.
   Namespace.prototype.isNamespace = true;
-  var _default = Namespace;
-  _exports.default = _default;
+  var _default = _exports.default = Namespace;
 });
 define("@ember/array/-internals", ["exports", "@glimmer/util"], function (_exports, _util) {
   "use strict";
@@ -14010,10 +13801,7 @@ define("@ember/array/index", ["exports", "@ember/-internals/metal", "@ember/obje
 
   var EMPTY_ARRAY = Object.freeze([]);
   var identityFunction = item => item;
-  function uniqBy(array, keyOrFunc) {
-    if (keyOrFunc === void 0) {
-      keyOrFunc = identityFunction;
-    }
+  function uniqBy(array, keyOrFunc = identityFunction) {
     (true && !(isArray(array)) && (0, _debug.assert)(`first argument passed to \`uniqBy\` should be array`, isArray(array)));
     var ret = A();
     var seen = new Set();
@@ -14027,10 +13815,7 @@ define("@ember/array/index", ["exports", "@ember/-internals/metal", "@ember/obje
     });
     return ret;
   }
-  function iter() {
-    for (var _len = arguments.length, args = new Array(_len), _key2 = 0; _key2 < _len; _key2++) {
-      args[_key2] = arguments[_key2];
-    }
+  function iter(...args) {
     var valueProvided = args.length === 2;
     var [key, value] = args;
     return valueProvided ? item => value === (0, _object.get)(item, key) : item => Boolean((0, _object.get)(item, key));
@@ -14046,33 +13831,21 @@ define("@ember/array/index", ["exports", "@ember/-internals/metal", "@ember/obje
     }
     return -1;
   }
-  function find(array, callback, target) {
-    if (target === void 0) {
-      target = null;
-    }
+  function find(array, callback, target = null) {
     var predicate = callback.bind(target);
     var index = findIndex(array, predicate, 0);
     return index === -1 ? undefined : (0, _metal.objectAt)(array, index);
   }
-  function any(array, callback, target) {
-    if (target === void 0) {
-      target = null;
-    }
+  function any(array, callback, target = null) {
     var predicate = callback.bind(target);
     return findIndex(array, predicate, 0) !== -1;
   }
-  function every(array, callback, target) {
-    if (target === void 0) {
-      target = null;
-    }
+  function every(array, callback, target = null) {
     var cb = callback.bind(target);
     var predicate = (item, index, array) => !cb(item, index, array);
     return findIndex(array, predicate, 0) === -1;
   }
-  function indexOf(array, val, startAt, withNaNCheck) {
-    if (startAt === void 0) {
-      startAt = 0;
-    }
+  function indexOf(array, val, startAt = 0, withNaNCheck) {
     var len = array.length;
     if (startAt < 0) {
       startAt += len;
@@ -14183,10 +13956,7 @@ define("@ember/array/index", ["exports", "@ember/-internals/metal", "@ember/obje
       return (0, _metal.objectAt)(this, this.length - 1);
     }).readOnly(),
     // Add any extra methods to EmberArray that are native to the built-in Array.
-    slice(beginIndex, endIndex) {
-      if (beginIndex === void 0) {
-        beginIndex = 0;
-      }
+    slice(beginIndex = 0, endIndex) {
       var ret = A();
       var length = this.length;
       if (beginIndex < 0) {
@@ -14223,10 +13993,7 @@ define("@ember/array/index", ["exports", "@ember/-internals/metal", "@ember/obje
       }
       return -1;
     },
-    forEach(callback, target) {
-      if (target === void 0) {
-        target = null;
-      }
+    forEach(callback, target = null) {
       (true && !(typeof callback === 'function') && (0, _debug.assert)('`forEach` expects a function as first argument.', typeof callback === 'function'));
       var length = this.length;
       for (var index = 0; index < length; index++) {
@@ -14239,20 +14006,14 @@ define("@ember/array/index", ["exports", "@ember/-internals/metal", "@ember/obje
     setEach(key, value) {
       return this.forEach(item => (0, _object.set)(item, key, value));
     },
-    map(callback, target) {
-      if (target === void 0) {
-        target = null;
-      }
+    map(callback, target = null) {
       (true && !(typeof callback === 'function') && (0, _debug.assert)('`map` expects a function as first argument.', typeof callback === 'function'));
       var ret = A();
       this.forEach((x, idx, i) => ret[idx] = callback.call(target, x, idx, i));
       return ret;
     },
     mapBy,
-    filter(callback, target) {
-      if (target === void 0) {
-        target = null;
-      }
+    filter(callback, target = null) {
       (true && !(typeof callback === 'function') && (0, _debug.assert)('`filter` expects a function as first argument.', typeof callback === 'function'));
       var ret = A();
       this.forEach((x, idx, i) => {
@@ -14262,10 +14023,7 @@ define("@ember/array/index", ["exports", "@ember/-internals/metal", "@ember/obje
       });
       return ret;
     },
-    reject(callback, target) {
-      if (target === void 0) {
-        target = null;
-      }
+    reject(callback, target = null) {
       (true && !(typeof callback === 'function') && (0, _debug.assert)('`reject` expects a function as first argument.', typeof callback === 'function'));
       return this.filter(function () {
         // @ts-expect-error TS doesn't like us using arguments like this
@@ -14280,10 +14038,7 @@ define("@ember/array/index", ["exports", "@ember/-internals/metal", "@ember/obje
       // @ts-expect-error TS doesn't like the ...arguments spread here.
       return this.reject(iter(...arguments));
     },
-    find(callback, target) {
-      if (target === void 0) {
-        target = null;
-      }
+    find(callback, target = null) {
       (true && !(typeof callback === 'function') && (0, _debug.assert)('`find` expects a function as first argument.', typeof callback === 'function'));
       return find(this, callback, target);
     },
@@ -14292,10 +14047,7 @@ define("@ember/array/index", ["exports", "@ember/-internals/metal", "@ember/obje
       var callback = iter(...arguments);
       return find(this, callback);
     },
-    every(callback, target) {
-      if (target === void 0) {
-        target = null;
-      }
+    every(callback, target = null) {
       (true && !(typeof callback === 'function') && (0, _debug.assert)('`every` expects a function as first argument.', typeof callback === 'function'));
       return every(this, callback, target);
     },
@@ -14304,10 +14056,7 @@ define("@ember/array/index", ["exports", "@ember/-internals/metal", "@ember/obje
       var callback = iter(...arguments);
       return every(this, callback);
     },
-    any(callback, target) {
-      if (target === void 0) {
-        target = null;
-      }
+    any(callback, target = null) {
       (true && !(typeof callback === 'function') && (0, _debug.assert)('`any` expects a function as first argument.', typeof callback === 'function'));
       return any(this, callback, target);
     },
@@ -14325,10 +14074,7 @@ define("@ember/array/index", ["exports", "@ember/-internals/metal", "@ember/obje
       }, this);
       return ret;
     },
-    invoke(methodName) {
-      for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key3 = 1; _key3 < _len2; _key3++) {
-        args[_key3 - 1] = arguments[_key3];
-      }
+    invoke(methodName, ...args) {
       var ret = A();
       // SAFETY: This is not entirely safe and the code will not work with Ember proxies
       this.forEach(item => {
@@ -14377,7 +14123,7 @@ define("@ember/array/index", ["exports", "@ember/-internals/metal", "@ember/obje
       return this.filter(predicate);
     }
   });
-  var MutableArray = _mixin.default.create(EmberArray, _mutable.default, {
+  var MutableArray = _exports.MutableArray = _mixin.default.create(EmberArray, _mutable.default, {
     clear() {
       var len = this.length;
       if (len === 0) {
@@ -14474,23 +14220,18 @@ define("@ember/array/index", ["exports", "@ember/-internals/metal", "@ember/obje
       return this;
     }
   });
-  _exports.MutableArray = MutableArray;
-  var NativeArray = _mixin.default.create(MutableArray, _observable.default, {
+  var NativeArray = _exports.NativeArray = _mixin.default.create(MutableArray, _observable.default, {
     objectAt(idx) {
       return this[idx];
     },
     // primitive for array support.
-    replace(start, deleteCount, items) {
-      if (items === void 0) {
-        items = EMPTY_ARRAY;
-      }
+    replace(start, deleteCount, items = EMPTY_ARRAY) {
       (true && !(Array.isArray(items)) && (0, _debug.assert)('The third argument to replace needs to be an array.', Array.isArray(items)));
       (0, _metal.replaceInNativeArray)(this, start, deleteCount, items);
       return this;
     }
   });
   // Remove any methods implemented natively so we don't override them
-  _exports.NativeArray = NativeArray;
   var ignore = ['length'];
   NativeArray.keys().forEach(methodName => {
     // SAFETY: It's safe to read unknown properties from an object
@@ -14500,7 +14241,6 @@ define("@ember/array/index", ["exports", "@ember/-internals/metal", "@ember/obje
   });
   _exports.NativeArray = NativeArray = NativeArray.without(...ignore);
   var A;
-  _exports.A = A;
   if (_environment.ENV.EXTEND_PROTOTYPES.Array) {
     NativeArray.apply(Array.prototype, true);
     _exports.A = A = function (arr) {
@@ -14519,8 +14259,7 @@ define("@ember/array/index", ["exports", "@ember/-internals/metal", "@ember/obje
       }
     };
   }
-  var _default = EmberArray;
-  _exports.default = _default;
+  var _default = _exports.default = EmberArray;
 });
 define("@ember/array/lib/make-array", ["exports"], function (_exports) {
   "use strict";
@@ -14538,8 +14277,7 @@ define("@ember/array/lib/make-array", ["exports"], function (_exports) {
     }
     return isArray(obj) ? obj : [obj];
   }
-  var _default = makeArray;
-  _exports.default = _default;
+  var _default = _exports.default = makeArray;
 });
 define("@ember/array/mutable", ["exports", "@ember/array"], function (_exports, _array) {
   "use strict";
@@ -14767,8 +14505,7 @@ define("@ember/array/proxy", ["exports", "@ember/-internals/metal", "@ember/obje
   ArrayProxy.reopen(_mutable.default, {
     arrangedContent: (0, _metal.alias)('content')
   });
-  var _default = ArrayProxy;
-  _exports.default = _default;
+  var _default = _exports.default = ArrayProxy;
 });
 define("@ember/canary-features/index", ["exports", "@ember/-internals/environment"], function (_exports, _environment) {
   "use strict";
@@ -14788,7 +14525,7 @@ define("@ember/canary-features/index", ["exports", "@ember/-internals/environmen
     @module @ember/canary-features
     @public
   */
-  var DEFAULT_FEATURES = {
+  var DEFAULT_FEATURES = _exports.DEFAULT_FEATURES = {
     // FLAG_NAME: true/false
   };
   /**
@@ -14800,8 +14537,7 @@ define("@ember/canary-features/index", ["exports", "@ember/-internals/environmen
     @since 1.1.0
     @public
   */
-  _exports.DEFAULT_FEATURES = DEFAULT_FEATURES;
-  var FEATURES = Object.assign(DEFAULT_FEATURES, _environment.ENV.FEATURES);
+  var FEATURES = _exports.FEATURES = Object.assign(DEFAULT_FEATURES, _environment.ENV.FEATURES);
   /**
     Determine whether the specified `feature` is enabled. Used by Ember's
     build tools to exclude experimental features from beta/stable builds.
@@ -14817,7 +14553,6 @@ define("@ember/canary-features/index", ["exports", "@ember/-internals/environmen
     @since 1.1.0
     @public
   */
-  _exports.FEATURES = FEATURES;
   function isEnabled(feature) {
     var value = FEATURES[feature];
     if (value === true || value === false) {
@@ -14929,7 +14664,7 @@ define("@ember/controller/index", ["exports", "@ember/-internals/owner", "@ember
   // This is imported from -internals to avoid circularity
 
   var MODEL = (0, _utils.symbol)('MODEL');
-  var ControllerMixin = _mixin.default.create(_runtime.ActionHandler, {
+  var ControllerMixin = _exports.ControllerMixin = _mixin.default.create(_runtime.ActionHandler, {
     /* ducktype as a controller */
     isController: true,
     concatenatedProperties: ['queryParams'],
@@ -14986,7 +14721,7 @@ define("@ember/controller/index", ["exports", "@ember/-internals/owner", "@ember
       var value = (0, _object.get)(controller, prop);
       delegate(prop, value);
     },
-    transitionToRoute() {
+    transitionToRoute(...args) {
       var _a;
       (0, _internals2.deprecateTransitionMethods)('controller', 'transitionToRoute');
       // target may be either another controller or a router
@@ -14995,12 +14730,9 @@ define("@ember/controller/index", ["exports", "@ember/-internals/owner", "@ember
       // mock out an object that only has the single method. Since this is deprecated, I think it's
       // ok to be a little less than proper here.
       var method = (_a = target.transitionToRoute) !== null && _a !== void 0 ? _a : target.transitionTo;
-      for (var _len = arguments.length, args = new Array(_len), _key2 = 0; _key2 < _len; _key2++) {
-        args[_key2] = arguments[_key2];
-      }
       return method.apply(target, (0, _internals2.prefixRouteNameArg)(this, args));
     },
-    replaceRoute() {
+    replaceRoute(...args) {
       var _a;
       (0, _internals2.deprecateTransitionMethods)('controller', 'replaceRoute');
       // target may be either another controller or a router
@@ -15009,19 +14741,12 @@ define("@ember/controller/index", ["exports", "@ember/-internals/owner", "@ember
       // mock out an object that only has the single method. Since this is deprecated, I think it's
       // ok to be a little less than proper here.
       var method = (_a = target.replaceRoute) !== null && _a !== void 0 ? _a : target.replaceWith;
-      for (var _len2 = arguments.length, args = new Array(_len2), _key3 = 0; _key3 < _len2; _key3++) {
-        args[_key3] = arguments[_key3];
-      }
       return method.apply(target, (0, _internals2.prefixRouteNameArg)(this, args));
     }
   });
-  _exports.ControllerMixin = ControllerMixin;
   class Controller extends _internals.FrameworkObject.extend(ControllerMixin) {}
   _exports.default = Controller;
-  function inject() {
-    for (var _len3 = arguments.length, args = new Array(_len3), _key4 = 0; _key4 < _len3; _key4++) {
-      args[_key4] = arguments[_key4];
-    }
+  function inject(...args) {
     return (0, _metal.inject)('controller', ...args);
   }
 });
@@ -15670,26 +15395,16 @@ define("@ember/debug/index", ["exports", "@ember/-internals/browser-environment"
   _exports.warn = void 0;
   // These are the default production build versions:
   var noop = () => {};
-  var assert = noop;
-  _exports.assert = assert;
-  var info = noop;
-  _exports.info = info;
-  var warn = noop;
-  _exports.warn = warn;
-  var debug = noop;
-  _exports.debug = debug;
-  var deprecate = noop;
-  _exports.deprecate = deprecate;
-  var debugSeal = noop;
-  _exports.debugSeal = debugSeal;
-  var debugFreeze = noop;
-  _exports.debugFreeze = debugFreeze;
-  var runInDebug = noop;
-  _exports.runInDebug = runInDebug;
-  var setDebugFunction = noop;
-  _exports.setDebugFunction = setDebugFunction;
-  var getDebugFunction = noop;
-  _exports.getDebugFunction = getDebugFunction;
+  var assert = _exports.assert = noop;
+  var info = _exports.info = noop;
+  var warn = _exports.warn = noop;
+  var debug = _exports.debug = noop;
+  var deprecate = _exports.deprecate = noop;
+  var debugSeal = _exports.debugSeal = noop;
+  var debugFreeze = _exports.debugFreeze = noop;
+  var runInDebug = _exports.runInDebug = noop;
+  var setDebugFunction = _exports.setDebugFunction = noop;
+  var getDebugFunction = _exports.getDebugFunction = noop;
   var deprecateFunc = function () {
     return arguments[arguments.length - 1];
   };
@@ -15828,17 +15543,11 @@ define("@ember/debug/index", ["exports", "@ember/-internals/browser-environment"
       @return {Function} A new function that wraps the original function with a deprecation warning
       @private
     */
-    setDebugFunction('deprecateFunc', function deprecateFunc() {
-      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-        args[_key] = arguments[_key];
-      }
+    setDebugFunction('deprecateFunc', function deprecateFunc(...args) {
       if (args.length === 3) {
         var [message, options, func] = args;
-        return function () {
+        return function (...args) {
           deprecate(message, false, options);
-          for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-            args[_key2] = arguments[_key2];
-          }
           return func.apply(this, args);
         };
       } else {
@@ -15895,7 +15604,6 @@ define("@ember/debug/index", ["exports", "@ember/-internals/browser-environment"
     setDebugFunction('warn', _warn2.default);
   }
   var _warnIfUsingStrippedFeatureFlags;
-  _exports._warnIfUsingStrippedFeatureFlags = _warnIfUsingStrippedFeatureFlags;
   if (true /* DEBUG */ && !(0, _testing.isTesting)()) {
     if (typeof window !== 'undefined' && (_browserEnvironment.isFirefox || _browserEnvironment.isChrome) && window.addEventListener) {
       window.addEventListener('load', () => {
@@ -15994,9 +15702,7 @@ define("@ember/debug/lib/deprecate", ["exports", "@ember/-internals/environment"
   var registerHandler = () => {};
   _exports.registerHandler = registerHandler;
   var missingOptionsDeprecation;
-  _exports.missingOptionsDeprecation = missingOptionsDeprecation;
   var missingOptionsIdDeprecation;
-  _exports.missingOptionsIdDeprecation = missingOptionsIdDeprecation;
   var missingOptionDeprecation = () => '';
   _exports.missingOptionDeprecation = missingOptionDeprecation;
   var deprecate = () => {};
@@ -16021,7 +15727,6 @@ define("@ember/debug/lib/deprecate", ["exports", "@ember/-internals/environment"
       var updatedMessage = formatMessage(message, options);
       console.warn(`DEPRECATION: ${updatedMessage}`); // eslint-disable-line no-console
     });
-
     var captureErrorForStack;
     if (new Error().stack) {
       captureErrorForStack = () => new Error();
@@ -16139,8 +15844,7 @@ define("@ember/debug/lib/deprecate", ["exports", "@ember/-internals/environment"
       (0, _handlers.invoke)('deprecate', message, test, options);
     };
   }
-  var _default = deprecate;
-  _exports.default = _default;
+  var _default = _exports.default = deprecate;
 });
 define("@ember/debug/lib/handlers", ["exports"], function (_exports) {
   "use strict";
@@ -16149,10 +15853,8 @@ define("@ember/debug/lib/handlers", ["exports"], function (_exports) {
     value: true
   });
   _exports.registerHandler = _exports.invoke = _exports.HANDLERS = void 0;
-  var HANDLERS = {};
-  _exports.HANDLERS = HANDLERS;
-  var registerHandler = function registerHandler(_type, _callback) {};
-  _exports.registerHandler = registerHandler;
+  var HANDLERS = _exports.HANDLERS = {};
+  var registerHandler = _exports.registerHandler = function registerHandler(_type, _callback) {};
   var invoke = () => {};
   _exports.invoke = invoke;
   if (true /* DEBUG */) {
@@ -16323,12 +16025,10 @@ define("@ember/debug/lib/warn", ["exports", "@ember/debug/index", "@ember/debug/
   _exports.registerHandler = registerHandler;
   var warn = () => {};
   var missingOptionsDeprecation;
-  _exports.missingOptionsDeprecation = missingOptionsDeprecation;
   var missingOptionsIdDeprecation;
   /**
   @module @ember/debug
   */
-  _exports.missingOptionsIdDeprecation = missingOptionsIdDeprecation;
   if (true /* DEBUG */) {
     /**
       Allows for runtime registration of handler functions that override the default warning behavior.
@@ -16364,7 +16064,6 @@ define("@ember/debug/lib/warn", ["exports", "@ember/debug/index", "@ember/debug/
       console.warn(`WARNING: ${message}`);
       /* eslint-enable no-console */
     });
-
     _exports.missingOptionsDeprecation = missingOptionsDeprecation = 'When calling `warn` you ' + 'must provide an `options` hash as the third parameter.  ' + '`options` should include an `id` property.';
     _exports.missingOptionsIdDeprecation = missingOptionsIdDeprecation = 'When calling `warn` you must provide `id` in options.';
     /**
@@ -16402,8 +16101,7 @@ define("@ember/debug/lib/warn", ["exports", "@ember/debug/index", "@ember/debug/
       (0, _handlers.invoke)('warn', message, test, options);
     };
   }
-  var _default = warn;
-  _exports.default = _default;
+  var _default = _exports.default = warn;
 });
 define("@ember/deprecated-features/index", ["exports"], function (_exports) {
   "use strict";
@@ -16415,8 +16113,7 @@ define("@ember/deprecated-features/index", ["exports"], function (_exports) {
   /* eslint-disable no-implicit-coercion */
   // These versions should be the version that the deprecation was _introduced_,
   // not the version that the feature will be removed.
-  var ASSIGN = !!'4.0.0-beta.1';
-  _exports.ASSIGN = ASSIGN;
+  var ASSIGN = _exports.ASSIGN = !!'4.0.0-beta.1';
 });
 define("@ember/destroyable/index", ["exports", "@glimmer/destroyable"], function (_exports, _destroyable) {
   "use strict";
@@ -16793,10 +16490,7 @@ define("@ember/engine/index", ["exports", "@ember/engine/lib/engine-parent", "@e
       @method buildInstance
       @return {EngineInstance} the engine instance
     */
-    buildInstance(options) {
-      if (options === void 0) {
-        options = {};
-      }
+    buildInstance(options = {}) {
       this.ensureInitializers();
       return _instance.default.create(Object.assign(Object.assign({}, options), {
         base: this
@@ -17143,8 +16837,7 @@ define("@ember/engine/index", ["exports", "@ember/engine/lib/engine-parent", "@e
     registry.register('container-debug-adapter:main', _containerDebugAdapter.default);
     registry.register('component-lookup:main', _views.ComponentLookup);
   }
-  var _default = Engine;
-  _exports.default = _default;
+  var _default = _exports.default = Engine;
 });
 define("@ember/engine/instance", ["exports", "@ember/object", "@ember/-internals/runtime", "@ember/debug", "@ember/-internals/container", "@ember/-internals/utils", "@ember/engine/lib/engine-parent", "@ember/-internals/owner", "@ember/engine"], function (_exports, _object, _runtime, _debug, _container, _utils, _engineParent, _owner, _engine) {
   "use strict";
@@ -17233,10 +16926,7 @@ define("@ember/engine/instance", ["exports", "@ember/object", "@ember/-internals
       this._booted = true;
       return this;
     }
-    setupRegistry(options) {
-      if (options === void 0) {
-        options = this.__container__.lookup('-environment:main');
-      }
+    setupRegistry(options = this.__container__.lookup('-environment:main')) {
       this.constructor.setupRegistry(this.__registry__, options);
     }
     /**
@@ -17262,10 +16952,7 @@ define("@ember/engine/instance", ["exports", "@ember/object", "@ember/-internals
       @param options {Object} options provided to the engine instance.
       @return {EngineInstance,Error}
     */
-    buildChildEngineInstance(name, options) {
-      if (options === void 0) {
-        options = {};
-      }
+    buildChildEngineInstance(name, options = {}) {
       var ChildEngine = this.lookup(`engine:${name}`);
       if (!ChildEngine) {
         throw new Error(`You attempted to mount the engine '${name}', but it is not registered with its parent.`);
@@ -17308,8 +16995,7 @@ define("@ember/engine/instance", ["exports", "@ember/object", "@ember/-internals
       });
     }
   }
-  var _default = EngineInstance;
-  _exports.default = _default;
+  var _default = _exports.default = EngineInstance;
 });
 define("@ember/engine/lib/engine-parent", ["exports"], function (_exports) {
   "use strict";
@@ -17320,7 +17006,7 @@ define("@ember/engine/lib/engine-parent", ["exports"], function (_exports) {
   _exports.ENGINE_PARENT = void 0;
   _exports.getEngineParent = getEngineParent;
   _exports.setEngineParent = setEngineParent;
-  var ENGINE_PARENT = Symbol('ENGINE_PARENT');
+  var ENGINE_PARENT = _exports.ENGINE_PARENT = Symbol('ENGINE_PARENT');
   /**
     `getEngineParent` retrieves an engine instance's parent instance.
   
@@ -17331,7 +17017,6 @@ define("@ember/engine/lib/engine-parent", ["exports"], function (_exports) {
     @static
     @private
   */
-  _exports.ENGINE_PARENT = ENGINE_PARENT;
   function getEngineParent(engine) {
     return engine[ENGINE_PARENT];
   }
@@ -17355,8 +17040,7 @@ define("@ember/enumerable/index", ["exports", "@ember/object/mixin"], function (
   });
   _exports.default = void 0;
   var Enumerable = _mixin.default.create();
-  var _default = Enumerable;
-  _exports.default = _default;
+  var _default = _exports.default = Enumerable;
 });
 define("@ember/enumerable/mutable", ["exports", "@ember/enumerable", "@ember/object/mixin"], function (_exports, _enumerable, _mixin) {
   "use strict";
@@ -17366,8 +17050,7 @@ define("@ember/enumerable/mutable", ["exports", "@ember/enumerable", "@ember/obj
   });
   _exports.default = void 0;
   var MutableEnumerable = _mixin.default.create(_enumerable.default);
-  var _default = MutableEnumerable;
-  _exports.default = _default;
+  var _default = _exports.default = MutableEnumerable;
 });
 define("@ember/error/index", ["exports", "@ember/debug"], function (_exports, _debug) {
   "use strict";
@@ -17408,8 +17091,7 @@ define("@ember/error/index", ["exports", "@ember/debug"], function (_exports, _d
   } else {
     EmberError = Error;
   }
-  var _default = EmberError;
-  _exports.default = _default;
+  var _default = _exports.default = EmberError;
 });
 define("@ember/helper/index", ["exports", "@glimmer/manager", "@glimmer/runtime"], function (_exports, _manager, _runtime) {
   "use strict";
@@ -17536,8 +17218,7 @@ define("@ember/instrumentation/index", ["exports", "@ember/-internals/environmen
     @static
     @private
   */
-  var subscribers = [];
-  _exports.subscribers = subscribers;
+  var subscribers = _exports.subscribers = [];
   var cache = {};
   function populateListeners(name) {
     var listeners = [];
@@ -17746,8 +17427,7 @@ define("@ember/object/-internals", ["exports", "@ember/-internals/metal", "@embe
     }
   });
   var _a;
-  var FrameworkObject = class FrameworkObject extends _object.default {};
-  _exports.FrameworkObject = FrameworkObject;
+  var FrameworkObject = _exports.FrameworkObject = class FrameworkObject extends _object.default {};
   if (true /* DEBUG */) {
     var INIT_WAS_CALLED = Symbol('INIT_WAS_CALLED');
     var ASSERT_INIT_WAS_CALLED = (0, _utils.symbol)('ASSERT_INIT_WAS_CALLED');
@@ -17793,10 +17473,7 @@ define("@ember/object/compat", ["exports", "@ember/-internals/metal", "@ember/de
     }
     return desc;
   };
-  function dependentKeyCompat() {
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
+  function dependentKeyCompat(...args) {
     if ((0, _metal.isElementDescriptor)(args)) {
       var [target, key, desc] = args;
       (true && !(desc != null && (typeof desc.get === 'function' || typeof desc.set === 'function')) && (0, _debug.assert)('The @dependentKeyCompat decorator must be applied to getters/setters when used in native classes', desc != null && (typeof desc.get === 'function' || typeof desc.set === 'function')));
@@ -18161,10 +17838,7 @@ define("@ember/object/core", ["exports", "@ember/-internals/container", "@ember/
         return self;
       }
     }
-    reopen() {
-      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-        args[_key] = arguments[_key];
-      }
+    reopen(...args) {
       (0, _mixin.applyMixin)(this, args);
       return this;
     }
@@ -18404,18 +18078,12 @@ define("@ember/object/core", ["exports", "@ember/-internals/container", "@ember/
       var extension = hasToStringExtension(this) ? `:${this.toStringExtension()}` : '';
       return `<${(0, _container.getFactoryFor)(this) || '(unknown)'}:${(0, _utils.guidFor)(this)}${extension}>`;
     }
-    static extend() {
+    static extend(...mixins) {
       var Class = class extends this {};
-      for (var _len2 = arguments.length, mixins = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-        mixins[_key2] = arguments[_key2];
-      }
       reopen.apply(Class.PrototypeMixin, mixins);
       return Class;
     }
-    static create() {
-      for (var _len3 = arguments.length, args = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
-        args[_key3] = arguments[_key3];
-      }
+    static create(...args) {
       var props = args[0];
       var instance;
       if (props !== undefined) {
@@ -18467,11 +18135,8 @@ define("@ember/object/core", ["exports", "@ember/-internals/container", "@ember/
       @static
       @public
     */
-    static reopen() {
+    static reopen(...args) {
       this.willReopen();
-      for (var _len4 = arguments.length, args = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
-        args[_key4] = arguments[_key4];
-      }
       reopen.apply(this.PrototypeMixin, args);
       return this;
     }
@@ -18534,10 +18199,7 @@ define("@ember/object/core", ["exports", "@ember/-internals/container", "@ember/
       @static
       @public
     */
-    static reopenClass() {
-      for (var _len5 = arguments.length, mixins = new Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
-        mixins[_key5] = arguments[_key5];
-      }
+    static reopenClass(...mixins) {
       (0, _mixin.applyMixin)(this, mixins);
       return this;
     }
@@ -18595,10 +18257,7 @@ define("@ember/object/core", ["exports", "@ember/-internals/container", "@ember/
       @param {Object} binding
       @private
     */
-    static eachComputedProperty(callback, binding) {
-      if (binding === void 0) {
-        binding = this;
-      }
+    static eachComputedProperty(callback, binding = this) {
       this.proto(); // ensure prototype is initialized
       var empty = {};
       (0, _meta2.meta)(this.prototype).forEachDescriptors((name, descriptor) => {
@@ -18643,11 +18302,8 @@ define("@ember/object/core", ["exports", "@ember/-internals/container", "@ember/
   }
   CoreObject.isClass = true;
   CoreObject.isMethod = false;
-  function flattenProps() {
+  function flattenProps(...props) {
     var initProperties = {};
-    for (var _len6 = arguments.length, props = new Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
-      props[_key6] = arguments[_key6];
-    }
     for (var properties of props) {
       (true && !(!(properties instanceof _mixin.default)) && (0, _debug.assert)('EmberObject.create no longer supports mixing in other ' + 'definitions, use .extend & .create separately instead.', !(properties instanceof _mixin.default)));
       var keyNames = Object.keys(properties);
@@ -18706,8 +18362,7 @@ define("@ember/object/core", ["exports", "@ember/-internals/container", "@ember/
       return injections;
     };
   }
-  var _default = CoreObject;
-  _exports.default = _default;
+  var _default = _exports.default = CoreObject;
 });
 define("@ember/object/evented", ["exports", "@ember/-internals/metal", "@ember/object/mixin"], function (_exports, _metal, _mixin) {
   "use strict";
@@ -18731,10 +18386,7 @@ define("@ember/object/evented", ["exports", "@ember/-internals/metal", "@ember/o
       (0, _metal.addListener)(this, name, target, method, true);
       return this;
     },
-    trigger(name) {
-      for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-        args[_key - 1] = arguments[_key];
-      }
+    trigger(name, ...args) {
       (0, _metal.sendEvent)(this, name, args);
     },
     off(name, target, method) {
@@ -18745,8 +18397,7 @@ define("@ember/object/evented", ["exports", "@ember/-internals/metal", "@ember/o
       return (0, _metal.hasListeners)(this, name);
     }
   });
-  var _default = Evented;
-  _exports.default = _default;
+  var _default = _exports.default = Evented;
 });
 define("@ember/object/events", ["exports", "@ember/-internals/metal"], function (_exports, _metal) {
   "use strict";
@@ -18836,7 +18487,7 @@ define("@ember/object/index", ["exports", "@ember/debug", "@ember/-internals/env
       return factory !== undefined && factory.fullName;
     }
   }
-  var _default = EmberObject;
+  var _default = _exports.default = EmberObject;
   /**
     Decorator that turns the target function into an Action which can be accessed
     directly by reference.
@@ -18949,7 +18600,6 @@ define("@ember/object/index", ["exports", "@ember/debug", "@ember/-internals/env
                                          when used in classic classes
     @return {PropertyDecorator} property decorator instance
   */
-  _exports.default = _default;
   var BINDINGS_MAP = new WeakMap();
   function hasProto(obj) {
     return obj != null && obj.constructor !== undefined && typeof obj.constructor.proto === 'function';
@@ -18981,11 +18631,8 @@ define("@ember/object/index", ["exports", "@ember/debug", "@ember/-internals/env
       }
     };
   }
-  function action() {
+  function action(...args) {
     var actionFn;
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
     if (!(0, _metal.isElementDescriptor)(args)) {
       actionFn = args[0];
       var decorator = function (target, key, _desc, _meta, isClassicDecorator) {
@@ -19028,10 +18675,7 @@ define("@ember/object/index", ["exports", "@ember/debug", "@ember/-internals/env
     @public
     @static
   */
-  function observer() {
-    for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-      args[_key2] = arguments[_key2];
-    }
+  function observer(...args) {
     var funcOrDef = args.pop();
     (true && !(typeof funcOrDef === 'function' || typeof funcOrDef === 'object' && funcOrDef !== null) && (0, _debug.assert)('observer must be provided a function or an observer definition', typeof funcOrDef === 'function' || typeof funcOrDef === 'object' && funcOrDef !== null));
     var func;
@@ -19116,10 +18760,7 @@ define("@ember/object/lib/computed/computed_macros", ["exports", "@ember/-intern
     return expandedProperties;
   }
   function generateComputedWithPredicate(name, predicate) {
-    return function (dependentKey) {
-      for (var _len = arguments.length, additionalDependentKeys = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-        additionalDependentKeys[_key - 1] = arguments[_key];
-      }
+    return (dependentKey, ...additionalDependentKeys) => {
       var properties = [dependentKey, ...additionalDependentKeys];
       (true && !(!(0, _metal.isElementDescriptor)(properties)) && (0, _debug.assert)(`You attempted to use @${name} as a decorator directly, but it requires at least one dependent key parameter`, !(0, _metal.isElementDescriptor)(properties)));
       var dependentKeys = expandPropertiesToArray(name, properties);
@@ -19627,7 +19268,7 @@ define("@ember/object/lib/computed/computed_macros", ["exports", "@ember/-intern
     the values of all the original values for properties.
     @public
   */
-  var and = generateComputedWithPredicate('and', value => value);
+  var and = _exports.and = generateComputedWithPredicate('and', value => value);
   /**
     A computed property which performs a logical `or` on the original values for
     the provided dependent properties.
@@ -19669,8 +19310,7 @@ define("@ember/object/lib/computed/computed_macros", ["exports", "@ember/-intern
     the values of all the original values for properties.
     @public
   */
-  _exports.and = and;
-  var or = generateComputedWithPredicate('or', value => !value);
+  var or = _exports.or = generateComputedWithPredicate('or', value => !value);
   /**
     Creates a new property that is an alias for another property on an object.
     Calls to `get` or `set` this property behave as though they were called on the
@@ -19744,7 +19384,6 @@ define("@ember/object/lib/computed/computed_macros", ["exports", "@ember/-intern
     property to the original value for property.
     @public
   */
-  _exports.or = or;
   function oneWay(dependentKey) {
     (true && !(!(0, _metal.isElementDescriptor)(Array.prototype.slice.call(arguments))) && (0, _debug.assert)('You attempted to use @oneWay as a decorator directly, but it requires a `dependentKey` parameter', !(0, _metal.isElementDescriptor)(Array.prototype.slice.call(arguments))));
     return (0, _metal.alias)(dependentKey).oneWay();
@@ -20239,10 +19878,7 @@ define("@ember/object/lib/computed/reduce_computed_macros", ["exports", "@ember/
     unique elements from the dependent array
     @public
   */
-  function uniq(dependentKey) {
-    for (var _len = arguments.length, additionalDependentKeys = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-      additionalDependentKeys[_key - 1] = arguments[_key];
-    }
+  function uniq(dependentKey, ...additionalDependentKeys) {
     (true && !(!(0, _metal.isElementDescriptor)(Array.prototype.slice.call(arguments))) && (0, _debug.assert)('You attempted to use @uniq/@union as a decorator directly, but it requires atleast one dependent key parameter', !(0, _metal.isElementDescriptor)(Array.prototype.slice.call(arguments))));
     var args = [dependentKey, ...additionalDependentKeys];
     return multiArrayMacro(args, function (dependentKeys) {
@@ -20352,7 +19988,7 @@ define("@ember/object/lib/computed/reduce_computed_macros", ["exports", "@ember/
     from one or more dependent arrays.
     @public
   */
-  var union = uniq;
+  var union = _exports.union = uniq;
   /**
     A computed property which returns a new array with all the elements
     two or more dependent arrays have in common.
@@ -20388,11 +20024,7 @@ define("@ember/object/lib/computed/reduce_computed_macros", ["exports", "@ember/
     elements from the dependent arrays
     @public
   */
-  _exports.union = union;
-  function intersect(dependentKey) {
-    for (var _len2 = arguments.length, additionalDependentKeys = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
-      additionalDependentKeys[_key2 - 1] = arguments[_key2];
-    }
+  function intersect(dependentKey, ...additionalDependentKeys) {
     (true && !(!(0, _metal.isElementDescriptor)(Array.prototype.slice.call(arguments))) && (0, _debug.assert)('You attempted to use @intersect as a decorator directly, but it requires atleast one dependent key parameter', !(0, _metal.isElementDescriptor)(Array.prototype.slice.call(arguments))));
     var args = [dependentKey, ...additionalDependentKeys];
     return multiArrayMacro(args, function (dependentKeys) {
@@ -20510,10 +20142,7 @@ define("@ember/object/lib/computed/reduce_computed_macros", ["exports", "@ember/
     in properties to an array.
     @public
   */
-  function collect(dependentKey) {
-    for (var _len3 = arguments.length, additionalDependentKeys = new Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
-      additionalDependentKeys[_key3 - 1] = arguments[_key3];
-    }
+  function collect(dependentKey, ...additionalDependentKeys) {
     (true && !(!(0, _metal.isElementDescriptor)(Array.prototype.slice.call(arguments))) && (0, _debug.assert)('You attempted to use @collect as a decorator directly, but it requires atleast one dependent key parameter', !(0, _metal.isElementDescriptor)(Array.prototype.slice.call(arguments))));
     var dependentKeys = [dependentKey, ...additionalDependentKeys];
     return multiArrayMacro(dependentKeys, function () {
@@ -20857,10 +20486,7 @@ define("@ember/object/mixin", ["exports", "@ember/-internals/container", "@ember
       }
     }
   }
-  function applyMixin(obj, mixins, _hideKeys) {
-    if (_hideKeys === void 0) {
-      _hideKeys = false;
-    }
+  function applyMixin(obj, mixins, _hideKeys = false) {
     var descs = Object.create(null);
     var values = Object.create(null);
     var meta = (0, _meta.meta)(obj);
@@ -20899,10 +20525,7 @@ define("@ember/object/mixin", ["exports", "@ember/-internals/container", "@ember
     @return obj
     @private
   */
-  function mixin(obj) {
-    for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-      args[_key - 1] = arguments[_key];
-    }
+  function mixin(obj, ...args) {
     applyMixin(obj, args);
     return obj;
   }
@@ -21019,12 +20642,9 @@ define("@ember/object/mixin", ["exports", "@ember/-internals/container", "@ember
       @param arguments*
       @public
     */
-    static create() {
+    static create(...args) {
       (0, _metal.setUnprocessedMixins)();
       var M = this;
-      for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-        args[_key2] = arguments[_key2];
-      }
       return new M(args, undefined);
     }
     // returns the mixins currently applied to the specified object
@@ -21050,10 +20670,7 @@ define("@ember/object/mixin", ["exports", "@ember/-internals/container", "@ember
       @private
       @internal
     */
-    reopen() {
-      for (var _len3 = arguments.length, args = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
-        args[_key3] = arguments[_key3];
-      }
+    reopen(...args) {
       if (args.length === 0) {
         return;
       }
@@ -21074,10 +20691,7 @@ define("@ember/object/mixin", ["exports", "@ember/-internals/container", "@ember
       @private
       @internal
     */
-    apply(obj, _hideKeys) {
-      if (_hideKeys === void 0) {
-        _hideKeys = false;
-      }
+    apply(obj, _hideKeys = false) {
       // Ember.NativeArray is a normal Ember.Mixin that we mix into `Array.prototype` when prototype extensions are enabled
       // mutating a native object prototype like this should _not_ result in enumerable properties being added (or we have significant
       // issues with things like deep equality checks from test frameworks, or things like jQuery.extend(true, [], [])).
@@ -21110,11 +20724,8 @@ define("@ember/object/mixin", ["exports", "@ember/-internals/container", "@ember
       return meta.hasMixin(this);
     }
     /** @internal */
-    without() {
+    without(...args) {
       var ret = new Mixin([this]);
-      for (var _len4 = arguments.length, args = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
-        args[_key4] = arguments[_key4];
-      }
       ret._without = args;
       return ret;
     }
@@ -21158,10 +20769,7 @@ define("@ember/object/mixin", ["exports", "@ember/-internals/container", "@ember
   if (true /* DEBUG */) {
     Object.seal(Mixin.prototype);
   }
-  function _detect(curMixin, targetMixin, seen) {
-    if (seen === void 0) {
-      seen = new Set();
-    }
+  function _detect(curMixin, targetMixin, seen = new Set()) {
     if (seen.has(curMixin)) {
       return false;
     }
@@ -21175,13 +20783,7 @@ define("@ember/object/mixin", ["exports", "@ember/-internals/container", "@ember
     }
     return false;
   }
-  function _keys(mixin, ret, seen) {
-    if (ret === void 0) {
-      ret = new Set();
-    }
-    if (seen === void 0) {
-      seen = new Set();
-    }
+  function _keys(mixin, ret = new Set(), seen = new Set()) {
     if (seen.has(mixin)) {
       return;
     }
@@ -21212,10 +20814,7 @@ define("@ember/object/observable", ["exports", "@ember/-internals/meta", "@ember
     get(keyName) {
       return (0, _object.get)(this, keyName);
     },
-    getProperties() {
-      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-        args[_key] = arguments[_key];
-      }
+    getProperties(...args) {
       return (0, _object.getProperties)(this, ...args);
     },
     set(keyName, value) {
@@ -21282,17 +20881,11 @@ define("@ember/object/observable", ["exports", "@ember/-internals/meta", "@ember
     hasObserverFor(key) {
       return (0, _metal.hasListeners)(this, `${key}:change`);
     },
-    incrementProperty(keyName, increment) {
-      if (increment === void 0) {
-        increment = 1;
-      }
+    incrementProperty(keyName, increment = 1) {
       (true && !(!isNaN(parseFloat(String(increment))) && isFinite(increment)) && (0, _debug.assert)('Must pass a numeric value to incrementProperty', !isNaN(parseFloat(String(increment))) && isFinite(increment)));
       return (0, _object.set)(this, keyName, (parseFloat((0, _object.get)(this, keyName)) || 0) + increment);
     },
-    decrementProperty(keyName, decrement) {
-      if (decrement === void 0) {
-        decrement = 1;
-      }
+    decrementProperty(keyName, decrement = 1) {
       (true && !((typeof decrement === 'number' || !isNaN(parseFloat(decrement))) && isFinite(decrement)) && (0, _debug.assert)('Must pass a numeric value to decrementProperty', (typeof decrement === 'number' || !isNaN(parseFloat(decrement))) && isFinite(decrement)));
       return (0, _object.set)(this, keyName, ((0, _object.get)(this, keyName) || 0) - decrement);
     },
@@ -21306,8 +20899,7 @@ define("@ember/object/observable", ["exports", "@ember/-internals/meta", "@ember
       }
     }
   });
-  var _default = Observable;
-  _exports.default = _default;
+  var _default = _exports.default = Observable;
 });
 define("@ember/object/observers", ["exports", "@ember/-internals/metal"], function (_exports, _metal) {
   "use strict";
@@ -21384,17 +20976,16 @@ define("@ember/object/promise-proxy-mixin", ["exports", "@ember/object", "@ember
     finally: promiseAlias('finally')
   });
   function promiseAlias(name) {
-    return function () {
+    return function (...args) {
       var promise = (0, _object.get)(this, 'promise');
       // We need this cast because `Parameters` is deferred so that it is not
       // possible for TS to see it will always produce the right type. However,
       // since `AnyFn` has a rest type, it is allowed. See discussion on [this
       // issue](https://github.com/microsoft/TypeScript/issues/47615).
-      return promise[name](...arguments);
+      return promise[name](...args);
     };
   }
-  var _default = PromiseProxyMixin;
-  _exports.default = _default;
+  var _default = _exports.default = PromiseProxyMixin;
 });
 define("@ember/object/proxy", ["exports", "@ember/object/-internals", "@ember/-internals/runtime"], function (_exports, _internals, _runtime) {
   "use strict";
@@ -21409,8 +21000,7 @@ define("@ember/object/proxy", ["exports", "@ember/object/-internals", "@ember/-i
 
   class ObjectProxy extends _internals.FrameworkObject {}
   ObjectProxy.PrototypeMixin.reopen(_runtime._ProxyMixin);
-  var _default = ObjectProxy;
-  _exports.default = _default;
+  var _default = _exports.default = ObjectProxy;
 });
 define("@ember/owner/index", ["exports", "@ember/-internals/owner"], function (_exports, _owner) {
   "use strict";
@@ -21509,8 +21099,7 @@ define("@ember/owner/index", ["exports", "@ember/-internals/owner"], function (_
   // TS (not incorrectly! Nothing expressly relates them) does not see that the
   // `InternalOwner` and `Owner` do actually have identical constraints on their
   // relations to the `DIRegistry`.
-  var getOwner = _owner.getOwner;
-  _exports.getOwner = getOwner;
+  var getOwner = _exports.getOwner = _owner.getOwner;
 });
 define("@ember/polyfills/index", ["exports", "@ember/polyfills/lib/assign"], function (_exports, _assign) {
   "use strict";
@@ -21525,8 +21114,7 @@ define("@ember/polyfills/index", ["exports", "@ember/polyfills/lib/assign"], fun
     }
   });
   _exports.hasPropertyAccessors = void 0;
-  var hasPropertyAccessors = true;
-  _exports.hasPropertyAccessors = hasPropertyAccessors;
+  var hasPropertyAccessors = _exports.hasPropertyAccessors = true;
 });
 define("@ember/polyfills/lib/assign", ["exports", "@ember/debug"], function (_exports, _debug) {
   "use strict";
@@ -21556,7 +21144,7 @@ define("@ember/polyfills/lib/assign", ["exports", "@ember/debug"], function (_ex
     @public
     @static
   */
-  function assign(target) {
+  function assign(target, ...rest) {
     (true && !(false) && (0, _debug.deprecate)('Use of `assign` has been deprecated. Please use `Object.assign` or the spread operator instead.', false, {
       id: 'ember-polyfills.deprecate-assign',
       until: '5.0.0',
@@ -21567,9 +21155,6 @@ define("@ember/polyfills/lib/assign", ["exports", "@ember/debug"], function (_ex
         enabled: '4.0.0'
       }
     }));
-    for (var _len = arguments.length, rest = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-      rest[_key - 1] = arguments[_key];
-    }
     return Object.assign(target, ...rest);
   }
 });
@@ -21760,7 +21345,7 @@ define("@ember/routing/auto-location", ["exports", "@ember/-internals/browser-en
     cancelRouterSetup: false
   });
   function delegateToConcreteImplementation(methodName) {
-    return function () {
+    return function (...args) {
       var _a;
       var {
         concreteImplementation
@@ -21769,9 +21354,6 @@ define("@ember/routing/auto-location", ["exports", "@ember/-internals/browser-en
       // possible for TS to see it will always produce the right type. However,
       // since `AnyFn` has a rest type, it is allowed. See discussion on [this
       // issue](https://github.com/microsoft/TypeScript/issues/47615).
-      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-        args[_key] = arguments[_key];
-      }
       return (_a = concreteImplementation[methodName]) === null || _a === void 0 ? void 0 : _a.call(concreteImplementation, ...args);
     };
   }
@@ -22376,10 +21958,7 @@ define("@ember/routing/lib/dsl", ["exports", "@ember/debug"], function (_exports
     return value !== null && typeof value === 'object';
   }
   class DSLImpl {
-    constructor(name, options) {
-      if (name === void 0) {
-        name = null;
-      }
+    constructor(name = null, options) {
       this.explicitIndex = false;
       this.parent = name;
       this.enableLoadingSubstates = Boolean(options && options.enableLoadingSubstates);
@@ -22468,10 +22047,7 @@ define("@ember/routing/lib/dsl", ["exports", "@ember/debug"], function (_exports
         }
       };
     }
-    mount(_name, options) {
-      if (options === void 0) {
-        options = {};
-      }
+    mount(_name, options = {}) {
       var engineRouteMap = this.options.resolveRouteMap(_name);
       var name = _name;
       if (options.as) {
@@ -22553,10 +22129,7 @@ define("@ember/routing/lib/dsl", ["exports", "@ember/debug"], function (_exports
       return name;
     }
   }
-  function createRoute(dsl, name, options, callback) {
-    if (options === void 0) {
-      options = {};
-    }
+  function createRoute(dsl, name, options = {}, callback) {
     var fullName = getFullName(dsl, name, options.resetNamespace);
     if (typeof options.path !== 'string') {
       options.path = `/${name}`;
@@ -22743,10 +22316,7 @@ define("@ember/routing/lib/query_params", ["exports"], function (_exports) {
   });
   _exports.default = void 0;
   class QueryParams {
-    constructor(values) {
-      if (values === void 0) {
-        values = null;
-      }
+    constructor(values = null) {
       this.isQueryParams = true;
       this.values = values;
     }
@@ -22990,10 +22560,7 @@ define("@ember/routing/lib/utils", ["exports", "@ember/-internals/metal", "@embe
   /*
     Stolen from Controller
   */
-  function calculateCacheKey(prefix, parts, values) {
-    if (parts === void 0) {
-      parts = [];
-    }
+  function calculateCacheKey(prefix, parts = [], values) {
     var suffixes = '';
     for (var part of parts) {
       var cacheValuePrefix = _calculateCacheValuePrefix(prefix, part);
@@ -23211,7 +22778,7 @@ define("@ember/routing/location", ["exports", "@ember/debug"], function (_export
     @class Location
     @private
   */
-  var _default = {
+  var _default = _exports.default = {
     /**
      This is deprecated in favor of using the container to lookup the location
      implementation as desired.
@@ -23248,7 +22815,6 @@ define("@ember/routing/location", ["exports", "@ember/debug"], function (_export
     },
     implementations: {}
   };
-  _exports.default = _default;
 });
 define("@ember/routing/none-location", ["exports", "@ember/object", "@ember/debug"], function (_exports, _object, _debug) {
   "use strict";
@@ -23383,13 +22949,10 @@ define("@ember/routing/route", ["exports", "@ember/-internals/container", "@embe
     var c = arguments.length,
       r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
       d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) {
-      if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    }
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
   };
-  var ROUTE_CONNECTIONS = new WeakMap();
-  _exports.ROUTE_CONNECTIONS = ROUTE_CONNECTIONS;
+  var ROUTE_CONNECTIONS = _exports.ROUTE_CONNECTIONS = new WeakMap();
   var RENDER = Symbol('render');
   class Route extends _object.default.extend(_runtime.ActionHandler, _evented.default) {
     constructor(owner) {
@@ -23568,8 +23131,7 @@ define("@ember/routing/route", ["exports", "@ember/-internals/container", "@embe
       var fullName = route.fullRouteName;
       var params = Object.assign({}, state.params[fullName]);
       var queryParams = getQueryParamsFor(route, state);
-      return Object.entries(queryParams).reduce((params, _ref) => {
-        var [key, value] = _ref;
+      return Object.entries(queryParams).reduce((params, [key, value]) => {
         (true && !(!params[key]) && (0, _debug.assert)(`The route '${this.routeName}' has both a dynamic segment and query param with name '${key}'. Please rename one to avoid collisions.`, !params[key]));
         params[key] = value;
         return params;
@@ -23872,11 +23434,8 @@ define("@ember/routing/route", ["exports", "@ember/-internals/container", "@embe
       @deprecated Use transitionTo from the Router service instead.
       @public
     */
-    transitionTo() {
+    transitionTo(...args) {
       (0, _utils3.deprecateTransitionMethods)('route', 'transitionTo');
-      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-        args[_key] = arguments[_key];
-      }
       return this._router.transitionTo(...(0, _utils3.prefixRouteNameArg)(this, args));
     }
     /**
@@ -23894,10 +23453,7 @@ define("@ember/routing/route", ["exports", "@ember/-internals/container", "@embe
       @since 1.2.0
       @public
      */
-    intermediateTransitionTo() {
-      for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-        args[_key2] = arguments[_key2];
-      }
+    intermediateTransitionTo(...args) {
       var [name, ...preparedArgs] = (0, _utils3.prefixRouteNameArg)(this, args);
       this._router.intermediateTransitionTo(name, ...preparedArgs);
     }
@@ -23959,11 +23515,8 @@ define("@ember/routing/route", ["exports", "@ember/-internals/container", "@embe
       @deprecated Use replaceWith from the Router service instead.
       @public
     */
-    replaceWith() {
+    replaceWith(...args) {
       (0, _utils3.deprecateTransitionMethods)('route', 'replaceWith');
-      for (var _len3 = arguments.length, args = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
-        args[_key3] = arguments[_key3];
-      }
       return this._router.replaceWith(...(0, _utils3.prefixRouteNameArg)(this, args));
     }
     /**
@@ -24162,8 +23715,8 @@ define("@ember/routing/route", ["exports", "@ember/-internals/container", "@embe
       @param {Object} value the value passed to find
       @private
     */
-    findModel() {
-      return (0, _object.get)(this, 'store').find(...arguments);
+    findModel(...args) {
+      return (0, _object.get)(this, 'store').find(...args);
     }
     /**
       A hook you can use to setup the controller for the current route.
@@ -24222,10 +23775,7 @@ define("@ember/routing/route", ["exports", "@ember/-internals/container", "@embe
         (0, _object.set)(controller, 'model', context);
       }
     }
-    controllerFor(name, _skipAssert) {
-      if (_skipAssert === void 0) {
-        _skipAssert = false;
-      }
+    controllerFor(name, _skipAssert = false) {
       var owner = (0, _owner.getOwner)(this);
       (true && !(owner) && (0, _debug.assert)('Route is unexpectedly missing an owner', owner));
       var route = owner.lookup(`route:${name}`);
@@ -24509,10 +24059,7 @@ define("@ember/routing/route", ["exports", "@ember/-internals/container", "@embe
     var routeInfo = routeInfoFor(route, route._router._routerMicrolib.state.routeInfos, -1);
     return routeInfo && routeInfo.route;
   }
-  function routeInfoFor(route, routeInfos, offset) {
-    if (offset === void 0) {
-      offset = 0;
-    }
+  function routeInfoFor(route, routeInfos, offset = 0) {
     if (!routeInfos) {
       return;
     }
@@ -24630,7 +24177,7 @@ define("@ember/routing/route", ["exports", "@ember/-internals/container", "@embe
     var qps = (0, _object.get)(route, '_qp').qps;
     for (var qp of qps) {
       // Put deserialized qp on params hash.
-      var qpValueWasPassedIn = (qp.prop in fullQueryParams);
+      var qpValueWasPassedIn = qp.prop in fullQueryParams;
       params[qp.prop] = qpValueWasPassedIn ? fullQueryParams[qp.prop] : copyDefaultValue(qp.defaultValue);
     }
     return params;
@@ -24701,8 +24248,7 @@ define("@ember/routing/route", ["exports", "@ember/-internals/container", "@embe
     }
     return routeName;
   }
-  var defaultSerialize = Route.prototype.serialize;
-  _exports.defaultSerialize = defaultSerialize;
+  var defaultSerialize = _exports.defaultSerialize = Route.prototype.serialize;
   function hasDefaultSerialize(route) {
     return route.serialize === defaultSerialize;
   }
@@ -24712,10 +24258,7 @@ define("@ember/routing/route", ["exports", "@ember/-internals/container", "@embe
     queryParams: {},
     templateName: null,
     controllerName: null,
-    send() {
-      for (var _len4 = arguments.length, args = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
-        args[_key4] = arguments[_key4];
-      }
+    send(...args) {
       (true && !(!this.isDestroying && !this.isDestroyed) && (0, _debug.assert)(`Attempted to call .send() with the action '${args[0]}' on the destroyed route '${this.routeName}'.`, !this.isDestroying && !this.isDestroyed));
       if (this._router && this._router._routerMicrolib || !(0, _debug.isTesting)()) {
         this._router.send(...args);
@@ -24866,8 +24409,7 @@ define("@ember/routing/route", ["exports", "@ember/-internals/container", "@embe
       }
     }
   });
-  var _default = Route;
-  _exports.default = _default;
+  var _default = _exports.default = Route;
 });
 define("@ember/routing/router-service", ["exports", "@ember/-internals/owner", "@ember/object/evented", "@ember/debug", "@ember/object/computed", "@ember/service", "@glimmer/validator", "@ember/routing/router", "@ember/routing/lib/utils"], function (_exports, _owner, _evented, _debug, _computed, _service, _validator, _router2, _utils) {
   "use strict";
@@ -24880,17 +24422,14 @@ define("@ember/routing/router-service", ["exports", "@ember/-internals/owner", "
     var c = arguments.length,
       r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
       d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) {
-      if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    }
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
   };
   /**
    * @module @ember/routing/router-service
    */
 
-  var ROUTER = Symbol('ROUTER');
-  _exports.ROUTER = ROUTER;
+  var ROUTER = _exports.ROUTER = Symbol('ROUTER');
   function cleanURL(url, rootURL) {
     if (rootURL === '/') {
       return url;
@@ -24951,10 +24490,7 @@ define("@ember/routing/router-service", ["exports", "@ember/-internals/owner", "
          attempted transition
        @public
      */
-    transitionTo() {
-      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-        args[_key] = arguments[_key];
-      }
+    transitionTo(...args) {
       if ((0, _utils.resemblesURL)(args[0])) {
         // NOTE: this `args[0] as string` cast is safe and TS correctly infers it
         // in 3.6+, so it can be removed when TS is upgraded.
@@ -24998,8 +24534,8 @@ define("@ember/routing/router-service", ["exports", "@ember/-internals/owner", "
          attempted transition
        @public
      */
-    replaceWith() {
-      return this.transitionTo(...arguments).method('replace');
+    replaceWith(...args) {
+      return this.transitionTo(...args).method('replace');
     }
     /**
       Generate a URL based on the supplied route name and optionally a model. The
@@ -25058,11 +24594,8 @@ define("@ember/routing/router-service", ["exports", "@ember/-internals/owner", "
        @return {String} the string representing the generated URL
        @public
      */
-    urlFor(routeName) {
+    urlFor(routeName, ...args) {
       this._router.setupRouter();
-      for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
-        args[_key2 - 1] = arguments[_key2];
-      }
       return this._router.generate(routeName, ...args);
     }
     /**
@@ -25102,10 +24635,7 @@ define("@ember/routing/router-service", ["exports", "@ember/-internals/owner", "
        @return {boolean} true if the provided routeName/models/queryParams are active
        @public
      */
-    isActive() {
-      for (var _len3 = arguments.length, args = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
-        args[_key3] = arguments[_key3];
-      }
+    isActive(...args) {
       var {
         routeName,
         models,
@@ -25649,7 +25179,6 @@ define("@ember/routing/router", ["exports", "@ember/-internals/container", "@emb
           routerMicrolib.log = console.log.bind(console); // eslint-disable-line no-console
         }
       }
-
       routerMicrolib.map(dsl.generate());
     }
     _buildDSL() {
@@ -25825,10 +25354,7 @@ define("@ember/routing/router", ["exports", "@ember/-internals/container", "@emb
         attempted transition
       @public
     */
-    transitionTo() {
-      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-        args[_key] = arguments[_key];
-      }
+    transitionTo(...args) {
       if ((0, _utils.resemblesURL)(args[0])) {
         (true && !(!this.isDestroying && !this.isDestroyed) && (0, _debug.assert)(`A transition was attempted from '${this.currentRouteName}' to '${args[0]}' but the application instance has already been destroyed.`, !this.isDestroying && !this.isDestroyed));
         return this._doURLTransition('transitionTo', args[0]);
@@ -25841,10 +25367,7 @@ define("@ember/routing/router", ["exports", "@ember/-internals/container", "@emb
       (true && !(!this.isDestroying && !this.isDestroyed) && (0, _debug.assert)(`A transition was attempted from '${this.currentRouteName}' to '${routeName}' but the application instance has already been destroyed.`, !this.isDestroying && !this.isDestroyed));
       return this._doTransition(routeName, models, queryParams);
     }
-    intermediateTransitionTo(name) {
-      for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
-        args[_key2 - 1] = arguments[_key2];
-      }
+    intermediateTransitionTo(name, ...args) {
       this._routerMicrolib.intermediateTransitionTo(name, ...args);
       updatePaths(this);
       if (true /* DEBUG */) {
@@ -25871,13 +25394,10 @@ define("@ember/routing/router", ["exports", "@ember/-internals/container", "@emb
         attempted transition
       @public
     */
-    replaceWith() {
-      return this.transitionTo(...arguments).method('replace');
+    replaceWith(...args) {
+      return this.transitionTo(...args).method('replace');
     }
-    generate(name) {
-      for (var _len3 = arguments.length, args = new Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
-        args[_key3 - 1] = arguments[_key3];
-      }
+    generate(name, ...args) {
       var url = this._routerMicrolib.generate(name, ...args);
       (true && !(typeof this.location !== 'string') && (0, _debug.assert)('expected non-string location', typeof this.location !== 'string'));
       return this.location.formatURL(url);
@@ -25907,10 +25427,7 @@ define("@ember/routing/router", ["exports", "@ember/-internals/container", "@emb
     isActiveIntent(routeName, models, queryParams) {
       return this.currentState.isActiveIntent(routeName, models, queryParams);
     }
-    send(name) {
-      for (var _len4 = arguments.length, args = new Array(_len4 > 1 ? _len4 - 1 : 0), _key4 = 1; _key4 < _len4; _key4++) {
-        args[_key4 - 1] = arguments[_key4];
-      }
+    send(name, ...args) {
       /*name, context*/
       this._routerMicrolib.trigger(name, ...args);
     }
@@ -26371,12 +25888,11 @@ define("@ember/routing/router", ["exports", "@ember/-internals/container", "@emb
     _clearHandledError(error) {
       this._handledErrors.delete(error);
     }
-    _getEngineInstance(_ref) {
-      var {
-        name,
-        instanceId,
-        mountPoint
-      } = _ref;
+    _getEngineInstance({
+      name,
+      instanceId,
+      mountPoint
+    }) {
       var engineInstances = this._engineInstances;
       var namedInstances = engineInstances[name];
       if (!namedInstances) {
@@ -26710,10 +26226,9 @@ define("@ember/routing/router", ["exports", "@ember/-internals/container", "@emb
       ownState
     };
   }
-  function representEmptyRoute(liveRoutes, defaultParentState, _ref2) {
-    var {
-      routeName
-    } = _ref2;
+  function representEmptyRoute(liveRoutes, defaultParentState, {
+    routeName
+  }) {
     // the route didn't render anything
     var alreadyAppended = findLiveRoute(liveRoutes, routeName);
     if (alreadyAppended) {
@@ -26749,8 +26264,7 @@ define("@ember/routing/router", ["exports", "@ember/-internals/container", "@emb
       return location.getURL();
     })
   });
-  var _default = EmberRouter;
-  _exports.default = _default;
+  var _default = _exports.default = EmberRouter;
 });
 define("@ember/routing/transition", ["exports"], function (_exports) {
   "use strict";
@@ -26800,7 +26314,7 @@ define("@ember/runloop/index", ["exports", "@ember/debug", "@ember/-internals/er
     }
     next();
   }
-  var _rsvpErrorQueue = `${Math.random()}${Date.now()}`.replace('.', '');
+  var _rsvpErrorQueue = _exports._rsvpErrorQueue = `${Math.random()}${Date.now()}`.replace('.', '');
   /**
     Array of named queues. This array determines the order in which queues
     are flushed at the end of the RunLoop. You can define your own queues by
@@ -26812,16 +26326,14 @@ define("@ember/runloop/index", ["exports", "@ember/debug", "@ember/-internals/er
     @default ['actions', 'destroy']
     @private
   */
-  _exports._rsvpErrorQueue = _rsvpErrorQueue;
-  var _queues = ['actions',
+  var _queues = _exports._queues = ['actions',
   // used in router transitions to prevent unnecessary loading state entry
   // if all context promises resolve on the 'actions' queue first
   'routerTransitions', 'render', 'afterRender', 'destroy',
   // used to re-throw unhandled RSVP rejection errors specifically in this
   // position to avoid breaking anything rendered in the other sections
   _rsvpErrorQueue];
-  _exports._queues = _queues;
-  var _backburner = new _backburner2.default(_queues, {
+  var _backburner = _exports._backburner = new _backburner2.default(_queues, {
     defaultQueue: 'actions',
     onBegin,
     onEnd,
@@ -26829,21 +26341,14 @@ define("@ember/runloop/index", ["exports", "@ember/debug", "@ember/-internals/er
     onErrorMethod: 'onerror',
     flush
   });
-  _exports._backburner = _backburner;
-  function run() {
+  function run(...args) {
     // @ts-expect-error TS doesn't like our spread args
-    return _backburner.run(...arguments);
+    return _backburner.run(...args);
   }
-  function join(methodOrTarget, methodOrArg) {
-    for (var _len = arguments.length, additionalArgs = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
-      additionalArgs[_key - 2] = arguments[_key];
-    }
+  function join(methodOrTarget, methodOrArg, ...additionalArgs) {
     return _backburner.join(methodOrTarget, methodOrArg, ...additionalArgs);
   }
-  function bind() {
-    for (var _len2 = arguments.length, curried = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-      curried[_key2] = arguments[_key2];
-    }
+  function bind(...curried) {
     (true && !(function (methodOrTarget, methodOrArg) {
       // Applies the same logic as backburner parseArgs for detecting if a method
       // is actually being passed.
@@ -26858,7 +26363,7 @@ define("@ember/runloop/index", ["exports", "@ember/debug", "@ember/-internals/er
         methodOrTarget !== null && typeof methodOrArg === 'string' && methodOrArg in methodOrTarget ||
         // second argument is the name of a method in first argument
         typeof methodOrTarget === 'function' //first argument is a function
-        ;
+;
       }
       // @ts-expect-error TS doesn't like our spread args
     }(...curried)) && (0, _debug.assert)('could not find a suitable method to bind', function (methodOrTarget, methodOrArg) {
@@ -26871,12 +26376,7 @@ define("@ember/runloop/index", ["exports", "@ember/debug", "@ember/-internals/er
         return typeof methodOrArg === 'function' || methodOrTarget !== null && typeof methodOrArg === 'string' && methodOrArg in methodOrTarget || typeof methodOrTarget === 'function';
       }
     }(...curried))); // @ts-expect-error TS doesn't like our spread args
-    return function () {
-      for (var _len3 = arguments.length, args = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
-        args[_key3] = arguments[_key3];
-      }
-      return join(...curried.concat(args));
-    };
+    return (...args) => join(...curried.concat(args));
   }
   /**
     Begins a new RunLoop. Any deferred actions invoked after the begin will
@@ -26922,9 +26422,9 @@ define("@ember/runloop/index", ["exports", "@ember/debug", "@ember/-internals/er
   function end() {
     _backburner.end();
   }
-  function schedule() {
+  function schedule(...args) {
     // @ts-expect-error TS doesn't like the rest args here
-    return _backburner.schedule(...arguments);
+    return _backburner.schedule(...args);
   }
   // Used by global test teardown
   function _hasScheduledTimers() {
@@ -26934,24 +26434,18 @@ define("@ember/runloop/index", ["exports", "@ember/debug", "@ember/-internals/er
   function _cancelTimers() {
     _backburner.cancelTimers();
   }
-  function later() {
-    return _backburner.later(...arguments);
+  function later(...args) {
+    return _backburner.later(...args);
   }
-  function once() {
-    for (var _len4 = arguments.length, args = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
-      args[_key4] = arguments[_key4];
-    }
+  function once(...args) {
     // @ts-expect-error TS doesn't like the rest args here
     return _backburner.scheduleOnce('actions', ...args);
   }
-  function scheduleOnce() {
+  function scheduleOnce(...args) {
     // @ts-expect-error TS doesn't like the rest args here
-    return _backburner.scheduleOnce(...arguments);
+    return _backburner.scheduleOnce(...args);
   }
-  function next() {
-    for (var _len5 = arguments.length, args = new Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
-      args[_key5] = arguments[_key5];
-    }
+  function next(...args) {
     return _backburner.later(...args, 1);
   }
   /**
@@ -27024,13 +26518,13 @@ define("@ember/runloop/index", ["exports", "@ember/debug", "@ember/-internals/er
   function cancel(timer) {
     return _backburner.cancel(timer);
   }
-  function debounce() {
+  function debounce(...args) {
     // @ts-expect-error TS doesn't like the rest args here
-    return _backburner.debounce(...arguments);
+    return _backburner.debounce(...args);
   }
-  function throttle() {
+  function throttle(...args) {
     // @ts-expect-error TS doesn't like the rest args here
-    return _backburner.throttle(...arguments);
+    return _backburner.throttle(...args);
   }
 });
 define("@ember/service/index", ["exports", "@ember/object/-internals", "@ember/-internals/metal"], function (_exports, _internals, _metal) {
@@ -27042,16 +26536,10 @@ define("@ember/service/index", ["exports", "@ember/object/-internals", "@ember/-
   _exports.default = void 0;
   _exports.inject = inject;
   _exports.service = service;
-  function inject() {
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
+  function inject(...args) {
     return (0, _metal.inject)('service', ...args);
   }
-  function service() {
-    for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-      args[_key2] = arguments[_key2];
-    }
+  function service(...args) {
     return (0, _metal.inject)('service', ...args);
   }
   /**
@@ -27307,10 +26795,7 @@ define("@ember/string/index", ["exports", "@ember/string/lib/string_registry", "
       url: 'https://deprecations.emberjs.com/v4.x/#toc_ember-string-add-package'
     }));
   }
-  function deprecateImportFromString(name, message) {
-    if (message === void 0) {
-      message = `Importing ${name} from '@ember/string' is deprecated. Please import ${name} from '@ember/template' instead.`;
-    }
+  function deprecateImportFromString(name, message = `Importing ${name} from '@ember/string' is deprecated. Please import ${name} from '@ember/template' instead.`) {
     (true && !(false) && (0, _debug.deprecate)(message, false, {
       id: 'ember-string.htmlsafe-ishtmlsafe',
       for: 'ember-source',
@@ -27377,7 +26862,6 @@ define("@ember/template-compilation/index", ["exports", "ember-template-compiler
   });
   _exports.precompileTemplate = void 0;
   var precompileTemplate;
-  _exports.precompileTemplate = precompileTemplate;
   if (true /* DEBUG */) {
     _exports.precompileTemplate = precompileTemplate = () => {
       throw new Error('Attempted to call `precompileTemplate` at runtime, but this API is meant to be used at compile time. You should use `compileTemplate` instead.');
@@ -27423,8 +26907,7 @@ define("@ember/test/adapter", ["exports", "ember-testing"], function (_exports, 
     value: true
   });
   _exports.default = void 0;
-  var _default = _emberTesting.Adapter;
-  _exports.default = _default;
+  var _default = _exports.default = _emberTesting.Adapter;
 });
 define("@ember/test/index", ["exports", "require"], function (_exports, _require) {
   "use strict";
@@ -27434,15 +26917,10 @@ define("@ember/test/index", ["exports", "require"], function (_exports, _require
   });
   _exports.unregisterWaiter = _exports.unregisterHelper = _exports.registerWaiter = _exports.registerHelper = _exports.registerAsyncHelper = void 0;
   var registerAsyncHelper;
-  _exports.registerAsyncHelper = registerAsyncHelper;
   var registerHelper;
-  _exports.registerHelper = registerHelper;
   var registerWaiter;
-  _exports.registerWaiter = registerWaiter;
   var unregisterHelper;
-  _exports.unregisterHelper = unregisterHelper;
   var unregisterWaiter;
-  _exports.unregisterWaiter = unregisterWaiter;
   if ((0, _require.has)('ember-testing')) {
     var {
       Test
@@ -28104,7 +27582,6 @@ define("@glimmer/destroyable", ["exports", "@glimmer/util", "@glimmer/global-con
         state: 0
         /* Live */
       };
-
       if (true /* DEBUG */) {
         meta.source = destroyable;
       }
@@ -28122,10 +27599,7 @@ define("@glimmer/destroyable", ["exports", "@glimmer/util", "@glimmer/global-con
     childMeta.parents = push(childMeta.parents, parent);
     return child;
   }
-  function registerDestructor(destroyable, destructor, eager) {
-    if (eager === void 0) {
-      eager = false;
-    }
+  function registerDestructor(destroyable, destructor, eager = false) {
     if (true /* DEBUG */ && isDestroying(destroyable)) {
       throw new Error('Attempted to register a destructor with an object that is already destroying or destroyed');
     }
@@ -28134,10 +27608,7 @@ define("@glimmer/destroyable", ["exports", "@glimmer/util", "@glimmer/global-con
     meta[destructorsKey] = push(meta[destructorsKey], destructor);
     return destructor;
   }
-  function unregisterDestructor(destroyable, destructor, eager) {
-    if (eager === void 0) {
-      eager = false;
-    }
+  function unregisterDestructor(destroyable, destructor, eager = false) {
     if (true /* DEBUG */ && isDestroying(destroyable)) {
       throw new Error('Attempted to unregister a destructor with an object that is already destroying or destroyed');
     }
@@ -28158,7 +27629,6 @@ define("@glimmer/destroyable", ["exports", "@glimmer/util", "@glimmer/global-con
     } = meta;
     meta.state = 1
     /* Destroying */;
-
     iterate(children, destroy);
     iterate(eagerDestructors, destructor => destructor(destroyable));
     iterate(destructors, destructor => (0, _globalContext.scheduleDestroy)(destroyable, destructor));
@@ -28168,7 +27638,6 @@ define("@glimmer/destroyable", ["exports", "@glimmer/util", "@glimmer/global-con
       /* Destroyed */;
     });
   }
-
   function removeChildFromParent(child, parent) {
     var parentMeta = getDestroyableMeta(parent);
     if (parentMeta.state === 0
@@ -28191,7 +27660,6 @@ define("@glimmer/destroyable", ["exports", "@glimmer/util", "@glimmer/global-con
     return meta === undefined ? false : meta.state >= 1
     /* Destroying */;
   }
-
   function isDestroyed(destroyable) {
     var meta = DESTROYABLE_META.get(destroyable);
     return meta === undefined ? false : meta.state >= 2
@@ -28199,9 +27667,7 @@ define("@glimmer/destroyable", ["exports", "@glimmer/util", "@glimmer/global-con
   } ////////////
 
   var enableDestroyableTracking;
-  _exports.enableDestroyableTracking = enableDestroyableTracking;
   var assertDestroyablesDestroyed;
-  _exports.assertDestroyablesDestroyed = assertDestroyablesDestroyed;
   if (true /* DEBUG */) {
     var isTesting = false;
     _exports.enableDestroyableTracking = enableDestroyableTracking = () => {
@@ -28255,7 +27721,6 @@ define("@glimmer/encoder", ["exports"], function (_exports) {
       }
       var first = type | machine | arguments.length - 2 << 8
       /* ARG_SHIFT */;
-
       this.buffer.push(first);
       for (var i = 2; i < arguments.length; i++) {
         var op = arguments[i];
@@ -28284,10 +27749,8 @@ define("@glimmer/env", ["exports"], function (_exports) {
     value: true
   });
   _exports.DEBUG = _exports.CI = void 0;
-  var DEBUG = false;
-  _exports.DEBUG = DEBUG;
-  var CI = false;
-  _exports.CI = CI;
+  var DEBUG = _exports.DEBUG = false;
+  var CI = _exports.CI = false;
 });
 define("@glimmer/global-context", ["exports"], function (_exports) {
   "use strict";
@@ -28311,14 +27774,14 @@ define("@glimmer/global-context", ["exports"], function (_exports) {
    *
    */
 
-  var FEATURE_DEFAULT_HELPER_MANAGER = true; //////////
+  var FEATURE_DEFAULT_HELPER_MANAGER = _exports.FEATURE_DEFAULT_HELPER_MANAGER = true; //////////
 
   /**
    * Schedules a VM revalidation.
    *
    * Note: this has a default value so that tags can warm themselves when first loaded.
    */
-  _exports.FEATURE_DEFAULT_HELPER_MANAGER = FEATURE_DEFAULT_HELPER_MANAGER;
+
   var scheduleRevalidate = () => {};
   /**
    * Schedules a destructor to run
@@ -28333,21 +27796,21 @@ define("@glimmer/global-context", ["exports"], function (_exports) {
    *
    * @param finalizer finalizer function
    */
-  _exports.scheduleDestroy = scheduleDestroy;
+
   var scheduleDestroyed;
   /**
    * Hook to provide iterators for `{{each}}` loops
    *
    * @param value The value to create an iterator for
    */
-  _exports.scheduleDestroyed = scheduleDestroyed;
+
   var toIterator;
   /**
    * Hook to specify truthiness within Glimmer templates
    *
    * @param value The value to convert to a boolean
    */
-  _exports.toIterator = toIterator;
+
   var toBool;
   /**
    * Hook for specifying how Glimmer should access properties in cases where it
@@ -28356,7 +27819,7 @@ define("@glimmer/global-context", ["exports"], function (_exports) {
    * @param obj The object provided to get a value from
    * @param path The path to get the value from
    */
-  _exports.toBool = toBool;
+
   var getProp;
   /**
    * Hook for specifying how Glimmer should update props in cases where it needs
@@ -28366,7 +27829,7 @@ define("@glimmer/global-context", ["exports"], function (_exports) {
    * @param prop The prop to set the value at
    * @param value The value to set the value to
    */
-  _exports.getProp = getProp;
+
   var setProp;
   /**
    * Hook for specifying how Glimmer should access paths in cases where it needs
@@ -28375,7 +27838,7 @@ define("@glimmer/global-context", ["exports"], function (_exports) {
    * @param obj The object provided to get a value from
    * @param path The path to get the value from
    */
-  _exports.setProp = setProp;
+
   var getPath;
   /**
    * Hook for specifying how Glimmer should update paths in cases where it needs
@@ -28384,27 +27847,26 @@ define("@glimmer/global-context", ["exports"], function (_exports) {
    * @param obj The object provided to get a value from
    * @param path The path to get the value from
    */
-  _exports.getPath = getPath;
+
   var setPath;
   /**
    * Hook to warn if a style binding string or value was not marked as trusted
    * (e.g. HTMLSafe)
    */
-  _exports.setPath = setPath;
+
   var warnIfStyleNotTrusted;
   /**
    * Hook to customize assertion messages in the VM. Usages can be stripped out
    * by using the @glimmer/vm-babel-plugins package.
    */
-  _exports.warnIfStyleNotTrusted = warnIfStyleNotTrusted;
+
   var assert;
   /**
    * Hook to customize deprecation messages in the VM. Usages can be stripped out
    * by using the @glimmer/vm-babel-plugins package.
    */
-  _exports.assert = assert;
+
   var deprecate;
-  _exports.deprecate = deprecate;
   var globalContextWasSet = false;
   function setGlobalContext(context) {
     var _a;
@@ -28431,9 +27893,7 @@ define("@glimmer/global-context", ["exports"], function (_exports) {
     }
   }
   var assertGlobalContextWasSet;
-  _exports.assertGlobalContextWasSet = assertGlobalContextWasSet;
   var testOverrideGlobalContext;
-  _exports.testOverrideGlobalContext = testOverrideGlobalContext;
   if (true /* DEBUG */) {
     _exports.assertGlobalContextWasSet = assertGlobalContextWasSet = () => {
       if (globalContextWasSet === false) {
@@ -28477,8 +27937,7 @@ define("@glimmer/global-context", ["exports"], function (_exports) {
       return originalGlobalContext;
     };
   }
-  var _default = setGlobalContext;
-  _exports.default = _default;
+  var _default = _exports.default = setGlobalContext;
 });
 define("@glimmer/low-level", ["exports"], function (_exports) {
   "use strict";
@@ -28516,10 +27975,7 @@ define("@glimmer/low-level", ["exports"], function (_exports) {
   }
   _exports.Storage = Storage;
   class Stack {
-    constructor(vec) {
-      if (vec === void 0) {
-        vec = [];
-      }
+    constructor(vec = []) {
       this.vec = vec;
     }
     clone() {
@@ -28780,10 +28236,7 @@ define("@glimmer/manager", ["exports", "@glimmer/util", "@glimmer/reference", "@
       };
     };
   }
-  function helperCapabilities(managerAPI, options) {
-    if (options === void 0) {
-      options = {};
-    }
+  function helperCapabilities(managerAPI, options = {}) {
     if (true /* DEBUG */ && managerAPI !== '3.23') {
       throw new Error('Invalid helper manager compatibility specified');
     }
@@ -28881,11 +28334,10 @@ define("@glimmer/manager", ["exports", "@glimmer/util", "@glimmer/reference", "@
         args
       };
     }
-    getValue(_ref) {
-      var {
-        fn,
-        args
-      } = _ref;
+    getValue({
+      fn,
+      args
+    }) {
       if (Object.keys(args.named).length > 0) {
         var argsForFn = [...args.positional, args.named];
         return fn(...argsForFn);
@@ -29022,10 +28474,7 @@ define("@glimmer/manager", ["exports", "@glimmer/util", "@glimmer/reference", "@
     willDestroy: false,
     hasSubOwner: false
   };
-  function componentCapabilities(managerAPI, options) {
-    if (options === void 0) {
-      options = {};
-    }
+  function componentCapabilities(managerAPI, options = {}) {
     if (true /* DEBUG */ && managerAPI !== '3.13') {
       throw new Error('Invalid component manager compatibility specified');
     }
@@ -29118,31 +28567,28 @@ define("@glimmer/manager", ["exports", "@glimmer/util", "@glimmer/reference", "@
         delegate.updateComponent(component, args);
       }
     }
-    didCreate(_ref2) {
-      var {
-        component,
-        delegate
-      } = _ref2;
+    didCreate({
+      component,
+      delegate
+    }) {
       if (hasAsyncLifeCycleCallbacks(delegate)) {
         delegate.didCreateComponent(component);
       }
     }
-    didUpdate(_ref3) {
-      var {
-        component,
-        delegate
-      } = _ref3;
+    didUpdate({
+      component,
+      delegate
+    }) {
       if (hasAsyncUpdateHook(delegate)) {
         delegate.didUpdateComponent(component);
       }
     }
     didRenderLayout() {}
     didUpdateLayout() {}
-    getSelf(_ref4) {
-      var {
-        component,
-        delegate
-      } = _ref4;
+    getSelf({
+      component,
+      delegate
+    }) {
       return (0, _reference.createConstRef)(delegate.getContext(component), 'this');
     }
     getDestroyable(bucket) {
@@ -29173,10 +28619,7 @@ define("@glimmer/manager", ["exports", "@glimmer/util", "@glimmer/reference", "@
       this.args = args;
     }
   }
-  function modifierCapabilities(managerAPI, optionalFeatures) {
-    if (optionalFeatures === void 0) {
-      optionalFeatures = {};
-    }
+  function modifierCapabilities(managerAPI, optionalFeatures = {}) {
     if (true /* DEBUG */ && managerAPI !== '3.22') {
       throw new Error('Invalid modifier manager compatibility specified');
     }
@@ -29251,25 +28694,22 @@ define("@glimmer/manager", ["exports", "@glimmer/util", "@glimmer/reference", "@
       (0, _destroyable.registerDestructor)(state, () => delegate.destroyModifier(instance, args));
       return state;
     }
-    getDebugName(_ref5) {
-      var {
-        debugName
-      } = _ref5;
+    getDebugName({
+      debugName
+    }) {
       return debugName;
     }
-    getTag(_ref6) {
-      var {
-        tag
-      } = _ref6;
+    getTag({
+      tag
+    }) {
       return tag;
     }
-    install(_ref7) {
-      var {
-        element,
-        args,
-        modifier,
-        delegate
-      } = _ref7;
+    install({
+      element,
+      args,
+      modifier,
+      delegate
+    }) {
       var {
         capabilities
       } = delegate;
@@ -29279,12 +28719,11 @@ define("@glimmer/manager", ["exports", "@glimmer/util", "@glimmer/reference", "@
         delegate.installModifier(modifier, element, args);
       }
     }
-    update(_ref8) {
-      var {
-        args,
-        modifier,
-        delegate
-      } = _ref8;
+    update({
+      args,
+      modifier,
+      delegate
+    }) {
       var {
         capabilities
       } = delegate;
@@ -29460,10 +28899,7 @@ define("@glimmer/node", ["exports", "@glimmer/runtime", "@simple-dom/document"],
       }
       return super.openElement(tag);
     }
-    pushRemoteElement(element, cursorId, insertBefore) {
-      if (insertBefore === void 0) {
-        insertBefore = null;
-      }
+    pushRemoteElement(element, cursorId, insertBefore = null) {
       var {
         dom
       } = this;
@@ -29528,8 +28964,7 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
       return this.blocks !== null;
     }
   }
-  var EMPTY_BLOCKS = new NamedBlocksImpl(null);
-  _exports.EMPTY_BLOCKS = EMPTY_BLOCKS;
+  var EMPTY_BLOCKS = _exports.EMPTY_BLOCKS = new NamedBlocksImpl(null);
   function namedBlocks(blocks) {
     if (blocks === null) {
       return EMPTY_BLOCKS;
@@ -29619,19 +29054,14 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
   }
   var isGetFreeComponent = makeResolutionTypeVerifier(39
   /* GetFreeAsComponentHead */);
-
   var isGetFreeModifier = makeResolutionTypeVerifier(38
   /* GetFreeAsModifierHead */);
-
   var isGetFreeHelper = makeResolutionTypeVerifier(37
   /* GetFreeAsHelperHead */);
-
   var isGetFreeComponentOrHelper = makeResolutionTypeVerifier(35
   /* GetFreeAsComponentOrHelperHead */);
-
   var isGetFreeOptionalComponentOrHelper = makeResolutionTypeVerifier(34
   /* GetFreeAsComponentOrHelperHeadOrThisFallback */);
-
   function assertResolverInvariants(meta) {
     if (true /* DEBUG */) {
       if (!meta.upvars) {
@@ -29649,8 +29079,7 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
    * <Foo @arg={{true}} />
    */
 
-  function resolveComponent(resolver, constants, meta, _ref) {
-    var [, expr, then] = _ref;
+  function resolveComponent(resolver, constants, meta, [, expr, then]) {
     var type = expr[0];
     if (true /* DEBUG */ && expr[0] === 31
     /* GetStrictFree */) {
@@ -29682,8 +29111,7 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
    * (helper arg)
    */
 
-  function resolveHelper(resolver, constants, meta, _ref2) {
-    var [, expr, then] = _ref2;
+  function resolveHelper(resolver, constants, meta, [, expr, then]) {
     var type = expr[0];
     if (type === 32
     /* GetTemplateSymbol */) {
@@ -29714,8 +29142,7 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
    * <Foo {{modifier}}/>
    */
 
-  function resolveModifier(resolver, constants, meta, _ref3) {
-    var [, expr, then] = _ref3;
+  function resolveModifier(resolver, constants, meta, [, expr, then]) {
     var type = expr[0];
     if (type === 32
     /* GetTemplateSymbol */) {
@@ -29752,11 +29179,10 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
    * {{component-or-helper arg}}
    */
 
-  function resolveComponentOrHelper(resolver, constants, meta, _ref4) {
-    var [, expr, {
-      ifComponent,
-      ifHelper
-    }] = _ref4;
+  function resolveComponentOrHelper(resolver, constants, meta, [, expr, {
+    ifComponent,
+    ifHelper
+  }]) {
     var type = expr[0];
     if (type === 32
     /* GetTemplateSymbol */) {
@@ -29800,10 +29226,9 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
    * <Foo @arg={{helper}}>
    */
 
-  function resolveOptionalHelper(resolver, constants, meta, _ref5) {
-    var [, expr, {
-      ifHelper
-    }] = _ref5;
+  function resolveOptionalHelper(resolver, constants, meta, [, expr, {
+    ifHelper
+  }]) {
     var {
       upvars,
       owner
@@ -29818,12 +29243,11 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
    * {{maybeHelperOrComponent}}
    */
 
-  function resolveOptionalComponentOrHelper(resolver, constants, meta, _ref6) {
-    var [, expr, {
-      ifComponent,
-      ifHelper,
-      ifValue
-    }] = _ref6;
+  function resolveOptionalComponentOrHelper(resolver, constants, meta, [, expr, {
+    ifComponent,
+    ifHelper,
+    ifValue
+  }]) {
     var type = expr[0];
     if (type === 32
     /* GetTemplateSymbol */) {
@@ -29898,8 +29322,7 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
   }
   var EXPRESSIONS = new Compilers();
   EXPRESSIONS.add(29
-  /* Concat */, (op, _ref7) => {
-    var [, parts] = _ref7;
+  /* Concat */, (op, [, parts]) => {
     for (var part of parts) {
       expr(op, part);
     }
@@ -29907,8 +29330,7 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
     /* Concat */, parts.length);
   });
   EXPRESSIONS.add(28
-  /* Call */, (op, _ref8) => {
-    var [, expression, positional, named] = _ref8;
+  /* Call */, (op, [, expression, positional, named]) => {
     if (isGetFreeHelper(expression)) {
       op(1005
       /* ResolveHelper */, expression, handle => {
@@ -29920,20 +29342,17 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
     }
   });
   EXPRESSIONS.add(50
-  /* Curry */, (op, _ref9) => {
-    var [, expr$$1, type, positional, named] = _ref9;
+  /* Curry */, (op, [, expr$$1, type, positional, named]) => {
     Curry(op, type, expr$$1, positional, named);
   });
   EXPRESSIONS.add(30
-  /* GetSymbol */, (op, _ref10) => {
-    var [, sym, path] = _ref10;
+  /* GetSymbol */, (op, [, sym, path]) => {
     op(21
     /* GetVariable */, sym);
     withPath(op, path);
   });
   EXPRESSIONS.add(32
-  /* GetTemplateSymbol */, (op, _ref11) => {
-    var [, sym, path] = _ref11;
+  /* GetTemplateSymbol */, (op, [, sym, path]) => {
     op(1011
     /* ResolveTemplateLocal */, sym, handle => {
       op(29
@@ -29942,8 +29361,7 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
     });
   });
   EXPRESSIONS.add(31
-  /* GetStrictFree */, (op, _ref12) => {
-    var [, sym, _path] = _ref12;
+  /* GetStrictFree */, (op, [, sym, _path]) => {
     op(1009
     /* ResolveFree */, sym, _handle => {// TODO: Implement in strict mode
     });
@@ -29997,30 +29415,23 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
   EXPRESSIONS.add(27
   /* Undefined */, op => PushPrimitiveReference(op, undefined));
   EXPRESSIONS.add(48
-  /* HasBlock */, (op, _ref13) => {
-    var [, block] = _ref13;
+  /* HasBlock */, (op, [, block]) => {
     expr(op, block);
     op(25
     /* HasBlock */);
   });
-
   EXPRESSIONS.add(49
-  /* HasBlockParams */, (op, _ref14) => {
-    var [, block] = _ref14;
+  /* HasBlockParams */, (op, [, block]) => {
     expr(op, block);
     op(24
     /* SpreadBlock */);
-
     op(61
     /* CompileBlock */);
-
     op(26
     /* HasBlockParams */);
   });
-
   EXPRESSIONS.add(52
-  /* IfInline */, (op, _ref15) => {
-    var [, condition, truthy, falsy] = _ref15;
+  /* IfInline */, (op, [, condition, truthy, falsy]) => {
     // Push in reverse order
     expr(op, falsy);
     expr(op, truthy);
@@ -30028,36 +29439,27 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
     op(109
     /* IfInline */);
   });
-
   EXPRESSIONS.add(51
-  /* Not */, (op, _ref16) => {
-    var [, value] = _ref16;
+  /* Not */, (op, [, value]) => {
     expr(op, value);
     op(110
     /* Not */);
   });
-
   EXPRESSIONS.add(53
-  /* GetDynamicVar */, (op, _ref17) => {
-    var [, expression] = _ref17;
+  /* GetDynamicVar */, (op, [, expression]) => {
     expr(op, expression);
     op(111
     /* GetDynamicVar */);
   });
-
   EXPRESSIONS.add(54
-  /* Log */, (op, _ref18) => {
-    var [, positional] = _ref18;
+  /* Log */, (op, [, positional]) => {
     op(0
     /* PushFrame */);
-
     SimpleArgs(op, positional, null, false);
     op(112
     /* Log */);
-
     op(1
     /* PopFrame */);
-
     op(36
     /* Fetch */, _vm.$v0);
   });
@@ -30106,7 +29508,6 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
     if (positional === null && named === null) {
       op(83
       /* PushEmptyArgs */);
-
       return;
     }
     var count = CompilePositional(op, positional);
@@ -30194,13 +29595,11 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
   function Call(op, handle, positional, named) {
     op(0
     /* PushFrame */);
-
     SimpleArgs(op, positional, named, false);
     op(16
     /* Helper */, handle);
     op(1
     /* PopFrame */);
-
     op(36
     /* Fetch */, _vm.$v0);
   }
@@ -30215,26 +29614,22 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
   function CallDynamic(op, positional, named, append) {
     op(0
     /* PushFrame */);
-
     SimpleArgs(op, positional, named, false);
     op(33
     /* Dup */, _vm.$fp, 1);
     op(107
     /* DynamicHelper */);
-
     if (append) {
       op(36
       /* Fetch */, _vm.$v0);
       append();
       op(1
       /* PopFrame */);
-
       op(34
       /* Pop */, 1);
     } else {
       op(1
       /* PopFrame */);
-
       op(34
       /* Pop */, 1);
       op(36
@@ -30253,28 +29648,23 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
   function DynamicScope(op, names, block) {
     op(59
     /* PushDynamicScope */);
-
     op(58
     /* BindDynamicScope */, names);
     block();
     op(60
     /* PopDynamicScope */);
   }
-
   function Curry(op, type, definition, positional, named) {
     op(0
     /* PushFrame */);
-
     SimpleArgs(op, positional, named, false);
     op(86
     /* CaptureArgs */);
-
     expr(op, definition);
     op(77
     /* Curry */, type, isStrictMode());
     op(1
     /* PopFrame */);
-
     op(36
     /* Fetch */, _vm.$v0);
   }
@@ -30292,16 +29682,12 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
     /* GetBlock */, to);
     op(24
     /* SpreadBlock */);
-
     op(61
     /* CompileBlock */);
-
     op(64
     /* InvokeYield */);
-
     op(40
     /* PopScope */);
-
     op(1
     /* PopFrame */);
   }
@@ -30316,7 +29702,6 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
     PushSymbolTable(op, block && block[1]);
     op(62
     /* PushBlockScope */);
-
     PushCompilable(op, block);
   }
   /**
@@ -30328,14 +29713,11 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
   function InvokeStaticBlock(op, block) {
     op(0
     /* PushFrame */);
-
     PushCompilable(op, block);
     op(61
     /* CompileBlock */);
-
     op(2
     /* InvokeVirtual */);
-
     op(1
     /* PopFrame */);
   }
@@ -30357,11 +29739,9 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
     }
     op(0
     /* PushFrame */);
-
     if (count) {
       op(39
       /* ChildScope */);
-
       for (var i = 0; i < count; i++) {
         op(33
         /* Dup */, _vm.$fp, callerCount - i);
@@ -30372,19 +29752,15 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
     PushCompilable(op, block);
     op(61
     /* CompileBlock */);
-
     op(2
     /* InvokeVirtual */);
-
     if (count) {
       op(40
       /* PopScope */);
     }
-
     op(1
     /* PopFrame */);
   }
-
   function PushSymbolTable(op, parameters) {
     if (parameters !== null) {
       op(63
@@ -30448,7 +29824,6 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
     /* Label */, 'END');
     op(1002
     /* StopLabels */);
-
     op(70
     /* Exit */);
   }
@@ -30519,7 +29894,6 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
     // a unique meaning.
     op(1001
     /* StartLabels */);
-
     op(0
     /* PushFrame */); // If the body invokes a block, its return will return to
     // END. Otherwise, the return in RETURN will return to END.
@@ -30565,7 +29939,6 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
     /* Label */, 'ENDINITIAL');
     op(1
     /* PopFrame */);
-
     op(1002
     /* StopLabels */);
   }
@@ -30661,7 +30034,6 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
       }
       op(79
       /* PushDynamicComponentInstance */);
-
       InvokeNonStaticComponent(op, {
         capabilities: true,
         elementBlock,
@@ -30674,21 +30046,19 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
       /* Label */, 'ELSE');
     });
   }
-  function InvokeStaticComponent(op, _ref19) {
-    var {
-      capabilities,
-      layout,
-      elementBlock,
-      positional,
-      named,
-      blocks
-    } = _ref19;
+  function InvokeStaticComponent(op, {
+    capabilities,
+    layout,
+    elementBlock,
+    positional,
+    named,
+    blocks
+  }) {
     var {
       symbolTable
     } = layout;
     var bailOut = symbolTable.hasEval || (0, _manager.hasCapability)(capabilities, 4
     /* PrepareArgs */);
-
     if (bailOut) {
       InvokeNonStaticComponent(op, {
         capabilities,
@@ -30794,7 +30164,6 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
       op(59
       /* PushDynamicScope */);
     }
-
     if ((0, _manager.hasCapability)(capabilities, 512
     /* CreateInstance */)) {
       op(87
@@ -30846,40 +30215,33 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
     /* Constant */, layoutOperand(layout));
     op(61
     /* CompileBlock */);
-
     op(2
     /* InvokeVirtual */);
-
     op(100
     /* DidRenderLayout */, _vm.$s0);
     op(1
     /* PopFrame */);
-
     op(40
     /* PopScope */);
-
     if ((0, _manager.hasCapability)(capabilities, 64
     /* DynamicScope */)) {
       op(60
       /* PopDynamicScope */);
     }
-
     op(98
     /* CommitComponentTransaction */);
-
     op(35
     /* Load */, _vm.$s0);
   }
-  function InvokeNonStaticComponent(op, _ref20) {
-    var {
-      capabilities,
-      elementBlock,
-      positional,
-      named,
-      atNames,
-      blocks: namedBlocks$$1,
-      layout
-    } = _ref20;
+  function InvokeNonStaticComponent(op, {
+    capabilities,
+    elementBlock,
+    positional,
+    named,
+    atNames,
+    blocks: namedBlocks$$1,
+    layout
+  }) {
     var bindableBlocks = !!namedBlocks$$1;
     var bindableAtNames = capabilities === true || (0, _manager.hasCapability)(capabilities, 4
     /* PrepareArgs */) || !!(named && named[0].length !== 0);
@@ -30892,7 +30254,6 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
     /* Load */, _vm.$s0);
     op(0
     /* PushFrame */);
-
     CompileArgs(op, positional, named, blocks, atNames);
     op(85
     /* PrepareArgs */, _vm.$s0);
@@ -30917,13 +30278,11 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
   function WrappedComponent(op, layout, attrsBlockNumber) {
     op(1001
     /* StartLabels */);
-
     WithSavedRegister(op, _vm.$s1, () => {
       op(91
       /* GetComponentTagName */, _vm.$s0);
       op(31
       /* PrimitiveReference */);
-
       op(33
       /* Dup */, _vm.$sp, 0);
     });
@@ -30933,16 +30292,13 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
     /* Fetch */, _vm.$s1);
     op(89
     /* PutComponentOperations */);
-
     op(49
     /* OpenDynamicElement */);
-
     op(99
     /* DidCreateElement */, _vm.$s0);
     YieldBlock(op, attrsBlockNumber, null);
     op(54
     /* FlushElement */);
-
     op(1000
     /* Label */, 'BODY');
     InvokeStaticBlock(op, [layout.block[0], []]);
@@ -30952,7 +30308,6 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
     /* JumpUnless */, labelOperand('END'));
     op(55
     /* CloseElement */);
-
     op(1000
     /* Label */, 'END');
     op(35
@@ -30960,16 +30315,11 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
     op(1002
     /* StopLabels */);
   }
-
-  function invokePreparedComponent(op, hasBlock, bindableBlocks, bindableAtNames, populateLayout) {
-    if (populateLayout === void 0) {
-      populateLayout = null;
-    }
+  function invokePreparedComponent(op, hasBlock, bindableBlocks, bindableAtNames, populateLayout = null) {
     op(97
     /* BeginComponentTransaction */, _vm.$s0);
     op(59
     /* PushDynamicScope */);
-
     op(87
     /* CreateComponent */, hasBlock | 0, _vm.$s0); // this has to run after createComponent to allow
     // for late-bound layouts, but a caller is free
@@ -31001,17 +30351,13 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
     /* DidRenderLayout */, _vm.$s0);
     op(1
     /* PopFrame */);
-
     op(40
     /* PopScope */);
-
     op(60
     /* PopDynamicScope */);
-
     op(98
     /* CommitComponentTransaction */);
   }
-
   function InvokeBareComponent(op) {
     op(36
     /* Fetch */, _vm.$s0);
@@ -31021,10 +30367,8 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
     /* Load */, _vm.$s0);
     op(0
     /* PushFrame */);
-
     op(83
     /* PushEmptyArgs */);
-
     op(85
     /* PrepareArgs */, _vm.$s0);
     invokePreparedComponent(op, false, false, true, () => {
@@ -31080,7 +30424,6 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
     };
   }
   var debugCompiler;
-  _exports.debugCompiler = debugCompiler;
   var STATEMENTS = new Compilers();
   var INFLATE_ATTR_TABLE = ['class', 'id', 'value', 'name', 'type', 'style', 'href'];
   var INFLATE_TAG_TABLE = ['div', 'span', 'p', 'a'];
@@ -31096,20 +30439,16 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
   STATEMENTS.add(13
   /* CloseElement */, op => op(55
   /* CloseElement */));
-
   STATEMENTS.add(12
   /* FlushElement */, op => op(54
   /* FlushElement */));
-
   STATEMENTS.add(4
-  /* Modifier */, (op, _ref21) => {
-    var [, expression, positional, named] = _ref21;
+  /* Modifier */, (op, [, expression, positional, named]) => {
     if (isGetFreeModifier(expression)) {
       op(1003
       /* ResolveModifier */, expression, handle => {
         op(0
         /* PushFrame */);
-
         SimpleArgs(op, positional, named, false);
         op(57
         /* Modifier */, handle);
@@ -31120,76 +30459,63 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
       expr(op, expression);
       op(0
       /* PushFrame */);
-
       SimpleArgs(op, positional, named, false);
       op(33
       /* Dup */, _vm.$fp, 1);
       op(108
       /* DynamicModifier */);
-
       op(1
       /* PopFrame */);
     }
   });
-
   STATEMENTS.add(14
-  /* StaticAttr */, (op, _ref22) => {
-    var [, name, value, namespace] = _ref22;
+  /* StaticAttr */, (op, [, name, value, namespace]) => {
     op(51
     /* StaticAttr */, inflateAttrName(name), value, namespace !== null && namespace !== void 0 ? namespace : null);
   });
   STATEMENTS.add(24
-  /* StaticComponentAttr */, (op, _ref23) => {
-    var [, name, value, namespace] = _ref23;
+  /* StaticComponentAttr */, (op, [, name, value, namespace]) => {
     op(105
     /* StaticComponentAttr */, inflateAttrName(name), value, namespace !== null && namespace !== void 0 ? namespace : null);
   });
   STATEMENTS.add(15
-  /* DynamicAttr */, (op, _ref24) => {
-    var [, name, value, namespace] = _ref24;
+  /* DynamicAttr */, (op, [, name, value, namespace]) => {
     expr(op, value);
     op(52
     /* DynamicAttr */, inflateAttrName(name), false, namespace !== null && namespace !== void 0 ? namespace : null);
   });
   STATEMENTS.add(22
-  /* TrustingDynamicAttr */, (op, _ref25) => {
-    var [, name, value, namespace] = _ref25;
+  /* TrustingDynamicAttr */, (op, [, name, value, namespace]) => {
     expr(op, value);
     op(52
     /* DynamicAttr */, inflateAttrName(name), true, namespace !== null && namespace !== void 0 ? namespace : null);
   });
   STATEMENTS.add(16
-  /* ComponentAttr */, (op, _ref26) => {
-    var [, name, value, namespace] = _ref26;
+  /* ComponentAttr */, (op, [, name, value, namespace]) => {
     expr(op, value);
     op(53
     /* ComponentAttr */, inflateAttrName(name), false, namespace !== null && namespace !== void 0 ? namespace : null);
   });
   STATEMENTS.add(23
-  /* TrustingComponentAttr */, (op, _ref27) => {
-    var [, name, value, namespace] = _ref27;
+  /* TrustingComponentAttr */, (op, [, name, value, namespace]) => {
     expr(op, value);
     op(53
     /* ComponentAttr */, inflateAttrName(name), true, namespace !== null && namespace !== void 0 ? namespace : null);
   });
   STATEMENTS.add(10
-  /* OpenElement */, (op, _ref28) => {
-    var [, tag] = _ref28;
+  /* OpenElement */, (op, [, tag]) => {
     op(48
     /* OpenElement */, inflateTagName(tag));
   });
   STATEMENTS.add(11
-  /* OpenElementWithSplat */, (op, _ref29) => {
-    var [, tag] = _ref29;
+  /* OpenElementWithSplat */, (op, [, tag]) => {
     op(89
     /* PutComponentOperations */);
-
     op(48
     /* OpenElement */, inflateTagName(tag));
   });
   STATEMENTS.add(8
-  /* Component */, (op, _ref30) => {
-    var [, expr$$1, elementBlock, named, blocks] = _ref30;
+  /* Component */, (op, [, expr$$1, elementBlock, named, blocks]) => {
     if (isGetFreeComponent(expr$$1)) {
       op(1004
       /* ResolveComponent */, expr$$1, component => {
@@ -31202,24 +30528,14 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
     }
   });
   STATEMENTS.add(18
-  /* Yield */, (op, _ref31) => {
-    var [, to, params] = _ref31;
-    return YieldBlock(op, to, params);
-  });
+  /* Yield */, (op, [, to, params]) => YieldBlock(op, to, params));
   STATEMENTS.add(17
-  /* AttrSplat */, (op, _ref32) => {
-    var [, to] = _ref32;
-    return YieldBlock(op, to, null);
-  });
+  /* AttrSplat */, (op, [, to]) => YieldBlock(op, to, null));
   STATEMENTS.add(26
-  /* Debugger */, (op, _ref33) => {
-    var [, evalInfo] = _ref33;
-    return op(103
-    /* Debugger */, evalSymbolsOperand(), evalInfo);
-  });
+  /* Debugger */, (op, [, evalInfo]) => op(103
+  /* Debugger */, evalSymbolsOperand(), evalInfo));
   STATEMENTS.add(1
-  /* Append */, (op, _ref34) => {
-    var [, value] = _ref34;
+  /* Append */, (op, [, value]) => {
     // Special case for static values
     if (!Array.isArray(value)) {
       op(41
@@ -31233,18 +30549,15 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
         ifHelper(handle) {
           op(0
           /* PushFrame */);
-
           Call(op, handle, null, null);
           op(3
           /* InvokeStatic */, stdlibOperand('cautious-non-dynamic-append'));
           op(1
           /* PopFrame */);
         },
-
         ifValue(handle) {
           op(0
           /* PushFrame */);
-
           op(29
           /* ConstantReference */, handle);
           op(3
@@ -31265,7 +30578,6 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
           ifHelper(handle) {
             op(0
             /* PushFrame */);
-
             Call(op, handle, positional, named);
             op(3
             /* InvokeStatic */, stdlibOperand('cautious-non-dynamic-append'));
@@ -31283,10 +30595,8 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
           /* Component */, () => {
             op(81
             /* ResolveCurriedComponent */);
-
             op(79
             /* PushDynamicComponentInstance */);
-
             InvokeNonStaticComponent(op, {
               capabilities: true,
               elementBlock: null,
@@ -31308,7 +30618,6 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
     } else {
       op(0
       /* PushFrame */);
-
       expr(op, value);
       op(3
       /* InvokeStatic */, stdlibOperand('cautious-append'));
@@ -31316,17 +30625,14 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
       /* PopFrame */);
     }
   });
-
   STATEMENTS.add(2
-  /* TrustingAppend */, (op, _ref35) => {
-    var [, value] = _ref35;
+  /* TrustingAppend */, (op, [, value]) => {
     if (!Array.isArray(value)) {
       op(41
       /* Text */, value === null || value === undefined ? '' : String(value));
     } else {
       op(0
       /* PushFrame */);
-
       expr(op, value);
       op(3
       /* InvokeStatic */, stdlibOperand('trusting-append'));
@@ -31334,10 +30640,8 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
       /* PopFrame */);
     }
   });
-
   STATEMENTS.add(6
-  /* Block */, (op, _ref36) => {
-    var [, expr$$1, positional, named, blocks] = _ref36;
+  /* Block */, (op, [, expr$$1, positional, named, blocks]) => {
     if (isGetFreeComponent(expr$$1)) {
       op(1004
       /* ResolveComponent */, expr$$1, component => {
@@ -31348,8 +30652,7 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
     }
   });
   STATEMENTS.add(40
-  /* InElement */, (op, _ref37) => {
-    var [, block, guid, destination, insertBefore] = _ref37;
+  /* InElement */, (op, [, block, guid, destination, insertBefore]) => {
     ReplayableIf(op, () => {
       expr(op, guid);
       if (insertBefore === undefined) {
@@ -31364,87 +30667,73 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
     }, () => {
       op(50
       /* PushRemoteElement */);
-
       InvokeStaticBlock(op, block);
       op(56
       /* PopRemoteElement */);
     });
   });
-
   STATEMENTS.add(41
-  /* If */, (op, _ref38) => {
-    var [, condition, block, inverse] = _ref38;
-    return ReplayableIf(op, () => {
-      expr(op, condition);
-      op(71
-      /* ToBoolean */);
-
-      return 1;
-    }, () => {
-      InvokeStaticBlock(op, block);
-    }, inverse ? () => {
-      InvokeStaticBlock(op, inverse);
-    } : undefined);
-  });
+  /* If */, (op, [, condition, block, inverse]) => ReplayableIf(op, () => {
+    expr(op, condition);
+    op(71
+    /* ToBoolean */);
+    return 1;
+  }, () => {
+    InvokeStaticBlock(op, block);
+  }, inverse ? () => {
+    InvokeStaticBlock(op, inverse);
+  } : undefined));
   STATEMENTS.add(42
-  /* Each */, (op, _ref39) => {
-    var [, value, key, block, inverse] = _ref39;
-    return Replayable(op, () => {
-      if (key) {
-        expr(op, key);
-      } else {
-        PushPrimitiveReference(op, null);
-      }
-      expr(op, value);
-      return 2;
-    }, () => {
-      op(72
-      /* EnterList */, labelOperand('BODY'), labelOperand('ELSE'));
-      op(0
-      /* PushFrame */);
-
-      op(33
-      /* Dup */, _vm.$fp, 1);
-      op(6
-      /* ReturnTo */, labelOperand('ITER'));
-      op(1000
-      /* Label */, 'ITER');
-      op(74
-      /* Iterate */, labelOperand('BREAK'));
-      op(1000
-      /* Label */, 'BODY');
-      InvokeStaticBlockWithStack(op, block, 2);
-      op(34
-      /* Pop */, 2);
-      op(4
-      /* Jump */, labelOperand('FINALLY'));
-      op(1000
-      /* Label */, 'BREAK');
-      op(1
-      /* PopFrame */);
-
-      op(73
-      /* ExitList */);
-
-      op(4
-      /* Jump */, labelOperand('FINALLY'));
-      op(1000
-      /* Label */, 'ELSE');
-      if (inverse) {
-        InvokeStaticBlock(op, inverse);
-      }
-    });
-  });
+  /* Each */, (op, [, value, key, block, inverse]) => Replayable(op, () => {
+    if (key) {
+      expr(op, key);
+    } else {
+      PushPrimitiveReference(op, null);
+    }
+    expr(op, value);
+    return 2;
+  }, () => {
+    op(72
+    /* EnterList */, labelOperand('BODY'), labelOperand('ELSE'));
+    op(0
+    /* PushFrame */);
+    op(33
+    /* Dup */, _vm.$fp, 1);
+    op(6
+    /* ReturnTo */, labelOperand('ITER'));
+    op(1000
+    /* Label */, 'ITER');
+    op(74
+    /* Iterate */, labelOperand('BREAK'));
+    op(1000
+    /* Label */, 'BODY');
+    InvokeStaticBlockWithStack(op, block, 2);
+    op(34
+    /* Pop */, 2);
+    op(4
+    /* Jump */, labelOperand('FINALLY'));
+    op(1000
+    /* Label */, 'BREAK');
+    op(1
+    /* PopFrame */);
+    op(73
+    /* ExitList */);
+    op(4
+    /* Jump */, labelOperand('FINALLY'));
+    op(1000
+    /* Label */, 'ELSE');
+    if (inverse) {
+      InvokeStaticBlock(op, inverse);
+    }
+  }));
   STATEMENTS.add(43
-  /* With */, (op, _ref40) => {
-    var [, value, block, inverse] = _ref40;
+  /* With */, (op, [, value, block, inverse]) => {
     ReplayableIf(op, () => {
       expr(op, value);
       op(33
       /* Dup */, _vm.$sp, 0);
       op(71
       /* ToBoolean */);
-
       return 2;
     }, () => {
       InvokeStaticBlockWithStack(op, block, 1);
@@ -31455,14 +30744,12 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
     });
   });
   STATEMENTS.add(44
-  /* Let */, (op, _ref41) => {
-    var [, positional, block] = _ref41;
+  /* Let */, (op, [, positional, block]) => {
     var count = CompilePositional(op, positional);
     InvokeStaticBlockWithStack(op, block, count);
   });
   STATEMENTS.add(45
-  /* WithDynamicVars */, (op, _ref42) => {
-    var [, named, block] = _ref42;
+  /* WithDynamicVars */, (op, [, named, block]) => {
     if (named) {
       var [names, expressions] = named;
       CompilePositional(op, expressions);
@@ -31474,8 +30761,7 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
     }
   });
   STATEMENTS.add(46
-  /* InvokeComponent */, (op, _ref43) => {
-    var [, expr$$1, positional, named, blocks] = _ref43;
+  /* InvokeComponent */, (op, [, expr$$1, positional, named, blocks]) => {
     if (isGetFreeComponent(expr$$1)) {
       op(1004
       /* ResolveComponent */, expr$$1, component => {
@@ -31496,10 +30782,7 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
     // Part of CompilableTemplate
     symbolTable,
     // Used for debugging
-    moduleName) {
-      if (moduleName === void 0) {
-        moduleName = 'plain block';
-      }
+    moduleName = 'plain block') {
       this.statements = statements;
       this.meta = meta$$1;
       this.symbolTable = symbolTable;
@@ -31539,10 +30822,7 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
         resolver
       }
     } = context;
-    function pushOp() {
-      for (var _len = arguments.length, op = new Array(_len), _key = 0; _key < _len; _key++) {
-        op[_key] = arguments[_key];
-      }
+    function pushOp(...op) {
       encodeOp(encoder, constants, resolver, meta$$1, op);
     }
     for (var i = 0; i < statements.length; i++) {
@@ -31664,7 +30944,6 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
       this.heap.push(5
       /* Return */ | 1024
       /* MACHINE_MASK */);
-
       this.heap.finishMalloc(handle, size);
       if (this.errors.length) {
         return {
@@ -31675,7 +30954,7 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
         return handle;
       }
     }
-    push(constants, type) {
+    push(constants, type, ...args) {
       var {
         heap
       } = this;
@@ -31685,12 +30964,11 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
       }
       var machine = (0, _vm.isMachineOp)(type) ? 1024
       /* MACHINE_MASK */ : 0;
-      var first = type | machine | (arguments.length <= 2 ? 0 : arguments.length - 2) << 8
+      var first = type | machine | args.length << 8
       /* ARG_SHIFT */;
-
       heap.push(first);
-      for (var i = 0; i < (arguments.length <= 2 ? 0 : arguments.length - 2); i++) {
-        var op = i + 2 < 2 || arguments.length <= i + 2 ? undefined : arguments[i + 2];
+      for (var i = 0; i < args.length; i++) {
+        var op = args[i];
         heap.push(this.operand(constants, op));
       }
     }
@@ -31721,10 +30999,8 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
               return this.stdlib[operand.value];
             case 6
             /* NonSmallInt */:
-
             case 7
             /* SymbolTable */:
-
             case 8
             /* Layout */:
               return constants.value(operand.value);
@@ -31751,7 +31027,6 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
     return op < 1000
     /* Start */;
   }
-
   function main(op) {
     op(75
     /* Main */, _vm.$s0);
@@ -31774,7 +31049,6 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
         if (trusting) {
           op(68
           /* AssertSame */);
-
           op(43
           /* AppendHTML */);
         } else {
@@ -31782,16 +31056,13 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
           /* AppendText */);
         }
       });
-
       if (typeof nonDynamicAppend === 'number') {
         when(0
         /* Component */, () => {
           op(81
           /* ResolveCurriedComponent */);
-
           op(79
           /* PushDynamicComponentInstance */);
-
           InvokeBareComponent(op);
         });
         when(1
@@ -31809,43 +31080,35 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
           op(47
           /* AppendText */);
         });
-
         when(1
         /* Helper */, () => {
           op(47
           /* AppendText */);
         });
       }
-
       when(4
       /* SafeString */, () => {
         op(68
         /* AssertSame */);
-
         op(44
         /* AppendSafeHTML */);
       });
-
       when(5
       /* Fragment */, () => {
         op(68
         /* AssertSame */);
-
         op(45
         /* AppendDocumentFragment */);
       });
-
       when(6
       /* Node */, () => {
         op(68
         /* AssertSame */);
-
         op(46
         /* AppendNode */);
       });
     });
   }
-
   function compileStd(context) {
     var mainHandle = build(context, op => main(op));
     var trustingGuardedNonDynamicAppend = build(context, op => StdAppend(op, true, null));
@@ -31871,10 +31134,7 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
       resolver
     } = program;
     var encoder = new EncoderImpl(heap, STDLIB_META);
-    function pushOp() {
-      for (var _len2 = arguments.length, op = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-        op[_key2] = arguments[_key2];
-      }
+    function pushOp(...op) {
       encodeOp(encoder, constants, resolver, STDLIB_META, op);
     }
     callback(pushOp);
@@ -31887,11 +31147,10 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
     }
   }
   class CompileTimeCompilationContextImpl {
-    constructor(_ref44, resolver) {
-      var {
-        constants,
-        heap
-      } = _ref44;
+    constructor({
+      constants,
+      heap
+    }, resolver) {
       this.resolver = resolver;
       this.constants = constants;
       this.heap = heap;
@@ -31899,7 +31158,7 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
     }
   }
   _exports.CompileTimeCompilationContextImpl = CompileTimeCompilationContextImpl;
-  var DEFAULT_CAPABILITIES = {
+  var DEFAULT_CAPABILITIES = _exports.DEFAULT_CAPABILITIES = {
     dynamicLayout: true,
     dynamicTag: true,
     prepareArgs: true,
@@ -31914,8 +31173,7 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
     willDestroy: false,
     hasSubOwner: false
   };
-  _exports.DEFAULT_CAPABILITIES = DEFAULT_CAPABILITIES;
-  var MINIMAL_CAPABILITIES = {
+  var MINIMAL_CAPABILITIES = _exports.MINIMAL_CAPABILITIES = {
     dynamicLayout: false,
     dynamicTag: false,
     prepareArgs: false,
@@ -31930,7 +31188,6 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
     willDestroy: false,
     hasSubOwner: false
   };
-  _exports.MINIMAL_CAPABILITIES = MINIMAL_CAPABILITIES;
   class WrappedBuilder {
     constructor(layout, moduleName) {
       this.layout = layout;
@@ -31964,10 +31221,7 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
           resolver
         }
       } = context;
-      function pushOp() {
-        for (var _len3 = arguments.length, op = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
-          op[_key3] = arguments[_key3];
-        }
+      function pushOp(...op) {
         encodeOp(encoder, constants, resolver, m, op);
       }
       WrappedComponent(pushOp, this.layout, this.attrsBlockNumber);
@@ -31981,7 +31235,7 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
   }
   _exports.WrappedBuilder = WrappedBuilder;
   var clientId = 0;
-  var templateCacheCounters = {
+  var templateCacheCounters = _exports.templateCacheCounters = {
     cacheHit: 0,
     cacheMiss: 0
   };
@@ -31990,15 +31244,14 @@ define("@glimmer/opcode-compiler", ["exports", "@glimmer/util", "@glimmer/vm", "
    * that handles lazy parsing the template and to create per env singletons
    * of the template.
    */
-  _exports.templateCacheCounters = templateCacheCounters;
-  function templateFactory(_ref45) {
-    var {
-      id: templateId,
-      moduleName,
-      block,
-      scope,
-      isStrictMode
-    } = _ref45;
+
+  function templateFactory({
+    id: templateId,
+    moduleName,
+    block,
+    scope,
+    isStrictMode
+  }) {
     // TODO(template-refactors): This should be removed in the near future, as it
     // appears that id is unused. It is currently kept for backwards compat reasons.
     var id = templateId || `client-${clientId++}`; // TODO: This caches JSON serialized output once in case a template is
@@ -32091,13 +31344,13 @@ define("@glimmer/owner", ["exports", "@glimmer/util"], function (_exports, _util
   _exports.OWNER = void 0;
   _exports.getOwner = getOwner;
   _exports.setOwner = setOwner;
-  var OWNER = (0, _util.symbol)('OWNER');
+  var OWNER = _exports.OWNER = (0, _util.symbol)('OWNER');
   /**
     Framework objects in a Glimmer application may receive an owner object.
     Glimmer is unopinionated about this owner, but will forward it through its
     internal resolution system, and through its managers if it is provided.
   */
-  _exports.OWNER = OWNER;
+
   function getOwner(object) {
     return object[OWNER];
   }
@@ -32200,10 +31453,7 @@ define("@glimmer/program", ["exports", "@glimmer/util", "@glimmer/manager", "@gl
     }
     helper(definitionState,
     // TODO: Add a way to expose resolved name for debugging
-    _resolvedName, isOptional) {
-      if (_resolvedName === void 0) {
-        _resolvedName = null;
-      }
+    _resolvedName = null, isOptional) {
       var handle = this.helperDefinitionCache.get(definitionState);
       if (handle === undefined) {
         var managerOrHelper = (0, _manager.getInternalHelperManager)(definitionState, isOptional);
@@ -32218,10 +31468,7 @@ define("@glimmer/program", ["exports", "@glimmer/util", "@glimmer/manager", "@gl
       }
       return handle;
     }
-    modifier(definitionState, resolvedName, isOptional) {
-      if (resolvedName === void 0) {
-        resolvedName = null;
-      }
+    modifier(definitionState, resolvedName = null, isOptional) {
       var handle = this.modifierDefinitionCache.get(definitionState);
       if (handle === undefined) {
         var manager = (0, _manager.getInternalModifierManager)(definitionState, isOptional);
@@ -32349,7 +31596,6 @@ define("@glimmer/program", ["exports", "@glimmer/util", "@glimmer/manager", "@gl
       return this.heap.getbyaddr(this.offset) & 255
       /* TYPE_MASK */;
     }
-
     get op1() {
       return this.heap.getbyaddr(this.offset + 1);
     }
@@ -32488,7 +31734,6 @@ define("@glimmer/program", ["exports", "@glimmer/util", "@glimmer/manager", "@gl
           // these slots
           handleState[i] = 2
           /* Purged */;
-
           compactedSize += size;
         } else if (state === 0
         /* Allocated */) {
@@ -32503,10 +31748,7 @@ define("@glimmer/program", ["exports", "@glimmer/util", "@glimmer/manager", "@gl
       }
       this.offset = this.offset - compactedSize;
     }
-    capture(offset) {
-      if (offset === void 0) {
-        offset = this.offset;
-      }
+    capture(offset = this.offset) {
       // Only called in eager mode
       var buffer = slice(this.heap, 0, offset).buffer;
       return {
@@ -32574,8 +31816,7 @@ define("@glimmer/reference", ["exports", "@glimmer/global-context", "@glimmer/ut
   _exports.isUpdatableRef = isUpdatableRef;
   _exports.updateRef = updateRef;
   _exports.valueForRef = valueForRef;
-  var REFERENCE = (0, _util.symbol)('REFERENCE');
-  _exports.REFERENCE = REFERENCE;
+  var REFERENCE = _exports.REFERENCE = (0, _util.symbol)('REFERENCE');
   class ReferenceImpl {
     constructor(type) {
       this.tag = null;
@@ -32589,7 +31830,6 @@ define("@glimmer/reference", ["exports", "@glimmer/global-context", "@glimmer/ut
   function createPrimitiveRef(value) {
     var ref = new ReferenceImpl(2
     /* Unbound */);
-
     ref.tag = _validator.CONSTANT_TAG;
     ref.lastValue = value;
     if (true /* DEBUG */) {
@@ -32597,18 +31837,13 @@ define("@glimmer/reference", ["exports", "@glimmer/global-context", "@glimmer/ut
     }
     return ref;
   }
-  var UNDEFINED_REFERENCE = createPrimitiveRef(undefined);
-  _exports.UNDEFINED_REFERENCE = UNDEFINED_REFERENCE;
-  var NULL_REFERENCE = createPrimitiveRef(null);
-  _exports.NULL_REFERENCE = NULL_REFERENCE;
-  var TRUE_REFERENCE = createPrimitiveRef(true);
-  _exports.TRUE_REFERENCE = TRUE_REFERENCE;
-  var FALSE_REFERENCE = createPrimitiveRef(false);
-  _exports.FALSE_REFERENCE = FALSE_REFERENCE;
+  var UNDEFINED_REFERENCE = _exports.UNDEFINED_REFERENCE = createPrimitiveRef(undefined);
+  var NULL_REFERENCE = _exports.NULL_REFERENCE = createPrimitiveRef(null);
+  var TRUE_REFERENCE = _exports.TRUE_REFERENCE = createPrimitiveRef(true);
+  var FALSE_REFERENCE = _exports.FALSE_REFERENCE = createPrimitiveRef(false);
   function createConstRef(value, debugLabel) {
     var ref = new ReferenceImpl(0
     /* Constant */);
-
     ref.lastValue = value;
     ref.tag = _validator.CONSTANT_TAG;
     if (true /* DEBUG */) {
@@ -32619,7 +31854,6 @@ define("@glimmer/reference", ["exports", "@glimmer/global-context", "@glimmer/ut
   function createUnboundRef(value, debugLabel) {
     var ref = new ReferenceImpl(2
     /* Unbound */);
-
     ref.lastValue = value;
     ref.tag = _validator.CONSTANT_TAG;
     if (true /* DEBUG */) {
@@ -32627,16 +31861,9 @@ define("@glimmer/reference", ["exports", "@glimmer/global-context", "@glimmer/ut
     }
     return ref;
   }
-  function createComputeRef(compute, update, debugLabel) {
-    if (update === void 0) {
-      update = null;
-    }
-    if (debugLabel === void 0) {
-      debugLabel = 'unknown';
-    }
+  function createComputeRef(compute, update = null, debugLabel = 'unknown') {
     var ref = new ReferenceImpl(1
     /* Compute */);
-
     ref.compute = compute;
     ref.update = update;
     if (true /* DEBUG */) {
@@ -32652,13 +31879,11 @@ define("@glimmer/reference", ["exports", "@glimmer/global-context", "@glimmer/ut
     return ref[REFERENCE] === 3
     /* Invokable */;
   }
-
   function createInvokableRef(inner) {
     var ref = createComputeRef(() => valueForRef(inner), value => updateRef(inner, value));
     ref.debugLabel = inner.debugLabel;
     ref[REFERENCE] = 3
     /* Invokable */;
-
     return ref;
   }
   function isConstRef(_ref) {
@@ -32748,7 +31973,6 @@ define("@glimmer/reference", ["exports", "@glimmer/global-context", "@glimmer/ut
     return reference;
   }
   var createDebugAliasRef;
-  _exports.createDebugAliasRef = createDebugAliasRef;
   if (true /* DEBUG */) {
     _exports.createDebugAliasRef = createDebugAliasRef = (debugLabel, inner) => {
       var update = isUpdatableRef(inner) ? value => updateRef(inner, value) : null;
@@ -33036,10 +32260,7 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
       this.evalScope = evalScope;
       this.partialMap = partialMap;
     }
-    static root(self, size, owner) {
-      if (size === void 0) {
-        size = 0;
-      }
+    static root(self, size = 0, owner) {
       var refs = new Array(size + 1);
       for (var i = 0; i <= size; i++) {
         refs[i] = _reference.UNDEFINED_REFERENCE;
@@ -33048,20 +32269,16 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
         self
       });
     }
-    static sized(size, owner) {
-      if (size === void 0) {
-        size = 0;
-      }
+    static sized(size = 0, owner) {
       var refs = new Array(size + 1);
       for (var i = 0; i <= size; i++) {
         refs[i] = _reference.UNDEFINED_REFERENCE;
       }
       return new PartialScopeImpl(refs, owner, null, null, null);
     }
-    init(_ref) {
-      var {
-        self
-      } = _ref;
+    init({
+      self
+    }) {
       this.slots[0] = self;
       return this;
     }
@@ -33386,10 +32603,7 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     }
     return str;
   }
-  function dynamicAttribute(element, attr, namespace, isTrusting) {
-    if (isTrusting === void 0) {
-      isTrusting = false;
-    }
+  function dynamicAttribute(element, attr, namespace, isTrusting = false) {
     var {
       tagName,
       namespaceURI
@@ -33670,10 +32884,7 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     pushBlockList(list) {
       return this.pushLiveBlock(new LiveBlockList(this.element, list));
     }
-    pushLiveBlock(block, isRemote) {
-      if (isRemote === void 0) {
-        isRemote = false;
-      }
+    pushLiveBlock(block, isRemote = false) {
       var current = this.blockStack.current;
       if (current !== null) {
         if (!isRemote) {
@@ -33735,10 +32946,7 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
       this.popBlock();
       this.popElement();
     }
-    pushElement(element, nextSibling) {
-      if (nextSibling === void 0) {
-        nextSibling = null;
-      }
+    pushElement(element, nextSibling = null) {
       this[CURSOR_STACK].push(new CursorImpl(element, nextSibling));
     }
     pushModifiers(modifiers) {
@@ -33971,10 +33179,7 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
       this.evaluateOpcode = (0, _util.fillNulls)(104
       /* Size */).slice();
     }
-    add(name, evaluate, kind) {
-      if (kind === void 0) {
-        kind = 'syscall';
-      }
+    add(name, evaluate, kind = 'syscall') {
       this.evaluateOpcode[name] = {
         syscall: kind !== 'machine',
         evaluate
@@ -34041,10 +33246,7 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
   }
   class CurriedValue {
     /** @internal */
-    constructor(type, inner, owner, args, resolved) {
-      if (resolved === void 0) {
-        resolved = false;
-      }
+    constructor(type, inner, owner, args, resolved = false) {
       CURRIED_VALUES.add(this);
       this[TYPE] = type;
       this[INNER] = inner;
@@ -34096,10 +33298,7 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
       named
     };
   }
-  function curry(type, spec, owner, args, resolved) {
-    if (resolved === void 0) {
-      resolved = false;
-    }
+  function curry(type, spec, owner, args, resolved = false) {
     return new CurriedValue(type, spec, owner, args, resolved);
   }
   function createCurryRef(type, inner, owner, args, resolver, isStrict) {
@@ -34342,10 +33541,7 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     has(name) {
       return this.names.indexOf(name) !== -1;
     }
-    get(name, atNames) {
-      if (atNames === void 0) {
-        atNames = false;
-      }
+    get(name, atNames = false) {
       var {
         base,
         stack
@@ -34533,18 +33729,14 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
       positional: reifyPositional$1(args.positional)
     };
   }
-  var EMPTY_NAMED = Object.freeze(Object.create(null));
-  _exports.EMPTY_NAMED = EMPTY_NAMED;
-  var EMPTY_POSITIONAL = EMPTY_REFERENCES;
-  _exports.EMPTY_POSITIONAL = EMPTY_POSITIONAL;
-  var EMPTY_ARGS = createCapturedArgs(EMPTY_NAMED, EMPTY_POSITIONAL);
-  _exports.EMPTY_ARGS = EMPTY_ARGS;
+  var EMPTY_NAMED = _exports.EMPTY_NAMED = Object.freeze(Object.create(null));
+  var EMPTY_POSITIONAL = _exports.EMPTY_POSITIONAL = EMPTY_REFERENCES;
+  var EMPTY_ARGS = _exports.EMPTY_ARGS = createCapturedArgs(EMPTY_NAMED, EMPTY_POSITIONAL);
   APPEND_OPCODES.add(77
-  /* Curry */, (vm, _ref2) => {
-    var {
-      op1: type,
-      op2: _isStrict
-    } = _ref2;
+  /* Curry */, (vm, {
+    op1: type,
+    op2: _isStrict
+  }) => {
     var stack = vm.stack;
     var definition = stack.pop();
     var capturedArgs = stack.pop();
@@ -34611,10 +33803,9 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     return constants.getValue(handle);
   }
   APPEND_OPCODES.add(16
-  /* Helper */, (vm, _ref3) => {
-    var {
-      op1: handle
-    } = _ref3;
+  /* Helper */, (vm, {
+    op1: handle
+  }) => {
     var stack = vm.stack;
     var helper = vm[CONSTANTS].getValue(handle);
     var args = stack.pop();
@@ -34625,36 +33816,32 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     vm.loadValue(_vm2.$v0, value);
   });
   APPEND_OPCODES.add(21
-  /* GetVariable */, (vm, _ref4) => {
-    var {
-      op1: symbol$$1
-    } = _ref4;
+  /* GetVariable */, (vm, {
+    op1: symbol$$1
+  }) => {
     var expr = vm.referenceForSymbol(symbol$$1);
     vm.stack.push(expr);
   });
   APPEND_OPCODES.add(19
-  /* SetVariable */, (vm, _ref5) => {
-    var {
-      op1: symbol$$1
-    } = _ref5;
+  /* SetVariable */, (vm, {
+    op1: symbol$$1
+  }) => {
     var expr = vm.stack.pop();
     vm.scope().bindSymbol(symbol$$1, expr);
   });
   APPEND_OPCODES.add(20
-  /* SetBlock */, (vm, _ref6) => {
-    var {
-      op1: symbol$$1
-    } = _ref6;
+  /* SetBlock */, (vm, {
+    op1: symbol$$1
+  }) => {
     var handle = vm.stack.pop();
     var scope = vm.stack.pop();
     var table = vm.stack.pop();
     vm.scope().bindBlock(symbol$$1, [handle, scope, table]);
   });
   APPEND_OPCODES.add(102
-  /* ResolveMaybeLocal */, (vm, _ref7) => {
-    var {
-      op1: _name
-    } = _ref7;
+  /* ResolveMaybeLocal */, (vm, {
+    op1: _name
+  }) => {
     var name = vm[CONSTANTS].getValue(_name);
     var locals = vm.scope().getPartialMap();
     var ref = locals[name];
@@ -34664,26 +33851,23 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     vm.stack.push(ref);
   });
   APPEND_OPCODES.add(37
-  /* RootScope */, (vm, _ref8) => {
-    var {
-      op1: symbols
-    } = _ref8;
+  /* RootScope */, (vm, {
+    op1: symbols
+  }) => {
     vm.pushRootScope(symbols, vm.getOwner());
   });
   APPEND_OPCODES.add(22
-  /* GetProperty */, (vm, _ref9) => {
-    var {
-      op1: _key
-    } = _ref9;
+  /* GetProperty */, (vm, {
+    op1: _key
+  }) => {
     var key = vm[CONSTANTS].getValue(_key);
     var expr = vm.stack.pop();
     vm.stack.push((0, _reference.childRefFor)(expr, key));
   });
   APPEND_OPCODES.add(23
-  /* GetBlock */, (vm, _ref10) => {
-    var {
-      op1: _block
-    } = _ref10;
+  /* GetBlock */, (vm, {
+    op1: _block
+  }) => {
     var {
       stack
     } = vm;
@@ -34732,10 +33916,9 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     vm.stack.push(hasBlockParams ? _reference.TRUE_REFERENCE : _reference.FALSE_REFERENCE);
   });
   APPEND_OPCODES.add(27
-  /* Concat */, (vm, _ref11) => {
-    var {
-      op1: count
-    } = _ref11;
+  /* Concat */, (vm, {
+    op1: count
+  }) => {
     var out = new Array(count);
     for (var i = count; i > 0; i--) {
       var offset = i - 1;
@@ -34815,24 +33998,21 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
   APPEND_OPCODES.add(60
   /* PopDynamicScope */, vm => vm.popDynamicScope());
   APPEND_OPCODES.add(28
-  /* Constant */, (vm, _ref12) => {
-    var {
-      op1: other
-    } = _ref12;
+  /* Constant */, (vm, {
+    op1: other
+  }) => {
     vm.stack.push(vm[CONSTANTS].getValue((0, _util.decodeHandle)(other)));
   });
   APPEND_OPCODES.add(29
-  /* ConstantReference */, (vm, _ref13) => {
-    var {
-      op1: other
-    } = _ref13;
+  /* ConstantReference */, (vm, {
+    op1: other
+  }) => {
     vm.stack.push((0, _reference.createConstRef)(vm[CONSTANTS].getValue((0, _util.decodeHandle)(other)), false));
   });
   APPEND_OPCODES.add(30
-  /* Primitive */, (vm, _ref14) => {
-    var {
-      op1: primitive
-    } = _ref14;
+  /* Primitive */, (vm, {
+    op1: primitive
+  }) => {
     var stack = vm.stack;
     if ((0, _util.isHandle)(primitive)) {
       // it is a handle which does not already exist on the stack
@@ -34862,48 +34042,42 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     stack.push(ref);
   });
   APPEND_OPCODES.add(33
-  /* Dup */, (vm, _ref15) => {
-    var {
-      op1: register,
-      op2: offset
-    } = _ref15;
+  /* Dup */, (vm, {
+    op1: register,
+    op2: offset
+  }) => {
     var position = vm.fetchValue(register) - offset;
     vm.stack.dup(position);
   });
   APPEND_OPCODES.add(34
-  /* Pop */, (vm, _ref16) => {
-    var {
-      op1: count
-    } = _ref16;
+  /* Pop */, (vm, {
+    op1: count
+  }) => {
     vm.stack.pop(count);
   });
   APPEND_OPCODES.add(35
-  /* Load */, (vm, _ref17) => {
-    var {
-      op1: register
-    } = _ref17;
+  /* Load */, (vm, {
+    op1: register
+  }) => {
     vm.load(register);
   });
   APPEND_OPCODES.add(36
-  /* Fetch */, (vm, _ref18) => {
-    var {
-      op1: register
-    } = _ref18;
+  /* Fetch */, (vm, {
+    op1: register
+  }) => {
     vm.fetch(register);
   });
   APPEND_OPCODES.add(58
-  /* BindDynamicScope */, (vm, _ref19) => {
-    var {
-      op1: _names
-    } = _ref19;
+  /* BindDynamicScope */, (vm, {
+    op1: _names
+  }) => {
     var names = vm[CONSTANTS].getArray(_names);
     vm.bindDynamicScope(names);
   });
   APPEND_OPCODES.add(69
-  /* Enter */, (vm, _ref20) => {
-    var {
-      op1: args
-    } = _ref20;
+  /* Enter */, (vm, {
+    op1: args
+  }) => {
     vm.enter(args);
   });
   APPEND_OPCODES.add(70
@@ -34911,10 +34085,9 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     vm.exit();
   });
   APPEND_OPCODES.add(63
-  /* PushSymbolTable */, (vm, _ref21) => {
-    var {
-      op1: _table
-    } = _ref21;
+  /* PushSymbolTable */, (vm, {
+    op1: _table
+  }) => {
     var stack = vm.stack;
     stack.push(vm[CONSTANTS].getValue(_table));
   });
@@ -34965,10 +34138,9 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     vm.call(handle);
   });
   APPEND_OPCODES.add(65
-  /* JumpIf */, (vm, _ref22) => {
-    var {
-      op1: target
-    } = _ref22;
+  /* JumpIf */, (vm, {
+    op1: target
+  }) => {
     var reference = vm.stack.pop();
     var value = Boolean((0, _reference.valueForRef)(reference));
     if ((0, _reference.isConstRef)(reference)) {
@@ -34983,10 +34155,9 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     }
   });
   APPEND_OPCODES.add(66
-  /* JumpUnless */, (vm, _ref23) => {
-    var {
-      op1: target
-    } = _ref23;
+  /* JumpUnless */, (vm, {
+    op1: target
+  }) => {
     var reference = vm.stack.pop();
     var value = Boolean((0, _reference.valueForRef)(reference));
     if ((0, _reference.isConstRef)(reference)) {
@@ -35001,11 +34172,10 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     }
   });
   APPEND_OPCODES.add(67
-  /* JumpEq */, (vm, _ref24) => {
-    var {
-      op1: target,
-      op2: comparison
-    } = _ref24;
+  /* JumpEq */, (vm, {
+    op1: target,
+    op2: comparison
+  }) => {
     var other = vm.stack.peek();
     if (other === comparison) {
       vm.goto(target);
@@ -35104,24 +34274,21 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     }
   }
   APPEND_OPCODES.add(41
-  /* Text */, (vm, _ref25) => {
-    var {
-      op1: text
-    } = _ref25;
+  /* Text */, (vm, {
+    op1: text
+  }) => {
     vm.elements().appendText(vm[CONSTANTS].getValue(text));
   });
   APPEND_OPCODES.add(42
-  /* Comment */, (vm, _ref26) => {
-    var {
-      op1: text
-    } = _ref26;
+  /* Comment */, (vm, {
+    op1: text
+  }) => {
     vm.elements().appendComment(vm[CONSTANTS].getValue(text));
   });
   APPEND_OPCODES.add(48
-  /* OpenElement */, (vm, _ref27) => {
-    var {
-      op1: tag
-    } = _ref27;
+  /* OpenElement */, (vm, {
+    op1: tag
+  }) => {
     vm.elements().openElement(vm[CONSTANTS].getValue(tag));
   });
   APPEND_OPCODES.add(49
@@ -35178,10 +34345,9 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     }
   });
   APPEND_OPCODES.add(57
-  /* Modifier */, (vm, _ref28) => {
-    var {
-      op1: handle
-    } = _ref28;
+  /* Modifier */, (vm, {
+    op1: handle
+  }) => {
     if (vm.env.isInteractive === false) {
       return;
     }
@@ -35347,24 +34513,22 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     }
   }
   APPEND_OPCODES.add(51
-  /* StaticAttr */, (vm, _ref29) => {
-    var {
-      op1: _name,
-      op2: _value,
-      op3: _namespace
-    } = _ref29;
+  /* StaticAttr */, (vm, {
+    op1: _name,
+    op2: _value,
+    op3: _namespace
+  }) => {
     var name = vm[CONSTANTS].getValue(_name);
     var value = vm[CONSTANTS].getValue(_value);
     var namespace = _namespace ? vm[CONSTANTS].getValue(_namespace) : null;
     vm.elements().setStaticAttribute(name, value, namespace);
   });
   APPEND_OPCODES.add(52
-  /* DynamicAttr */, (vm, _ref30) => {
-    var {
-      op1: _name,
-      op2: _trusting,
-      op3: _namespace
-    } = _ref30;
+  /* DynamicAttr */, (vm, {
+    op1: _name,
+    op2: _trusting,
+    op3: _namespace
+  }) => {
     var name = vm[CONSTANTS].getValue(_name);
     var trusting = vm[CONSTANTS].getValue(_trusting);
     var reference = vm.stack.pop();
@@ -35393,10 +34557,9 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     }
   }
   APPEND_OPCODES.add(78
-  /* PushComponentDefinition */, (vm, _ref31) => {
-    var {
-      op1: handle
-    } = _ref31;
+  /* PushComponentDefinition */, (vm, {
+    op1: handle
+  }) => {
     var definition = vm[CONSTANTS].getValue(handle);
     var {
       manager,
@@ -35414,10 +34577,9 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     vm.stack.push(instance);
   });
   APPEND_OPCODES.add(80
-  /* ResolveDynamicComponent */, (vm, _ref32) => {
-    var {
-      op1: _isStrict
-    } = _ref32;
+  /* ResolveDynamicComponent */, (vm, {
+    op1: _isStrict
+  }) => {
     var stack = vm.stack;
     var component = (0, _reference.valueForRef)(stack.pop());
     var constants = vm[CONSTANTS];
@@ -35482,12 +34644,11 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     });
   });
   APPEND_OPCODES.add(82
-  /* PushArgs */, (vm, _ref33) => {
-    var {
-      op1: _names,
-      op2: _blockNames,
-      op3: flags
-    } = _ref33;
+  /* PushArgs */, (vm, {
+    op1: _names,
+    op2: _blockNames,
+    op3: flags
+  }) => {
     var stack = vm.stack;
     var names = vm[CONSTANTS].getArray(_names);
     var positionalCount = flags >> 4;
@@ -35511,10 +34672,9 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     stack.push(capturedArgs);
   });
   APPEND_OPCODES.add(85
-  /* PrepareArgs */, (vm, _ref34) => {
-    var {
-      op1: _state
-    } = _ref34;
+  /* PrepareArgs */, (vm, {
+    op1: _state
+  }) => {
     var stack = vm.stack;
     var instance = vm.fetchValue(_state);
     var args = stack.pop();
@@ -35592,11 +34752,10 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     stack.push(args);
   });
   APPEND_OPCODES.add(87
-  /* CreateComponent */, (vm, _ref35) => {
-    var {
-      op1: flags,
-      op2: _state
-    } = _ref35;
+  /* CreateComponent */, (vm, {
+    op1: flags,
+    op2: _state
+  }) => {
     var instance = vm.fetchValue(_state);
     var {
       definition,
@@ -35636,10 +34795,9 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     }
   });
   APPEND_OPCODES.add(88
-  /* RegisterComponentDestructor */, (vm, _ref36) => {
-    var {
-      op1: _state
-    } = _ref36;
+  /* RegisterComponentDestructor */, (vm, {
+    op1: _state
+  }) => {
     var {
       manager,
       state,
@@ -35653,10 +34811,9 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     if (d) vm.associateDestroyable(d);
   });
   APPEND_OPCODES.add(97
-  /* BeginComponentTransaction */, (vm, _ref37) => {
-    var {
-      op1: _state
-    } = _ref37;
+  /* BeginComponentTransaction */, (vm, {
+    op1: _state
+  }) => {
     var _a;
     var name;
     if (true /* DEBUG */) {
@@ -35674,12 +34831,11 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     vm.loadValue(_vm2.$t0, new ComponentElementOperations());
   });
   APPEND_OPCODES.add(53
-  /* ComponentAttr */, (vm, _ref38) => {
-    var {
-      op1: _name,
-      op2: _trusting,
-      op3: _namespace
-    } = _ref38;
+  /* ComponentAttr */, (vm, {
+    op1: _name,
+    op2: _trusting,
+    op3: _namespace
+  }) => {
     var name = vm[CONSTANTS].getValue(_name);
     var trusting = vm[CONSTANTS].getValue(_trusting);
     var reference = vm.stack.pop();
@@ -35687,12 +34843,11 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     vm.fetchValue(_vm2.$t0).setAttribute(name, reference, trusting, namespace);
   });
   APPEND_OPCODES.add(105
-  /* StaticComponentAttr */, (vm, _ref39) => {
-    var {
-      op1: _name,
-      op2: _value,
-      op3: _namespace
-    } = _ref39;
+  /* StaticComponentAttr */, (vm, {
+    op1: _name,
+    op2: _value,
+    op3: _namespace
+  }) => {
     var name = vm[CONSTANTS].getValue(_name);
     var value = vm[CONSTANTS].getValue(_value);
     var namespace = _namespace ? vm[CONSTANTS].getValue(_namespace) : null;
@@ -35769,10 +34924,7 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     }
     return true;
   }
-  function setDeferredAttr(vm, name, value, namespace, trusting) {
-    if (trusting === void 0) {
-      trusting = false;
-    }
+  function setDeferredAttr(vm, name, value, namespace, trusting = false) {
     if (typeof value === 'string') {
       vm.elements().setStaticAttribute(name, value, namespace);
     } else {
@@ -35783,10 +34935,9 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     }
   }
   APPEND_OPCODES.add(99
-  /* DidCreateElement */, (vm, _ref40) => {
-    var {
-      op1: _state
-    } = _ref40;
+  /* DidCreateElement */, (vm, {
+    op1: _state
+  }) => {
     var {
       definition,
       state
@@ -35798,11 +34949,10 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     manager.didCreateElement(state, vm.elements().constructing, operations);
   });
   APPEND_OPCODES.add(90
-  /* GetComponentSelf */, (vm, _ref41) => {
-    var {
-      op1: _state,
-      op2: _names
-    } = _ref41;
+  /* GetComponentSelf */, (vm, {
+    op1: _state,
+    op2: _names
+  }) => {
     var _a;
     var instance = vm.fetchValue(_state);
     var {
@@ -35874,10 +35024,9 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     vm.stack.push(selfRef);
   });
   APPEND_OPCODES.add(91
-  /* GetComponentTagName */, (vm, _ref42) => {
-    var {
-      op1: _state
-    } = _ref42;
+  /* GetComponentTagName */, (vm, {
+    op1: _state
+  }) => {
     var {
       definition,
       state
@@ -35891,10 +35040,9 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
   }); // Dynamic Invocation Only
 
   APPEND_OPCODES.add(92
-  /* GetComponentLayout */, (vm, _ref43) => {
-    var {
-      op1: _state
-    } = _ref43;
+  /* GetComponentLayout */, (vm, {
+    op1: _state
+  }) => {
     var instance = vm.fetchValue(_state);
     var {
       manager,
@@ -35925,10 +35073,9 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     stack.push(handle);
   });
   APPEND_OPCODES.add(75
-  /* Main */, (vm, _ref44) => {
-    var {
-      op1: register
-    } = _ref44;
+  /* Main */, (vm, {
+    op1: register
+  }) => {
     var definition = vm.stack.pop();
     var invocation = vm.stack.pop();
     var {
@@ -35947,10 +35094,9 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     vm.loadValue(register, state);
   });
   APPEND_OPCODES.add(95
-  /* PopulateLayout */, (vm, _ref45) => {
-    var {
-      op1: _state
-    } = _ref45;
+  /* PopulateLayout */, (vm, {
+    op1: _state
+  }) => {
     var {
       stack
     } = vm; // In DEBUG handles could be ErrHandle objects
@@ -35962,10 +35108,9 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     state.table = table;
   });
   APPEND_OPCODES.add(38
-  /* VirtualRootScope */, (vm, _ref46) => {
-    var {
-      op1: _state
-    } = _ref46;
+  /* VirtualRootScope */, (vm, {
+    op1: _state
+  }) => {
     var {
       table,
       manager,
@@ -35994,10 +35139,9 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     vm.pushRootScope(table.symbols.length + 1, owner);
   });
   APPEND_OPCODES.add(94
-  /* SetupForEval */, (vm, _ref47) => {
-    var {
-      op1: _state
-    } = _ref47;
+  /* SetupForEval */, (vm, {
+    op1: _state
+  }) => {
     var state = vm.fetchValue(_state);
     if (state.table.hasEval) {
       var lookup = state.lookup = (0, _util.dict)();
@@ -36005,10 +35149,9 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     }
   });
   APPEND_OPCODES.add(17
-  /* SetNamedVariables */, (vm, _ref48) => {
-    var {
-      op1: _state
-    } = _ref48;
+  /* SetNamedVariables */, (vm, {
+    op1: _state
+  }) => {
     var state = vm.fetchValue(_state);
     var scope = vm.scope();
     var args = vm.stack.peek();
@@ -36028,10 +35171,9 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     if (state.lookup) state.lookup[symbolName] = block;
   }
   APPEND_OPCODES.add(18
-  /* SetBlocks */, (vm, _ref49) => {
-    var {
-      op1: _state
-    } = _ref49;
+  /* SetBlocks */, (vm, {
+    op1: _state
+  }) => {
     var state = vm.fetchValue(_state);
     var {
       blocks
@@ -36042,18 +35184,16 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
   }); // Dynamic Invocation Only
 
   APPEND_OPCODES.add(96
-  /* InvokeComponentLayout */, (vm, _ref50) => {
-    var {
-      op1: _state
-    } = _ref50;
+  /* InvokeComponentLayout */, (vm, {
+    op1: _state
+  }) => {
     var state = vm.fetchValue(_state);
     vm.call(state.handle);
   });
   APPEND_OPCODES.add(100
-  /* DidRenderLayout */, (vm, _ref51) => {
-    var {
-      op1: _state
-    } = _ref51;
+  /* DidRenderLayout */, (vm, {
+    op1: _state
+  }) => {
     var instance = vm.fetchValue(_state);
     var {
       manager,
@@ -36192,13 +35332,11 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
       /* String */;
     }
   }
-
   function toDynamicContentType(value) {
     if (!(0, _util.isObject)(value)) {
       return 2
       /* String */;
     }
-
     if (isCurriedType(value, 0
     /* Component */) || (0, _manager5.hasInternalComponentManager)(value)) {
       return 0
@@ -36212,7 +35350,6 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
       /* Helper */;
     }
   }
-
   APPEND_OPCODES.add(76
   /* ContentType */, vm => {
     var reference = vm.stack.peek();
@@ -36316,22 +35453,20 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     }
   }
   APPEND_OPCODES.add(103
-  /* Debugger */, (vm, _ref52) => {
-    var {
-      op1: _symbols,
-      op2: _evalInfo
-    } = _ref52;
+  /* Debugger */, (vm, {
+    op1: _symbols,
+    op2: _evalInfo
+  }) => {
     var symbols = vm[CONSTANTS].getArray(_symbols);
     var evalInfo = vm[CONSTANTS].getArray((0, _util.decodeHandle)(_evalInfo));
     var inspector = new ScopeInspector(vm.scope(), symbols, evalInfo);
     callback((0, _reference.valueForRef)(vm.getSelf()), path => (0, _reference.valueForRef)(inspector.get(path)));
   });
   APPEND_OPCODES.add(72
-  /* EnterList */, (vm, _ref53) => {
-    var {
-      op1: relativeStart,
-      op2: elseTarget
-    } = _ref53;
+  /* EnterList */, (vm, {
+    op1: relativeStart,
+    op2: elseTarget
+  }) => {
     var stack = vm.stack;
     var listRef = stack.pop();
     var keyRef = stack.pop();
@@ -36353,10 +35488,9 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     vm.exitList();
   });
   APPEND_OPCODES.add(74
-  /* Iterate */, (vm, _ref54) => {
-    var {
-      op1: breaks
-    } = _ref54;
+  /* Iterate */, (vm, {
+    op1: breaks
+  }) => {
     var stack = vm.stack;
     var iterator = stack.peek();
     var item = iterator.next();
@@ -36385,10 +35519,9 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     getCapabilities() {
       return CAPABILITIES;
     }
-    getDebugName(_ref55) {
-      var {
-        name
-      } = _ref55;
+    getDebugName({
+      name
+    }) {
       return name;
     }
     getSelf() {
@@ -36399,16 +35532,10 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     }
   }
   _exports.TemplateOnlyComponentManager = TemplateOnlyComponentManager;
-  var TEMPLATE_ONLY_COMPONENT_MANAGER = new TemplateOnlyComponentManager(); // This is only exported for types, don't use this class directly
-  _exports.TEMPLATE_ONLY_COMPONENT_MANAGER = TEMPLATE_ONLY_COMPONENT_MANAGER;
+  var TEMPLATE_ONLY_COMPONENT_MANAGER = _exports.TEMPLATE_ONLY_COMPONENT_MANAGER = new TemplateOnlyComponentManager(); // This is only exported for types, don't use this class directly
+
   class TemplateOnlyComponentDefinition {
-    constructor(moduleName, name) {
-      if (moduleName === void 0) {
-        moduleName = '@glimmer/component/template-only';
-      }
-      if (name === void 0) {
-        name = '(unknown template-only component)';
-      }
+    constructor(moduleName = '@glimmer/component/template-only', name = '(unknown template-only component)') {
       this.moduleName = moduleName;
       this.name = name;
     }
@@ -36681,10 +35808,7 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
       createElementNS(namespace, tag) {
         return this.document.createElementNS(namespace, tag);
       }
-      setAttribute(element, name, value, namespace) {
-        if (namespace === void 0) {
-          namespace = null;
-        }
+      setAttribute(element, name, value, namespace = null) {
         if (namespace) {
           element.setAttributeNS(namespace, name, value);
         } else {
@@ -36697,7 +35821,6 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     appliedTreeConstruction = applyTextNodeMergingFix(doc, appliedTreeConstruction);
     appliedTreeConstruction = applySVGInnerHTMLFix(doc, appliedTreeConstruction, "http://www.w3.org/2000/svg"
     /* SVG */);
-
     DOM.DOMTreeConstruction = appliedTreeConstruction;
   })(DOM || (DOM = {}));
   class DOMChangesImpl extends DOMOperations {
@@ -36721,11 +35844,8 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
   helper = applyTextNodeMergingFix(doc, helper);
   helper = applySVGInnerHTMLFix(doc, helper, "http://www.w3.org/2000/svg"
   /* SVG */);
-
-  var helper$1 = helper;
-  _exports.DOMChanges = helper$1;
-  var DOMTreeConstruction = DOM.DOMTreeConstruction;
-  _exports.DOMTreeConstruction = DOMTreeConstruction;
+  var helper$1 = _exports.DOMChanges = helper;
+  var DOMTreeConstruction = _exports.DOMTreeConstruction = DOM.DOMTreeConstruction;
   var GUID = 0;
   class Ref {
     constructor(value) {
@@ -36873,10 +35993,9 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
         children
       };
     }
-    captureTemplate(_ref56) {
-      var {
-        template
-      } = _ref56;
+    captureTemplate({
+      template
+    }) {
       return template || null;
     }
     captureBounds(node) {
@@ -37165,10 +36284,9 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     }
   }
   class UpdatingVMImpl {
-    constructor(env, _ref57) {
-      var {
-        alwaysRevalidate = false
-      } = _ref57;
+    constructor(env, {
+      alwaysRevalidate = false
+    }) {
       this.frameStack = new _util.Stack();
       this.env = env;
       this.dom = env.getDOM();
@@ -37491,12 +36609,11 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
       (0, _destroyable2.associateDestroyableChild)(this, drop);
       (0, _destroyable2.registerDestructor)(this, () => clear(this.bounds));
     }
-    rerender(_temp) {
-      var {
-        alwaysRevalidate = false
-      } = _temp === void 0 ? {
-        alwaysRevalidate: false
-      } : _temp;
+    rerender({
+      alwaysRevalidate = false
+    } = {
+      alwaysRevalidate: false
+    }) {
       var {
         env,
         updating
@@ -37521,10 +36638,7 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
   }
   class EvaluationStackImpl {
     // fp -> sp
-    constructor(stack, registers) {
-      if (stack === void 0) {
-        stack = [];
-      }
+    constructor(stack = [], registers) {
       this.stack = stack;
       this[REGISTERS] = registers;
     }
@@ -37534,39 +36648,24 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     push(value) {
       this.stack[++this[REGISTERS][_vm2.$sp]] = value;
     }
-    dup(position) {
-      if (position === void 0) {
-        position = this[REGISTERS][_vm2.$sp];
-      }
+    dup(position = this[REGISTERS][_vm2.$sp]) {
       this.stack[++this[REGISTERS][_vm2.$sp]] = this.stack[position];
     }
     copy(from, to) {
       this.stack[to] = this.stack[from];
     }
-    pop(n) {
-      if (n === void 0) {
-        n = 1;
-      }
+    pop(n = 1) {
       var top = this.stack[this[REGISTERS][_vm2.$sp]];
       this[REGISTERS][_vm2.$sp] -= n;
       return top;
     }
-    peek(offset) {
-      if (offset === void 0) {
-        offset = 0;
-      }
+    peek(offset = 0) {
       return this.stack[this[REGISTERS][_vm2.$sp] - offset];
     }
-    get(offset, base) {
-      if (base === void 0) {
-        base = this[REGISTERS][_vm2.$fp];
-      }
+    get(offset, base = this[REGISTERS][_vm2.$fp]) {
       return this.stack[base + offset];
     }
-    set(value, offset, base) {
-      if (base === void 0) {
-        base = this[REGISTERS][_vm2.$fp];
-      }
+    set(value, offset, base = this[REGISTERS][_vm2.$fp]) {
       this.stack[base + offset] = value;
     }
     slice(start, end) {
@@ -37598,13 +36697,12 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     /**
      * End of migrated.
      */
-    constructor(runtime, _ref58, elementStack, context) {
-      var {
-        pc,
-        scope,
-        dynamicScope,
-        stack
-      } = _ref58;
+    constructor(runtime, {
+      pc,
+      scope,
+      dynamicScope,
+      stack
+    }, elementStack, context) {
       this.runtime = runtime;
       this.elementStack = elementStack;
       this.context = context;
@@ -37726,28 +36824,26 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     return() {
       this[INNER_VM].return();
     }
-    static initial(runtime, context, _ref59) {
-      var {
-        handle,
-        self,
-        dynamicScope,
-        treeBuilder,
-        numSymbols,
-        owner
-      } = _ref59;
+    static initial(runtime, context, {
+      handle,
+      self,
+      dynamicScope,
+      treeBuilder,
+      numSymbols,
+      owner
+    }) {
       var scope = PartialScopeImpl.root(self, numSymbols, owner);
       var state = vmState(runtime.program.heap.getaddr(handle), scope, dynamicScope);
       var vm = initVM(context)(runtime, state, treeBuilder);
       vm.pushUpdating();
       return vm;
     }
-    static empty(runtime, _ref60, context) {
-      var {
-        handle,
-        treeBuilder,
-        dynamicScope,
-        owner
-      } = _ref60;
+    static empty(runtime, {
+      handle,
+      treeBuilder,
+      dynamicScope,
+      owner
+    }, context) {
       var vm = initVM(context)(runtime, vmState(runtime.program.heap.getaddr(handle), PartialScopeImpl.root(_reference.UNDEFINED_REFERENCE, 0, owner), dynamicScope), treeBuilder);
       vm.pushUpdating();
       return vm;
@@ -37762,10 +36858,7 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     get env() {
       return this.runtime.env;
     }
-    captureState(args, pc) {
-      if (pc === void 0) {
-        pc = this[INNER_VM].fetchRegister(_vm2.$pc);
-      }
+    captureState(args, pc = this[INNER_VM].fetchRegister(_vm2.$pc)) {
       return {
         pc,
         scope: this.scope(),
@@ -37773,10 +36866,7 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
         stack: this.stack.capture(args)
       };
     }
-    capture(args, pc) {
-      if (pc === void 0) {
-        pc = this[INNER_VM].fetchRegister(_vm2.$pc);
-      }
+    capture(args, pc = this[INNER_VM].fetchRegister(_vm2.$pc)) {
       return new ResumableVMStateImpl(this.captureState(args, pc), this.resume);
     }
     beginCacheGroup(name) {
@@ -37801,12 +36891,11 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
       var tryOpcode = new TryOpcode(state, this.runtime, block, updating);
       this.didEnter(tryOpcode);
     }
-    enterItem(_ref61) {
-      var {
-        key,
-        value,
-        memo
-      } = _ref61;
+    enterItem({
+      key,
+      value,
+      memo
+    }) {
       var {
         stack
       } = this;
@@ -37847,10 +36936,7 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
       this.exit();
       this[STACKS].list.pop();
     }
-    pushUpdating(list) {
-      if (list === void 0) {
-        list = [];
-      }
+    pushUpdating(list = []) {
       this[STACKS].updating.push(list);
     }
     popUpdating() {
@@ -38012,10 +37098,7 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     inTransaction(env, () => result = iterator.sync());
     return result;
   }
-  function renderMain(runtime, context, owner, self, treeBuilder, layout, dynamicScope) {
-    if (dynamicScope === void 0) {
-      dynamicScope = new DynamicScopeImpl();
-    }
+  function renderMain(runtime, context, owner, self, treeBuilder, layout, dynamicScope = new DynamicScopeImpl()) {
     var handle = (0, _util.unwrapHandle)(layout.compile(context));
     var numSymbols = layout.symbolTable.symbols.length;
     var vm = VM.initial(runtime, context, {
@@ -38034,10 +37117,7 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     var argList = Object.keys(args).map(key => [key, args[key]]);
     var blockNames = ['main', 'else', 'attrs']; // Prefix argument names with `@` symbol
 
-    var argNames = argList.map(_ref62 => {
-      var [name] = _ref62;
-      return `@${name}`;
-    });
+    var argNames = argList.map(([name]) => `@${name}`);
     var reified = vm[CONSTANTS].component(definition, owner);
     vm.pushFrame(); // Push blocks on to the stack, three stack values per block
 
@@ -38046,8 +37126,7 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     }
     vm.stack.push(null); // For each argument, push its backing reference on to the stack
 
-    argList.forEach(_ref63 => {
-      var [, reference] = _ref63;
+    argList.forEach(([, reference]) => {
       vm.stack.push(reference);
     }); // Configure VM based on blocks and args just pushed on to the stack.
 
@@ -38065,13 +37144,7 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     vm.stack.push(reified);
     return new TemplateIteratorImpl(vm);
   }
-  function renderComponent(runtime, treeBuilder, context, owner, definition, args, dynamicScope) {
-    if (args === void 0) {
-      args = {};
-    }
-    if (dynamicScope === void 0) {
-      dynamicScope = new DynamicScopeImpl();
-    }
+  function renderComponent(runtime, treeBuilder, context, owner, definition, args = {}, dynamicScope = new DynamicScopeImpl()) {
     var vm = VM.empty(runtime, {
       treeBuilder,
       handle: context.stdlib.main,
@@ -38087,8 +37160,7 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
       return acc;
     }, {});
   }
-  var SERIALIZATION_FIRST_NODE_STRING = '%+b:0%';
-  _exports.SERIALIZATION_FIRST_NODE_STRING = SERIALIZATION_FIRST_NODE_STRING;
+  var SERIALIZATION_FIRST_NODE_STRING = _exports.SERIALIZATION_FIRST_NODE_STRING = '%+b:0%';
   function isSerializationFirstNode(node) {
     return node.nodeValue === SERIALIZATION_FIRST_NODE_STRING;
   }
@@ -38165,10 +37237,7 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
       currentCursor.candidate = candidate;
       currentCursor.nextSibling = null;
     }
-    pushElement(element, nextSibling) {
-      if (nextSibling === void 0) {
-        nextSibling = null;
-      }
+    pushElement(element, nextSibling = null) {
       var cursor = new RehydratingCursor(element, nextSibling, this.blockDepth || 0);
       /**
        * <div>   <---------------  currentCursor.element
@@ -38526,10 +37595,7 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     return (0, _validator.getValue)(true /* DEBUG */ ? ARGS_CACHES.get(proxy) : proxy.argsCache);
   }
   class SimpleArgsProxy {
-    constructor(context, computeArgs) {
-      if (computeArgs === void 0) {
-        computeArgs = () => EMPTY_ARGS;
-      }
+    constructor(context, computeArgs = () => EMPTY_ARGS) {
       var argsCache = (0, _validator.createCache)(() => computeArgs(context));
       if (true /* DEBUG */) {
         ARGS_CACHES.set(this, argsCache);
@@ -38649,19 +37715,15 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     @public
   */
 
-  var fn = internalHelper(_ref64 => {
-    var {
-      positional
-    } = _ref64;
+  var fn = _exports.fn = internalHelper(({
+    positional
+  }) => {
     var callbackRef = positional[0];
     if (true /* DEBUG */) assertCallbackIsFn(callbackRef);
     return (0, _reference.createComputeRef)(() => {
-      return function () {
+      return (...invocationArgs) => {
         var [fn, ...args] = (0, _runtime.reifyPositional)(positional);
         if (true /* DEBUG */) assertCallbackIsFn(callbackRef);
-        for (var _len = arguments.length, invocationArgs = new Array(_len), _key2 = 0; _key2 < _len; _key2++) {
-          invocationArgs[_key2] = arguments[_key2];
-        }
         if ((0, _reference.isInvokableRef)(callbackRef)) {
           var value = args.length > 0 ? args[0] : invocationArgs[0];
           return (0, _reference.updateRef)(callbackRef, value);
@@ -38671,7 +37733,6 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
       };
     }, null, 'fn');
   });
-  _exports.fn = fn;
   function assertCallbackIsFn(callbackRef) {
     if (!(callbackRef && ((0, _reference.isInvokableRef)(callbackRef) || typeof (0, _reference.valueForRef)(callbackRef) === 'function'))) {
       throw new Error(`You must pass a function as the \`fn\` helper's first argument, you passed ${callbackRef ? (0, _reference.valueForRef)(callbackRef) : callbackRef}. While rendering:\n\n${callbackRef === null || callbackRef === void 0 ? void 0 : callbackRef.debugLabel}`);
@@ -38728,10 +37789,9 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
      @public
    */
 
-  var hash = internalHelper(_ref65 => {
-    var {
-      named
-    } = _ref65;
+  var hash = _exports.hash = internalHelper(({
+    named
+  }) => {
     var ref = (0, _reference.createComputeRef)(() => {
       var hash = (0, _runtime.reifyNamed)(named);
       if (true /* DEBUG */ && _util.HAS_NATIVE_PROXY) {
@@ -38782,11 +37842,10 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
      @return {Array} Array
      @public
    */
-  _exports.hash = hash;
-  var array = internalHelper(_ref66 => {
-    var {
-      positional
-    } = _ref66;
+
+  var array = _exports.array = internalHelper(({
+    positional
+  }) => {
     return (0, _reference.createComputeRef)(() => (0, _runtime.reifyPositional)(positional), null, 'array');
   });
 
@@ -38867,11 +37926,10 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     @public
     @method get
    */
-  _exports.array = array;
-  var get = internalHelper(_ref67 => {
-    var {
-      positional
-    } = _ref67;
+
+  var get = _exports.get = internalHelper(({
+    positional
+  }) => {
     var _a, _b;
     var sourceRef = (_a = positional[0]) !== null && _a !== void 0 ? _a : _reference.UNDEFINED_REFERENCE;
     var pathRef = (_b = positional[1]) !== null && _b !== void 0 ? _b : _reference.UNDEFINED_REFERENCE;
@@ -38887,7 +37945,6 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
       }
     }, 'get');
   });
-  _exports.get = get;
   var isEmpty$2 = value => {
     return value === null || value === undefined || typeof value.toString !== 'function';
   };
@@ -38918,13 +37975,11 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
     @method concat
   */
 
-  var concat = internalHelper(_ref68 => {
-    var {
-      positional
-    } = _ref68;
+  var concat = _exports.concat = internalHelper(({
+    positional
+  }) => {
     return (0, _reference.createComputeRef)(() => (0, _runtime.reifyPositional)(positional).map(normalizeTextValue).join(''), null, 'concat');
   });
-  _exports.concat = concat;
   var untouchableContext = (0, _util.buildUntouchableThis)('`on` modifier');
   /*
     Internet Explorer 11 does not support `once` and also does not support
@@ -39243,8 +38298,7 @@ define("@glimmer/runtime", ["exports", "@glimmer/util", "@glimmer/reference", "@
       return state;
     }
   }
-  var on = (0, _manager5.setInternalModifierManager)(new OnModifierManager(), {});
-  _exports.on = on;
+  var on = _exports.on = (0, _manager5.setInternalModifierManager)(new OnModifierManager(), {});
 });
 define("@glimmer/tracking/index", ["exports", "@ember/-internals/metal"], function (_exports, _metal) {
   "use strict";
@@ -39350,19 +38404,17 @@ define("@glimmer/util", ["exports"], function (_exports) {
   _exports.unwrapTemplate = unwrapTemplate;
   _exports.values = values;
   _exports.verifySteps = void 0;
-  var EMPTY_ARRAY = Object.freeze([]);
-  _exports.EMPTY_ARRAY = EMPTY_ARRAY;
+  var EMPTY_ARRAY = _exports.EMPTY_ARRAY = Object.freeze([]);
   function emptyArray() {
     return EMPTY_ARRAY;
   }
-  var EMPTY_STRING_ARRAY = emptyArray();
-  _exports.EMPTY_STRING_ARRAY = EMPTY_STRING_ARRAY;
-  var EMPTY_NUMBER_ARRAY = emptyArray();
+  var EMPTY_STRING_ARRAY = _exports.EMPTY_STRING_ARRAY = emptyArray();
+  var EMPTY_NUMBER_ARRAY = _exports.EMPTY_NUMBER_ARRAY = emptyArray();
   /**
    * This function returns `true` if the input array is the special empty array sentinel,
    * which is sometimes used for optimizations.
    */
-  _exports.EMPTY_NUMBER_ARRAY = EMPTY_NUMBER_ARRAY;
+
   function isEmptyArray(input) {
     return input === EMPTY_ARRAY;
   }
@@ -39391,10 +38443,7 @@ define("@glimmer/util", ["exports"], function (_exports) {
     return typeof u === 'function' || typeof u === 'object' && u !== null;
   }
   class StackImpl {
-    constructor(values) {
-      if (values === void 0) {
-        values = [];
-      }
+    constructor(values = []) {
       this.current = null;
       this.stack = values;
     }
@@ -39431,13 +38480,11 @@ define("@glimmer/util", ["exports"], function (_exports) {
       current = next;
     }
   }
-  var SERIALIZATION_FIRST_NODE_STRING = '%+b:0%';
-  _exports.SERIALIZATION_FIRST_NODE_STRING = SERIALIZATION_FIRST_NODE_STRING;
+  var SERIALIZATION_FIRST_NODE_STRING = _exports.SERIALIZATION_FIRST_NODE_STRING = '%+b:0%';
   function isSerializationFirstNode(node) {
     return node.nodeValue === SERIALIZATION_FIRST_NODE_STRING;
   }
-  var assign = Object.assign;
-  _exports.assign = assign;
+  var assign = _exports.assign = Object.assign;
   function fillNulls(count) {
     var arr = new Array(count);
     for (var i = 0; i < count; i++) {
@@ -39502,16 +38549,14 @@ define("@glimmer/util", ["exports"], function (_exports) {
     }
     return str;
   }
-  var HAS_NATIVE_PROXY = typeof Proxy === 'function';
-  _exports.HAS_NATIVE_PROXY = HAS_NATIVE_PROXY;
-  var HAS_NATIVE_SYMBOL = function () {
+  var HAS_NATIVE_PROXY = _exports.HAS_NATIVE_PROXY = typeof Proxy === 'function';
+  var HAS_NATIVE_SYMBOL = _exports.HAS_NATIVE_SYMBOL = function () {
     if (typeof Symbol !== 'function') {
       return false;
     } // eslint-disable-next-line symbol-description
 
     return typeof Symbol() === 'symbol';
   }();
-  _exports.HAS_NATIVE_SYMBOL = HAS_NATIVE_SYMBOL;
   function keys(obj) {
     return Object.keys(obj);
   }
@@ -39523,32 +38568,20 @@ define("@glimmer/util", ["exports"], function (_exports) {
     if (val === null || val === undefined) throw new Error(message);
     return val;
   }
-  function unreachable(message) {
-    if (message === void 0) {
-      message = 'unreachable';
-    }
+  function unreachable(message = 'unreachable') {
     return new Error(message);
   }
   function exhausted(value) {
     throw new Error(`Exhausted ${value}`);
   }
-  var tuple = function () {
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-    return args;
-  };
+  var tuple = (...args) => args;
   _exports.tuple = tuple;
   function enumerableSymbol(key) {
     return intern(`__${key}${Math.floor(Math.random() * Date.now())}__`);
   }
-  var symbol = HAS_NATIVE_SYMBOL ? Symbol : enumerableSymbol;
-  _exports.symbol = symbol;
-  function strip(strings) {
+  var symbol = _exports.symbol = HAS_NATIVE_SYMBOL ? Symbol : enumerableSymbol;
+  function strip(strings, ...args) {
     var out = '';
-    for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
-      args[_key2 - 1] = arguments[_key2];
-    }
     for (var i = 0; i < strings.length; i++) {
       var string = strings[i];
       var dynamic = args[i] !== undefined ? String(args[i]) : '';
@@ -39579,11 +38612,7 @@ define("@glimmer/util", ["exports"], function (_exports) {
     return value > 3
     /* ENCODED_UNDEFINED_HANDLE */;
   }
-
-  function constants() {
-    for (var _len3 = arguments.length, values = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
-      values[_key3] = arguments[_key3];
-    }
+  function constants(...values) {
     return [false, true, null, undefined, ...values];
   }
   function isSmallInt(value) {
@@ -39591,17 +38620,14 @@ define("@glimmer/util", ["exports"], function (_exports) {
     /* MAX_INT */ && value >= -536870912
     /* MIN_INT */;
   }
-
   function encodeNegative(num) {
     return num & -536870913
     /* SIGN_BIT */;
   }
-
   function decodeNegative(num) {
     return num | ~-536870913
     /* SIGN_BIT */;
   }
-
   function encodePositive(num) {
     return ~num;
   }
@@ -39651,7 +38677,7 @@ define("@glimmer/util", ["exports"], function (_exports) {
   function isErrHandle(handle) {
     return typeof handle === 'number';
   }
-  var weakSet = typeof WeakSet === 'function' ? WeakSet : class WeakSetPolyFill {
+  var weakSet = _exports._WeakSet = typeof WeakSet === 'function' ? WeakSet : class WeakSetPolyFill {
     constructor() {
       this._map = new WeakMap();
     }
@@ -39666,7 +38692,6 @@ define("@glimmer/util", ["exports"], function (_exports) {
       return this._map.has(val);
     }
   };
-  _exports._WeakSet = weakSet;
   function castToSimple(node) {
     if (isDocument(node)) {
       return node;
@@ -39698,12 +38723,10 @@ define("@glimmer/util", ["exports"], function (_exports) {
     return node.nodeType === 9
     /* DOCUMENT_NODE */;
   }
-
   function isElement(node) {
     return node.nodeType === 1
     /* ELEMENT_NODE */;
   }
-
   function checkNode(node, check) {
     var isMatch = false;
     if (node !== null) {
@@ -39755,10 +38778,7 @@ define("@glimmer/util", ["exports"], function (_exports) {
       return null;
     }
   }
-  function assertPresent(list, message) {
-    if (message === void 0) {
-      message = `unexpected empty list`;
-    }
+  function assertPresent(list, message = `unexpected empty list`) {
     if (!isPresent(list)) {
       throw new Error(message);
     }
@@ -39836,14 +38856,10 @@ define("@glimmer/util", ["exports"], function (_exports) {
       }
     };
   }
-  var debugToString$1 = debugToString;
-  _exports.debugToString = debugToString$1;
+  var debugToString$1 = _exports.debugToString = debugToString;
   var beginTestSteps;
-  _exports.beginTestSteps = beginTestSteps;
   var endTestSteps;
-  _exports.endTestSteps = endTestSteps;
   var verifySteps;
-  _exports.verifySteps = verifySteps;
   var logStep;
 
   /**
@@ -39854,21 +38870,17 @@ define("@glimmer/util", ["exports"], function (_exports) {
    * It does not alleviate the need to check LOCAL_SHOULD_LOG, which is used
    * for stripping.
    */
-  _exports.logStep = logStep;
-  var LOCAL_LOGGER = console;
+
+  var LOCAL_LOGGER = _exports.LOCAL_LOGGER = console;
   /**
    * This constant exists to make it easier to differentiate normal logs from
    * errant console.logs. LOGGER can be used outside of LOCAL_SHOULD_LOG checks,
    * and is meant to be used in the rare situation where a console.* call is
    * actually appropriate.
    */
-  _exports.LOCAL_LOGGER = LOCAL_LOGGER;
-  var LOGGER = console;
-  _exports.LOGGER = LOGGER;
-  function assertNever(value, desc) {
-    if (desc === void 0) {
-      desc = 'unexpected unreachable branch';
-    }
+
+  var LOGGER = _exports.LOGGER = console;
+  function assertNever(value, desc = 'unexpected unreachable branch') {
     LOGGER.log('unreachable', value);
     LOGGER.log(`${desc} :: ${JSON.stringify(value)} (${value})`);
     throw new Error(`code reached unreachable`);
@@ -39935,18 +38947,13 @@ define("@glimmer/validator", ["exports", "@glimmer/global-context"], function (_
     return val;
   }
   var beginTrackingTransaction;
-  _exports.beginTrackingTransaction = beginTrackingTransaction;
   var endTrackingTransaction;
-  _exports.endTrackingTransaction = endTrackingTransaction;
   var runInTrackingTransaction;
-  _exports.runInTrackingTransaction = runInTrackingTransaction;
   var resetTrackingTransaction;
   var setTrackingTransactionEnv;
-  _exports.setTrackingTransactionEnv = setTrackingTransactionEnv;
   var assertTagNotConsumed;
   var markTagAsConsumed;
   var logTrackingStack;
-  _exports.logTrackingStack = logTrackingStack;
   if (true /* DEBUG */) {
     var CONSUMED_TAGS = null;
     var TRANSACTION_STACK = []; /////////
@@ -40020,10 +39027,7 @@ define("@glimmer/validator", ["exports", "@glimmer/global-context"], function (_
         }
       }
     };
-    var nthIndex = function (str, pattern, n, startingPos) {
-      if (startingPos === void 0) {
-        startingPos = -1;
-      }
+    var nthIndex = (str, pattern, n, startingPos = -1) => {
       var i = startingPos;
       while (n-- > 0 && i++ < str.length) {
         i = str.indexOf(pattern, i);
@@ -40087,18 +39091,15 @@ define("@glimmer/validator", ["exports", "@glimmer/global-context"], function (_
       }
     };
   }
-  var CONSTANT = 0;
-  _exports.CONSTANT = CONSTANT;
-  var INITIAL = 1;
-  _exports.INITIAL = INITIAL;
-  var VOLATILE = NaN;
-  _exports.VOLATILE = VOLATILE;
+  var CONSTANT = _exports.CONSTANT = 0;
+  var INITIAL = _exports.INITIAL = 1;
+  var VOLATILE = _exports.VOLATILE = NaN;
   var $REVISION = INITIAL;
   function bump() {
     $REVISION++;
   } //////////
 
-  var COMPUTE = symbol('TAG_COMPUTE'); //////////
+  var COMPUTE = _exports.COMPUTE = symbol('TAG_COMPUTE'); //////////
 
   /**
    * `value` receives a tag and returns an opaque Revision based on that tag. This
@@ -40108,7 +39109,7 @@ define("@glimmer/validator", ["exports", "@glimmer/global-context"], function (_
    *
    * @param tag
    */
-  _exports.COMPUTE = COMPUTE;
+
   function valueForTag(tag) {
     return tag[COMPUTE]();
   }
@@ -40130,7 +39131,6 @@ define("@glimmer/validator", ["exports", "@glimmer/global-context"], function (_
   // eslint-disable-next-line @typescript-eslint/naming-convention
 
   var ALLOW_CYCLES;
-  _exports.ALLOW_CYCLES = ALLOW_CYCLES;
   if (true /* DEBUG */) {
     _exports.ALLOW_CYCLES = ALLOW_CYCLES = new WeakMap();
   }
@@ -40160,7 +39160,6 @@ define("@glimmer/validator", ["exports", "@glimmer/global-context"], function (_
         default:
           var tag = new MonomorphicTagImpl(2
           /* Combinator */);
-
           tag.subtag = tags;
           return tag;
       }
@@ -40254,23 +39253,20 @@ define("@glimmer/validator", ["exports", "@glimmer/global-context"], function (_
       (0, _globalContext.scheduleRevalidate)();
     }
   }
-  var DIRTY_TAG = MonomorphicTagImpl.dirtyTag;
-  _exports.dirtyTag = DIRTY_TAG;
-  var UPDATE_TAG = MonomorphicTagImpl.updateTag; //////////
-  _exports.updateTag = UPDATE_TAG;
+  var DIRTY_TAG = _exports.dirtyTag = MonomorphicTagImpl.dirtyTag;
+  var UPDATE_TAG = _exports.updateTag = MonomorphicTagImpl.updateTag; //////////
+
   function createTag() {
     return new MonomorphicTagImpl(0
     /* Dirtyable */);
   }
-
   function createUpdatableTag() {
     return new MonomorphicTagImpl(1
     /* Updatable */);
   } //////////
 
-  var CONSTANT_TAG = new MonomorphicTagImpl(3
+  var CONSTANT_TAG = _exports.CONSTANT_TAG = new MonomorphicTagImpl(3
   /* Constant */);
-  _exports.CONSTANT_TAG = CONSTANT_TAG;
   function isConstTag(tag) {
     return tag === CONSTANT_TAG;
   } //////////
@@ -40281,18 +39277,18 @@ define("@glimmer/validator", ["exports", "@glimmer/global-context"], function (_
     }
   }
   _exports.VolatileTag = VolatileTag;
-  var VOLATILE_TAG = new VolatileTag(); //////////
-  _exports.VOLATILE_TAG = VOLATILE_TAG;
+  var VOLATILE_TAG = _exports.VOLATILE_TAG = new VolatileTag(); //////////
+
   class CurrentTag {
     [COMPUTE]() {
       return $REVISION;
     }
   }
   _exports.CurrentTag = CurrentTag;
-  var CURRENT_TAG = new CurrentTag(); //////////
-  _exports.CURRENT_TAG = CURRENT_TAG;
-  var combine = MonomorphicTagImpl.combine; // Warm
-  _exports.combine = combine;
+  var CURRENT_TAG = _exports.CURRENT_TAG = new CurrentTag(); //////////
+
+  var combine = _exports.combine = MonomorphicTagImpl.combine; // Warm
+
   var tag1 = createUpdatableTag();
   var tag2 = createUpdatableTag();
   var tag3 = createUpdatableTag();
@@ -40582,35 +39578,30 @@ define("@glimmer/vm", ["exports"], function (_exports) {
    * register numbers are different.
    */
   // $0 or $pc (program counter): pointer into `program` for the next insturction; -1 means exit
-  var $pc = 0; // $1 or $ra (return address): pointer into `program` for the return
-  _exports.$pc = $pc;
-  var $ra = 1; // $2 or $fp (frame pointer): pointer into the `evalStack` for the base of the stack
-  _exports.$ra = $ra;
-  var $fp = 2; // $3 or $sp (stack pointer): pointer into the `evalStack` for the top of the stack
-  _exports.$fp = $fp;
-  var $sp = 3; // $4-$5 or $s0-$s1 (saved): callee saved general-purpose registers
-  _exports.$sp = $sp;
-  var $s0 = 4;
-  _exports.$s0 = $s0;
-  var $s1 = 5; // $6-$7 or $t0-$t1 (temporaries): caller saved general-purpose registers
-  _exports.$s1 = $s1;
-  var $t0 = 6;
-  _exports.$t0 = $t0;
-  var $t1 = 7; // $8 or $v0 (return value)
-  _exports.$t1 = $t1;
-  var $v0 = 8;
-  _exports.$v0 = $v0;
+  var $pc = _exports.$pc = 0; // $1 or $ra (return address): pointer into `program` for the return
+
+  var $ra = _exports.$ra = 1; // $2 or $fp (frame pointer): pointer into the `evalStack` for the base of the stack
+
+  var $fp = _exports.$fp = 2; // $3 or $sp (stack pointer): pointer into the `evalStack` for the top of the stack
+
+  var $sp = _exports.$sp = 3; // $4-$5 or $s0-$s1 (saved): callee saved general-purpose registers
+
+  var $s0 = _exports.$s0 = 4;
+  var $s1 = _exports.$s1 = 5; // $6-$7 or $t0-$t1 (temporaries): caller saved general-purpose registers
+
+  var $t0 = _exports.$t0 = 6;
+  var $t1 = _exports.$t1 = 7; // $8 or $v0 (return value)
+
+  var $v0 = _exports.$v0 = 8;
   function isLowLevelRegister(register) {
     return register <= $sp;
   }
   var SavedRegister;
-  _exports.SavedRegister = SavedRegister;
   (function (SavedRegister) {
     SavedRegister[SavedRegister["s0"] = 4] = "s0";
     SavedRegister[SavedRegister["s1"] = 5] = "s1";
   })(SavedRegister || (_exports.SavedRegister = SavedRegister = {}));
   var TemporaryRegister;
-  _exports.TemporaryRegister = TemporaryRegister;
   (function (TemporaryRegister) {
     TemporaryRegister[TemporaryRegister["t0"] = 6] = "t0";
     TemporaryRegister[TemporaryRegister["t1"] = 7] = "t1";
@@ -40635,9 +39626,8 @@ define("@glimmer/wire-format", ["exports"], function (_exports) {
     };
   } // Statements
 
-  var isFlushElement = is(12
+  var isFlushElement = _exports.isFlushElement = is(12
   /* FlushElement */);
-  _exports.isFlushElement = isFlushElement;
   function isAttribute(val) {
     return val[0] === 14
     /* StaticAttr */ || val[0] === 15
@@ -40649,7 +39639,6 @@ define("@glimmer/wire-format", ["exports"], function (_exports) {
     /* AttrSplat */ || val[0] === 4
     /* Modifier */;
   }
-
   function isStringLiteral(expr) {
     return typeof expr === 'string';
   }
@@ -40661,15 +39650,13 @@ define("@glimmer/wire-format", ["exports"], function (_exports) {
     /* StaticArg */ || val[0] === 20
     /* DynamicArg */;
   }
-
   function isHelper(expr) {
     return Array.isArray(expr) && expr[0] === 28
     /* Call */;
   } // Expressions
 
-  var isGet = is(30
+  var isGet = _exports.isGet = is(30
   /* GetSymbol */);
-  _exports.isGet = isGet;
 });
 define("@simple-dom/document", ["exports"], function (_exports) {
   "use strict";
@@ -40993,7 +39980,6 @@ define("@simple-dom/document", ["exports"], function (_exports) {
     createElement(name) {
       return new SimpleNodeImpl(this, 1 /* ELEMENT_NODE */, name.toUpperCase(), null, "http://www.w3.org/1999/xhtml" /* HTML */);
     }
-
     createElementNS(namespace, qualifiedName) {
       // Node name is case-preserving in XML contexts, but returns canonical uppercase form in HTML contexts
       // https://www.w3.org/TR/2004/REC-DOM-Level-3-Core-20040407/core.html#ID-104682815
@@ -41032,8 +40018,7 @@ define("@simple-dom/document", ["exports"], function (_exports) {
     document.appendChild(html);
     return document;
   }
-  var _default = createHTMLDocument;
-  _exports.default = _default;
+  var _default = _exports.default = createHTMLDocument;
 });
 define("backburner", ["exports"], function (_exports) {
   "use strict";
@@ -41122,10 +40107,7 @@ define("backburner", ["exports"], function (_exports) {
     }
     return index;
   }
-  function getQueueItems(items, queueItemLength, queueItemPositionOffset) {
-    if (queueItemPositionOffset === void 0) {
-      queueItemPositionOffset = 0;
-    }
+  function getQueueItems(items, queueItemLength, queueItemPositionOffset = 0) {
     var queueItems = [];
     for (var i = 0; i < items.length; i += queueItemLength) {
       var maybeError = items[i + 3 /* stack */ + queueItemPositionOffset];
@@ -41161,13 +40143,7 @@ define("backburner", ["exports"], function (_exports) {
   }
   var QUEUE_ITEM_LENGTH = 4;
   class Queue {
-    constructor(name, options, globalOptions) {
-      if (options === void 0) {
-        options = {};
-      }
-      if (globalOptions === void 0) {
-        globalOptions = {};
-      }
+    constructor(name, options = {}, globalOptions = {}) {
       this._queueBeingFlushed = [];
       this.targetQueues = new Map();
       this.index = 0;
@@ -41238,7 +40214,6 @@ define("backburner", ["exports"], function (_exports) {
           }
         }
       }
-
       if (after !== undefined) {
         after();
       }
@@ -41252,11 +40227,10 @@ define("backburner", ["exports"], function (_exports) {
     hasWork() {
       return this._queueBeingFlushed.length > 0 || this._queue.length > 0;
     }
-    cancel(_ref) {
-      var {
-        target,
-        method
-      } = _ref;
+    cancel({
+      target,
+      method
+    }) {
       var queue = this._queue;
       var targetQueueMap = this.targetQueues.get(target);
       if (targetQueueMap !== undefined) {
@@ -41300,7 +40274,6 @@ define("backburner", ["exports"], function (_exports) {
         queue[index + 2] = args; // replace args
         queue[index + 3] = stack; // replace stack
       }
-
       return {
         queue: this,
         target,
@@ -41334,10 +40307,7 @@ define("backburner", ["exports"], function (_exports) {
     }
   }
   class DeferredActionQueues {
-    constructor(queueNames, options) {
-      if (queueNames === void 0) {
-        queueNames = [];
-      }
+    constructor(queueNames = [], options) {
       this.queues = {};
       this.queueNameIndex = 0;
       this.queueNames = queueNames;
@@ -41378,10 +40348,7 @@ define("backburner", ["exports"], function (_exports) {
      * @method flush
      * @param {Boolean} fromAutorun
      */
-    flush(fromAutorun) {
-      if (fromAutorun === void 0) {
-        fromAutorun = false;
-      }
+    flush(fromAutorun = false) {
       var queue;
       var queueName;
       var numberOfQueues = this.queueNames.length;
@@ -41561,7 +40528,6 @@ define("backburner", ["exports"], function (_exports) {
         this._autorunStack = null;
         this._end(true /* fromAutorun */);
       };
-
       var builder = this.options._buildPlatform || buildPlatform;
       this._platform = builder(this._boundAutorunEnd);
     }
@@ -41671,18 +40637,12 @@ define("backburner", ["exports"], function (_exports) {
     /**
      * @deprecated please use schedule instead.
      */
-    defer(queueName, target, method) {
+    defer(queueName, target, method, ...args) {
       deferCount++;
-      for (var _len = arguments.length, args = new Array(_len > 3 ? _len - 3 : 0), _key = 3; _key < _len; _key++) {
-        args[_key - 3] = arguments[_key];
-      }
       return this.schedule(queueName, target, method, ...args);
     }
-    schedule(queueName) {
+    schedule(queueName, ..._args) {
       scheduleCount++;
-      for (var _len2 = arguments.length, _args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
-        _args[_key2 - 1] = arguments[_key2];
-      }
       var [target, method, args] = parseArgs(..._args);
       var stack = this.DEBUG ? new Error() : undefined;
       return this._ensureInstance().schedule(queueName, target, method, args, false, stack);
@@ -41702,18 +40662,12 @@ define("backburner", ["exports"], function (_exports) {
     /**
      * @deprecated please use scheduleOnce instead.
      */
-    deferOnce(queueName, target, method) {
+    deferOnce(queueName, target, method, ...args) {
       deferOnceCount++;
-      for (var _len3 = arguments.length, args = new Array(_len3 > 3 ? _len3 - 3 : 0), _key3 = 3; _key3 < _len3; _key3++) {
-        args[_key3 - 3] = arguments[_key3];
-      }
       return this.scheduleOnce(queueName, target, method, ...args);
     }
-    scheduleOnce(queueName) {
+    scheduleOnce(queueName, ..._args) {
       scheduleOnceCount++;
-      for (var _len4 = arguments.length, _args = new Array(_len4 > 1 ? _len4 - 1 : 0), _key4 = 1; _key4 < _len4; _key4++) {
-        _args[_key4 - 1] = arguments[_key4];
-      }
       var [target, method, args] = parseArgs(..._args);
       var stack = this.DEBUG ? new Error() : undefined;
       return this._ensureInstance().schedule(queueName, target, method, args, true, stack);
@@ -42011,8 +40965,7 @@ define("backburner", ["exports"], function (_exports) {
   Backburner.Queue = Queue;
   Backburner.buildPlatform = buildPlatform;
   Backburner.buildNext = buildNext;
-  var _default = Backburner;
-  _exports.default = _default;
+  var _default = _exports.default = Backburner;
 });
 define("dag-map", ["exports"], function (_exports) {
   "use strict";
@@ -42089,9 +41042,8 @@ define("dag-map", ["exports"], function (_exports) {
     };
     return DAG;
   }();
-  var _default = DAG;
+  var _default = _exports.default = DAG;
   /** @private */
-  _exports.default = _default;
   var Vertices = function () {
     function Vertices() {
       this.length = 0;
@@ -42490,8 +41442,7 @@ define("ember-testing/lib/adapters/adapter", ["exports", "@ember/object"], funct
       throw error;
     }
   });
-  var _default = Adapter;
-  _exports.default = _default;
+  var _default = _exports.default = Adapter;
 });
 define("ember-testing/lib/adapters/qunit", ["exports", "@ember/debug", "ember-testing/lib/adapters/adapter"], function (_exports, _debug, _adapter) {
   "use strict";
@@ -42536,8 +41487,7 @@ define("ember-testing/lib/adapters/qunit", ["exports", "@ember/debug", "ember-te
       QUnit.config.current.assert.ok(false, (0, _debug.inspect)(error));
     }
   });
-  var _default = QUnitAdapter;
-  _exports.default = _default;
+  var _default = _exports.default = QUnitAdapter;
 });
 define("ember-testing/lib/ext/application", ["@ember/application", "ember-testing/lib/setup_for_testing", "ember-testing/lib/test/helpers", "ember-testing/lib/test/promise", "ember-testing/lib/test/run", "ember-testing/lib/test/on_inject_helpers", "ember-testing/lib/test/adapter", "@ember/debug"], function (_application, _setup_for_testing, _helpers, _promise, _run, _on_inject_helpers, _adapter, _debug) {
   "use strict";
@@ -42674,10 +41624,7 @@ define("ember-testing/lib/ext/application", ["@ember/application", "ember-testin
   // of helper chaining
   function protoWrap(proto, name, callback, isAsync) {
     // SAFETY: This isn't entirely safe, but it _seems_ to be ok.
-    proto[name] = function () {
-      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-        args[_key] = arguments[_key];
-      }
+    proto[name] = function (...args) {
       if (isAsync) {
         return callback.apply(this, args);
       } else {
@@ -42694,17 +41641,9 @@ define("ember-testing/lib/ext/application", ["@ember/application", "ember-testin
     var fn = helper.method;
     var meta = helper.meta;
     if (!meta.wait) {
-      return function () {
-        for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-          args[_key2] = arguments[_key2];
-        }
-        return fn.apply(app, [app, ...args]);
-      };
+      return (...args) => fn.apply(app, [app, ...args]);
     }
-    return function () {
-      for (var _len3 = arguments.length, args = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
-        args[_key3] = arguments[_key3];
-      }
+    return (...args) => {
       var lastPromise = (0, _run.default)(() => (0, _promise.resolve)((0, _promise.getLastPromise)()));
       // wait for last helper's promise to resolve and then
       // execute. To be safe, we need to tell the adapter we're going
@@ -42734,8 +41673,7 @@ define("ember-testing/lib/ext/rsvp", ["exports", "@ember/-internals/runtime", "@
       _runloop._backburner.schedule('actions', () => callback(promise));
     }
   });
-  var _default = _runtime.RSVP;
-  _exports.default = _default;
+  var _default = _exports.default = _runtime.RSVP;
 });
 define("ember-testing/lib/helpers", ["ember-testing/lib/test/helpers", "ember-testing/lib/helpers/and_then", "ember-testing/lib/helpers/current_path", "ember-testing/lib/helpers/current_route_name", "ember-testing/lib/helpers/current_url", "ember-testing/lib/helpers/pause_test", "ember-testing/lib/helpers/visit", "ember-testing/lib/helpers/wait"], function (_helpers, _and_then, _current_path, _current_route_name, _current_url, _pause_test, _visit, _wait) {
   "use strict";
@@ -43175,8 +42113,7 @@ define("ember-testing/lib/test", ["exports", "ember-testing/lib/test/helpers", "
     get: _adapter.getAdapter,
     set: _adapter.setAdapter
   });
-  var _default = Test;
-  _exports.default = _default;
+  var _default = _exports.default = Test;
 });
 define("ember-testing/lib/test/adapter", ["exports", "@ember/-internals/error-handling"], function (_exports, _errorHandling) {
   "use strict";
@@ -43226,7 +42163,7 @@ define("ember-testing/lib/test/helpers", ["exports", "ember-testing/lib/test/pro
   _exports.registerAsyncHelper = registerAsyncHelper;
   _exports.registerHelper = registerHelper;
   _exports.unregisterHelper = unregisterHelper;
-  var helpers = {};
+  var helpers = _exports.helpers = {};
   /**
    @module @ember/test
   */
@@ -43267,7 +42204,6 @@ define("ember-testing/lib/test/helpers", ["exports", "ember-testing/lib/test/pro
     @param {Function} helperMethod
     @param options {Object}
   */
-  _exports.helpers = helpers;
   function registerHelper(name, helperMethod) {
     helpers[name] = {
       method: helperMethod,
@@ -43363,7 +42299,7 @@ define("ember-testing/lib/test/on_inject_helpers", ["exports"], function (_expor
   _exports.callbacks = void 0;
   _exports.invokeInjectHelpersCallbacks = invokeInjectHelpersCallbacks;
   _exports.onInjectHelpers = onInjectHelpers;
-  var callbacks = [];
+  var callbacks = _exports.callbacks = [];
   /**
     Used to register callbacks to be fired whenever `App.injectTestHelpers`
     is called.
@@ -43391,7 +42327,6 @@ define("ember-testing/lib/test/on_inject_helpers", ["exports"], function (_expor
     @method onInjectHelpers
     @param {Function} callback The function to be called.
   */
-  _exports.callbacks = callbacks;
   function onInjectHelpers(callback) {
     callbacks.push(callback);
   }
@@ -43539,15 +42474,15 @@ define("ember-testing/lib/test/waiters", ["exports"], function (_exports) {
   */
   var contexts = [];
   var callbacks = [];
-  function registerWaiter() {
+  function registerWaiter(...args) {
     var checkedCallback;
     var checkedContext;
-    if (arguments.length === 1) {
+    if (args.length === 1) {
       checkedContext = null;
-      checkedCallback = arguments.length <= 0 ? undefined : arguments[0];
+      checkedCallback = args[0];
     } else {
-      checkedContext = arguments.length <= 0 ? undefined : arguments[0];
-      checkedCallback = arguments.length <= 1 ? undefined : arguments[1];
+      checkedContext = args[0];
+      checkedCallback = args[1];
     }
     if (indexOf(checkedContext, checkedCallback) > -1) {
       return;
@@ -43618,13 +42553,14 @@ define("ember-testing/lib/test/waiters", ["exports"], function (_exports) {
     return -1;
   }
 });
-define("ember/index", ["exports", "require", "@ember/-internals/environment", "@ember/-internals/utils", "@ember/-internals/container", "@ember/instrumentation", "@ember/-internals/meta", "@ember/-internals/metal", "@ember/canary-features", "@ember/debug", "backburner", "@ember/controller", "@ember/string", "@ember/service", "@ember/object", "@ember/object/-internals", "@ember/object/compat", "@ember/object/computed", "@ember/object/events", "@ember/-internals/runtime", "@ember/-internals/glimmer", "ember/version", "@ember/-internals/views", "@ember/debug/container-debug-adapter", "@ember/debug/data-adapter", "@ember/error", "@ember/runloop", "@ember/-internals/error-handling", "@ember/array", "@ember/array/mutable", "@ember/array/proxy", "@ember/application", "@ember/application/instance", "@ember/application/namespace", "@ember/component", "@ember/component/helper", "@ember/engine", "@ember/engine/instance", "@ember/enumerable", "@ember/enumerable/mutable", "@ember/object/core", "@ember/object/evented", "@ember/object/mixin", "@ember/object/observable", "@ember/object/observers", "@ember/object/proxy", "@ember/object/promise-proxy-mixin", "@ember/polyfills", "@ember/routing/auto-location", "@ember/routing/hash-location", "@ember/routing/history-location", "@ember/routing/none-location", "@ember/routing/location", "@ember/routing/route", "@ember/routing/router", "@ember/routing/-internals", "@ember/utils", "@glimmer/runtime", "@glimmer/manager", "@ember/destroyable"], function (_exports, _require, _environment, utils, _container, instrumentation, _meta, metal, _canaryFeatures, EmberDebug, _backburner, _controller, _string, _service, _object, _internals, _compat, _computed, _events, _runtime, _glimmer, _version, views, _containerDebugAdapter, _dataAdapter, _error, _runloop, _errorHandling, _array, _mutable, _proxy, _application, _instance, _namespace, _component, _helper, _engine, _instance2, _enumerable, _mutable2, _core, _evented, _mixin, _observable, _observers, _proxy2, _promiseProxyMixin, _polyfills, _autoLocation, _hashLocation, _historyLocation, _noneLocation, _location, _route, _router, _internals2, _utils2, glimmerRuntime, _manager, _destroyable) {
+define("ember/index", ["exports", "require", "@ember/-internals/environment", "@ember/-internals/utils", "@ember/-internals/container", "@ember/instrumentation", "@ember/-internals/meta", "@ember/-internals/metal", "@ember/canary-features", "@ember/debug", "backburner", "@ember/controller", "@ember/string", "@ember/service", "@ember/object", "@ember/object/-internals", "@ember/object/compat", "@ember/object/computed", "@ember/object/events", "@ember/-internals/runtime", "@ember/-internals/glimmer", "ember/version", "@ember/-internals/views", "@ember/debug/container-debug-adapter", "@ember/debug/data-adapter", "@ember/error", "@ember/runloop", "@ember/-internals/error-handling", "@ember/array", "@ember/array/mutable", "@ember/array/proxy", "@ember/application", "@ember/application/instance", "@ember/application/namespace", "@ember/component", "@ember/component/helper", "@ember/engine", "@ember/engine/instance", "@ember/enumerable", "@ember/enumerable/mutable", "@ember/object/core", "@ember/object/evented", "@ember/object/mixin", "@ember/object/observable", "@ember/object/observers", "@ember/object/proxy", "@ember/object/promise-proxy-mixin", "@ember/polyfills", "@ember/routing/auto-location", "@ember/routing/hash-location", "@ember/routing/history-location", "@ember/routing/none-location", "@ember/routing/location", "@ember/routing/route", "@ember/routing/router", "@ember/routing/-internals", "@ember/utils", "@glimmer/runtime", "@glimmer/manager", "@ember/destroyable"], function (_exports, _require, _environment, utils, _container, instrumentation, _meta, metal, _canaryFeatures, _debug, _backburner, _controller, _string, _service, _object, _internals, _compat, _computed, _events, _runtime, _glimmer, _version, views, _containerDebugAdapter, _dataAdapter, _error, _runloop, _errorHandling, _array, _mutable, _proxy, _application, _instance, _namespace, _component, _helper, _engine, _instance2, _enumerable, _mutable2, _core, _evented, _mixin, _observable, _observers, _proxy2, _promiseProxyMixin, _polyfills, _autoLocation, _hashLocation, _historyLocation, _noneLocation, _location, _route, _router, _internals2, _utils2, glimmerRuntime, _manager, _destroyable) {
   "use strict";
 
   Object.defineProperty(_exports, "__esModule", {
     value: true
   });
   _exports.default = void 0;
+  var EmberDebug = _debug;
   /**
   @module ember
   */
@@ -43638,7 +42574,7 @@ define("ember/index", ["exports", "require", "@ember/-internals/environment", "@
     @public
   */
   function inject() {
-    (true && !(false) && (0, EmberDebug.assert)(`Injected properties must be created through helpers, see '${Object.keys(inject).map(k => `'inject.${k}'`).join(' or ')}'`));
+    (true && !(false) && (0, _debug.assert)(`Injected properties must be created through helpers, see '${Object.keys(inject).map(k => `'inject.${k}'`).join(' or ')}'`));
   }
   // ****@ember/controller****
   inject.controller = _controller.inject;
@@ -43723,7 +42659,7 @@ define("ember/index", ["exports", "require", "@ember/-internals/environment", "@
     Controller: _controller.default,
     ControllerMixin: _controller.ControllerMixin,
     // ****@ember/debug****
-    _captureRenderTree: EmberDebug.captureRenderTree,
+    _captureRenderTree: _debug.captureRenderTree,
     assert: EmberDebug.assert,
     warn: EmberDebug.warn,
     debug: EmberDebug.debug,
@@ -43942,7 +42878,7 @@ define("ember/index", ["exports", "require", "@ember/-internals/environment", "@
     enumerable: false
   });
   function deprecateStringUseOnEmberModule() {
-    (true && !(false) && (0, EmberDebug.deprecate)('Using `Ember.String` is deprecated. Please import methods directly from `@ember/string`.', false, {
+    (true && !(false) && (0, _debug.deprecate)('Using `Ember.String` is deprecated. Please import methods directly from `@ember/string`.', false, {
       id: 'ember-string.from-ember-module',
       for: 'ember-source',
       since: {
@@ -44062,8 +42998,7 @@ define("ember/index", ["exports", "require", "@ember/-internals/environment", "@
   defineEmberTestingLazyLoad('setupForTesting');
   // @ts-expect-error Per types, runLoadHooks requires a second parameter. Should we loosen types?
   (0, _application.runLoadHooks)('Ember');
-  var _default = Ember;
-  _exports.default = _default;
+  var _default = _exports.default = Ember;
 });
 define("ember/version", ["exports"], function (_exports) {
   "use strict";
@@ -44072,8 +43007,7 @@ define("ember/version", ["exports"], function (_exports) {
     value: true
   });
   _exports.default = void 0;
-  var _default = "4.12.4";
-  _exports.default = _default;
+  var _default = _exports.default = "4.12.4";
 });
 define("route-recognizer", ["exports"], function (_exports) {
   "use strict";
@@ -44300,7 +43234,6 @@ define("route-recognizer", ["exports"], function (_exports) {
       } else {
         type = 0 /* Static */;
       }
-
       flags = 2 << type;
       if (flags & 12 /* Named */) {
         part = part.slice(1);
@@ -44752,8 +43685,7 @@ define("route-recognizer", ["exports"], function (_exports) {
     encodePathSegment: encodePathSegment
   };
   RouteRecognizer.prototype.map = map;
-  var _default = RouteRecognizer;
-  _exports.default = _default;
+  var _default = _exports.default = RouteRecognizer;
 });
 define("router_js", ["exports", "rsvp", "route-recognizer"], function (_exports, _rsvp, _routeRecognizer) {
   "use strict";
@@ -44843,12 +43775,9 @@ define("router_js", ["exports", "rsvp", "route-recognizer"], function (_exports,
   /**
     @private
    */
-  function log(router) {
+  function log(router, ...args) {
     if (!router.log) {
       return;
-    }
-    for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-      args[_key - 1] = arguments[_key];
     }
     if (args.length === 2) {
       var [sequence, msg] = args;
@@ -44917,11 +43846,9 @@ define("router_js", ["exports", "rsvp", "route-recognizer"], function (_exports,
   function promiseLabel(label) {
     return 'Router: ' + label;
   }
-  var STATE_SYMBOL = `__STATE__-2619860001345920-3322w3`;
-  _exports.STATE_SYMBOL = STATE_SYMBOL;
-  var PARAMS_SYMBOL = `__PARAMS__-261986232992830203-23323`;
-  _exports.PARAMS_SYMBOL = PARAMS_SYMBOL;
-  var QUERY_PARAMS_SYMBOL = `__QPS__-2619863929824844-32323`;
+  var STATE_SYMBOL = _exports.STATE_SYMBOL = `__STATE__-2619860001345920-3322w3`;
+  var PARAMS_SYMBOL = _exports.PARAMS_SYMBOL = `__PARAMS__-261986232992830203-23323`;
+  var QUERY_PARAMS_SYMBOL = _exports.QUERY_PARAMS_SYMBOL = `__QPS__-2619863929824844-32323`;
   /**
     A Transition is a thenable (a promise-like object) that represents
     an attempt to transition to another route. It can be aborted, either
@@ -44937,15 +43864,8 @@ define("router_js", ["exports", "rsvp", "route-recognizer"], function (_exports,
     @param {Object} error
     @private
    */
-  _exports.QUERY_PARAMS_SYMBOL = QUERY_PARAMS_SYMBOL;
   class Transition {
-    constructor(router, intent, state, error, previousTransition) {
-      if (error === void 0) {
-        error = undefined;
-      }
-      if (previousTransition === void 0) {
-        previousTransition = undefined;
-      }
+    constructor(router, intent, state, error = undefined, previousTransition = undefined) {
       this.from = null;
       this.to = undefined;
       this.isAborted = false;
@@ -45167,10 +44087,7 @@ define("router_js", ["exports", "rsvp", "route-recognizer"], function (_exports,
       return this;
     }
     // Alias 'trigger' as 'send'
-    send(ignoreFailure, _name, err, transition, handler) {
-      if (ignoreFailure === void 0) {
-        ignoreFailure = false;
-      }
+    send(ignoreFailure = false, _name, err, transition, handler) {
       this.trigger(ignoreFailure, _name, err, transition, handler);
     }
     /**
@@ -45183,17 +44100,11 @@ define("router_js", ["exports", "rsvp", "route-recognizer"], function (_exports,
       @param {String} name the name of the event to fire
       @public
      */
-    trigger(ignoreFailure, name) {
-      if (ignoreFailure === void 0) {
-        ignoreFailure = false;
-      }
+    trigger(ignoreFailure = false, name, ...args) {
       // TODO: Deprecate the current signature
       if (typeof ignoreFailure === 'string') {
         name = ignoreFailure;
         ignoreFailure = false;
-      }
-      for (var _len2 = arguments.length, args = new Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
-        args[_key2 - 2] = arguments[_key2];
       }
       this.router.triggerEvent(this[STATE_SYMBOL].routeInfos.slice(0, this.resolveIndex + 1), ignoreFailure, name, args);
     }
@@ -45247,13 +44158,7 @@ define("router_js", ["exports", "rsvp", "route-recognizer"], function (_exports,
     return obj;
   }
   var ROUTE_INFOS = new WeakMap();
-  function toReadOnlyRouteInfo(routeInfos, queryParams, includeAttributes) {
-    if (queryParams === void 0) {
-      queryParams = {};
-    }
-    if (includeAttributes === void 0) {
-      includeAttributes = false;
-    }
+  function toReadOnlyRouteInfo(routeInfos, queryParams = {}, includeAttributes = false) {
     return routeInfos.map((info, i) => {
       var {
         name,
@@ -45636,10 +44541,7 @@ define("router_js", ["exports", "rsvp", "route-recognizer"], function (_exports,
     return true;
   }
   class TransitionIntent {
-    constructor(router, data) {
-      if (data === void 0) {
-        data = {};
-      }
+    constructor(router, data = {}) {
       this.router = router;
       this.data = data;
     }
@@ -45729,13 +44631,7 @@ define("router_js", ["exports", "rsvp", "route-recognizer"], function (_exports,
   }
   _exports.TransitionError = TransitionError;
   class NamedTransitionIntent extends TransitionIntent {
-    constructor(router, name, pivotHandler, contexts, queryParams, data) {
-      if (contexts === void 0) {
-        contexts = [];
-      }
-      if (queryParams === void 0) {
-        queryParams = {};
-      }
+    constructor(router, name, pivotHandler, contexts = [], queryParams = {}, data) {
       super(router, data);
       this.preTransitionState = undefined;
       this.name = name;
@@ -46121,13 +45017,7 @@ define("router_js", ["exports", "rsvp", "route-recognizer"], function (_exports,
     @param {Array[Object]} args arguments passed to transitionTo,
       replaceWith, or handleURL
     */
-    doTransition(name, modelsArray, isIntermediate) {
-      if (modelsArray === void 0) {
-        modelsArray = [];
-      }
-      if (isIntermediate === void 0) {
-        isIntermediate = false;
-      }
+    doTransition(name, modelsArray = [], isIntermediate = false) {
       var lastArg = modelsArray[modelsArray.length - 1];
       var queryParams = {};
       if (lastArg && Object.prototype.hasOwnProperty.call(lastArg, 'queryParams')) {
@@ -46483,10 +45373,7 @@ define("router_js", ["exports", "rsvp", "route-recognizer"], function (_exports,
         newTransition.from = fromInfos[fromInfos.length - 1] || null;
       }
     }
-    toInfos(newTransition, newRouteInfos, includeAttributes) {
-      if (includeAttributes === void 0) {
-        includeAttributes = false;
-      }
+    toInfos(newTransition, newRouteInfos, includeAttributes = false) {
       if (newTransition !== undefined && newRouteInfos.length > 0) {
         var toInfos = toReadOnlyRouteInfo(newRouteInfos, Object.assign({}, newTransition[QUERY_PARAMS_SYMBOL]), includeAttributes);
         newTransition.to = toInfos[toInfos.length - 1] || null;
@@ -46555,20 +45442,14 @@ define("router_js", ["exports", "rsvp", "route-recognizer"], function (_exports,
       that are no longer represented by the target route.
          @param {String} name the name of the route
     */
-    transitionTo(name) {
-      for (var _len3 = arguments.length, contexts = new Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
-        contexts[_key3 - 1] = arguments[_key3];
-      }
+    transitionTo(name, ...contexts) {
       if (typeof name === 'object') {
         contexts.push(name);
         return this.doTransition(undefined, contexts, false);
       }
       return this.doTransition(name, contexts);
     }
-    intermediateTransitionTo(name) {
-      for (var _len4 = arguments.length, args = new Array(_len4 > 1 ? _len4 - 1 : 0), _key4 = 1; _key4 < _len4; _key4++) {
-        args[_key4 - 1] = arguments[_key4];
-      }
+    intermediateTransitionTo(name, ...args) {
       return this.doTransition(name, args, true);
     }
     refresh(pivotRoute) {
@@ -46605,10 +45486,7 @@ define("router_js", ["exports", "rsvp", "route-recognizer"], function (_exports,
       @param {...Object} objects a list of objects to serialize
          @return {String} a URL
     */
-    generate(routeName) {
-      for (var _len5 = arguments.length, args = new Array(_len5 > 1 ? _len5 - 1 : 0), _key5 = 1; _key5 < _len5; _key5++) {
-        args[_key5 - 1] = arguments[_key5];
-      }
+    generate(routeName, ...args) {
       var partitionedArgs = extractQueryParams(args),
         suppliedParams = partitionedArgs[0],
         queryParams = partitionedArgs[1];
@@ -46671,17 +45549,11 @@ define("router_js", ["exports", "rsvp", "route-recognizer"], function (_exports,
       }
       return routesEqual && !getChangelist(activeQPsOnNewHandler, queryParams);
     }
-    isActive(routeName) {
-      for (var _len6 = arguments.length, args = new Array(_len6 > 1 ? _len6 - 1 : 0), _key6 = 1; _key6 < _len6; _key6++) {
-        args[_key6 - 1] = arguments[_key6];
-      }
+    isActive(routeName, ...args) {
       var [contexts, queryParams] = extractQueryParams(args);
       return this.isActiveIntent(routeName, contexts, queryParams);
     }
-    trigger(name) {
-      for (var _len7 = arguments.length, args = new Array(_len7 > 1 ? _len7 - 1 : 0), _key7 = 1; _key7 < _len7; _key7++) {
-        args[_key7 - 1] = arguments[_key7];
-      }
+    trigger(name, ...args) {
       this.triggerEvent(this.currentRouteInfos, false, name, args);
     }
   }
@@ -46733,8 +45605,7 @@ define("router_js", ["exports", "rsvp", "route-recognizer"], function (_exports,
     }
     return true;
   }
-  var _default = Router;
-  _exports.default = _default;
+  var _default = _exports.default = Router;
 });
 define("rsvp", ["exports"], function (_exports) {
   "use strict";
@@ -46774,7 +45645,7 @@ define("rsvp", ["exports"], function (_exports) {
     @for rsvp
     @public
   */
-  var EventTarget = {
+  var EventTarget = _exports.EventTarget = {
     /**
       `EventTarget.mixin` extends an object with EventTarget methods. For
       Example:
@@ -46922,7 +45793,6 @@ define("rsvp", ["exports"], function (_exports) {
       }
     }
   };
-  _exports.EventTarget = EventTarget;
   var config = {
     instrument: false
   };
@@ -48265,10 +47135,7 @@ define("rsvp", ["exports"], function (_exports) {
     return Promise.race(array, label);
   }
   class PromiseHash extends Enumerator {
-    constructor(Constructor, object, abortOnReject, label) {
-      if (abortOnReject === void 0) {
-        abortOnReject = true;
-      }
+    constructor(Constructor, object, abortOnReject = true, label) {
       super(Constructor, object, abortOnReject, label);
     }
     _init(Constructor, object) {
@@ -48991,8 +47858,7 @@ define("rsvp", ["exports"], function (_exports) {
   // defaults
   config.async = asap;
   config.after = cb => setTimeout(cb, 0);
-  var cast = resolve$2;
-  _exports.cast = cast;
+  var cast = _exports.cast = resolve$2;
   var async = (callback, arg) => config.async(callback, arg);
   _exports.async = async;
   function on() {
@@ -49037,8 +47903,7 @@ define("rsvp", ["exports"], function (_exports) {
     async,
     filter
   };
-  var _default = rsvp;
-  _exports.default = _default;
+  var _default = _exports.default = rsvp;
 });
 require('@ember/-internals/bootstrap')
 }());
