@@ -1,4 +1,5 @@
 import Route from '@ember/routing/route';
+import config from 'utility-hub/config/environment';
 
 export default class IndexRoute extends Route {
   model() {
