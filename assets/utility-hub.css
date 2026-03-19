@@ -1,0 +1,72 @@
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.utility-card {
+  display: flex;
+  flex-direction: column;
+  width: 280px;
+  height: 90%;
+  padding: 20px;
+  border-radius: 12px;
+  background: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+.utility-card:hover {
+  transform: translateY(-5px);
+  transition: 0.2s ease;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+.utility-card p {
+  flex-grow: 1;
+  color: #555;
+}
+.utility-card img {
+  width: 100%;
+  height: 180px;
+  border-radius: 8px;
+  margin: 10px 0;
+}
+
+body {
+  background: #f5f7fb;
+  font-family: Arial, sans-serif;
+  margin: 0;
+}
+
+.header {
+  text-align: center;
+  padding: 30px 20px 0;
+}
+.header h1 {
+  margin: 0;
+  font-size: 32px;
+  color: #222;
+}
+.header p {
+  margin-top: 8px;
+  color: #666;
+  font-size: 16px;
+}
+
+.utility-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 24px;
+  padding: 40px;
+}
+.utility-grid h2 {
+  margin-bottom: 10px;
+  font-size: 20px;
+  color: #333;
+  text-align: center;
+}
+.utility-grid p {
+  color: #666;
+  font-size: 14px;
+  line-height: 1.5;
+}
+/*@ sourceMappingURL=utility-hub.css.map*/
